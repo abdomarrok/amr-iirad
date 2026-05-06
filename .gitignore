@@ -1,0 +1,56 @@
+# ========================
+# Maven / Java
+# ========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ========================
+# MariaDB4j embedded data
+# ========================
+~/.amriirad/
+*.db
+*.sql.gz
+*.sql.enc
+
+# ========================
+# IDE — IntelliJ IDEA
+# ========================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ========================
+# IDE — Eclipse / VS Code
+# ========================
+.classpath
+.project
+.settings/
+.vscode/
+*.code-workspace
+
+# ========================
+# OS generated
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+
+# ========================
+# Build artifacts
+# ========================
+*.jasper
+*.jrxml.bak
