@@ -1,7 +1,7 @@
 # أمر بالإيراد — Mini-App Project Plan
 ### Revenue Order Management System — Independent Module
 
-> **Document Status:** Planning Phase — No code yet.
+> **Document Status:** Implementation Phase — Phase 4 Complete, ready for Testing/Packaging.
 > **Parent Project:** WGEBUDG (Algerian Public Budget Management)
 > **Institution Context:** Ministry of Justice / Superior School of Magistracy (المدرسة العليا للقضاء)
 > **Reference Documents:**
@@ -547,18 +547,22 @@ amr-iirad/
 ## 9. Development Phases
 
 ### Phase 0 — Project Bootstrap
-- [ ] Initialize Maven project with JavaFX 21 + MariaDB4j dependencies.
-- [ ] Copy and adapt shared utilities from WGEBUDG (DatabaseConnection, FiscalYearGuard, AuditService, etc.).
-- [ ] Implement `DatabaseSchemaManager` with all 5 tables: `revenue_order`, `debtor`, `revenue_order_cancellation`, `dispatch_slip`, `dispatch_slip_order`, `audit_log`.
-- [ ] Configure institution-specific constants (institution name, Wilaya, treasury account numbers, decree reference) as a single `InstitutionConfig` class.
-- [ ] Verify project compiles and the DB initializes correctly.
+- [x] Initialize Maven project with JavaFX 21 + MariaDB4j dependencies.
+- [x] Copy and adapt shared utilities from WGEBUDG (DatabaseConnection, FiscalYearGuard, AuditService, etc.).
+- [x] Implement `DatabaseSchemaManager` with all 5 tables: `revenue_order`, `debtor`, `revenue_order_cancellation`, `dispatch_slip`, `dispatch_slip_order`, `audit_log`.
+- [x] Configure institution-specific constants (institution name, Wilaya, treasury account numbers, decree reference) as a single `InstitutionConfig` class.
+- [x] Verify project compiles and the DB initializes correctly.
 
 ### Phase 1 — Core Data Layer
-- [ ] Implement `Debtor` model and `DebtorRepository` (full CRUD + soft-delete).
-- [ ] Implement `RevenueOrder` model with `Status` enum.
-- [ ] Implement `RevenueOrderRepository` (full CRUD + soft-delete + `findByYear`, `findByStatus`).
-- [ ] Implement `RevenueOrderService` with all RO-01 to RO-12 rules enforced.
-- [ ] Implement `TafqeetUtil` for Arabic number-to-words conversion.
+- [x] Implement `Debtor` model and `DebtorRepository` (full CRUD + soft-delete).
+- [x] Implement `RevenueOrder` model with `Status` enum.
+- [x] Implement `RevenueOrderRepository` (full CRUD + soft-delete + `findByYear`, `findByStatus`).
+- [x] Implement `RevenueOrderService` with all RO-01 to RO-12 rules enforced.
+- [x] Implement `TafqeetService` for Arabic number-to-words conversion (GstockDz dinar/centime pattern).
+- [x] Implement `CancellationOrderService` (BR-03, BR-04, INS-04, INS-05).
+- [x] Implement `DispatchSlipService` (BR-05, BR-06, INS-06).
+- [x] Implement `AuditService` (append-only audit trail).
+- [x] Add soft-delete columns (is_deleted, deleted_at, deleted_by) to revenue_order schema.
 
 ### Phase 2 — UI Screens
 - [ ] Login screen & Fiscal year setup.

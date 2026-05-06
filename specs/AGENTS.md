@@ -49,10 +49,10 @@ amr-iirad/
     │   └── DatabaseSchemaManager.java       ← DDL: 7 tables + 1 view (idempotent)
     ├── core/
     │   └── ConcurrencyManager.java          ← Background task execution (JavaFX-safe)
-    ├── model/                               ← [Phase 1] Domain objects (empty)
-    ├── repository/                          ← [Phase 1] JDBC Data Access (empty)
-    ├── service/                             ← [Phase 2] Business Logic (empty)
-    └── controller/                          ← [Phase 3] JavaFX Controllers (empty)
+    ├── model/                               ← [Phase 1] 6 Models + 3 Enums (✅ Done)
+    ├── repository/                          ← [Phase 1] 6 JDBC Repositories (✅ Done)
+    ├── service/                             ← [Phase 2] 5 Services (✅ Done)
+    └── controller/                          ← [Phase 3] JavaFX Controllers (pending)
 ```
 
 ---
@@ -140,54 +140,48 @@ All tables use `ENGINE=InnoDB` and `utf8mb4` charset.
 
 ---
 
-## Current State — Phase 0 COMPLETE ✅
+## Current State — Phase 2 COMPLETE ✅
 
-All utilities are written and the project compiles cleanly (`BUILD SUCCESS`). The following is ready:
-
+- ✅ **Phase 0** Complete (Structure, Utils, DB Manager, App Entry)
+- ✅ **Phase 1** Complete — All 6 Models, 3 Enums, 6 Repositories
+- ✅ **Phase 2** Complete — All 5 Services with full business rule enforcement:
+    - ✅ `RevenueOrderService` (RO-01→RO-12, INS-01, INS-02, state machine)
+    - ✅ `CancellationOrderService` (BR-03, BR-04, INS-04, INS-05)
+    - ✅ `DispatchSlipService` (BR-05, BR-06, INS-06, auto-computed totals)
+    - ✅ `TafqeetService` (Arabic amount-to-words, GstockDz dinar/centime pattern)
+    - ✅ `AuditService` (append-only audit trail)
+- ✅ `DatabaseSchemaManager` updated with `is_deleted` columns for soft-delete
 - ✅ `pom.xml` with all dependencies
-- ✅ `AppSettings` + `AppMode` (persistent mode selection via `java.util.prefs`)
-- ✅ `DatabaseConnection` (HikariCP + GZIP backup/restore)
-- ✅ `EmbeddedDatabase` (MariaDB4j for local mode)
-- ✅ `DatabaseSchemaManager` (7 tables + view, idempotent)
-- ✅ `ConcurrencyManager` (background task execution, JavaFX-thread-safe)
-- ✅ `AmrIiradApp` (entry point with startup flow)
-- ✅ `specs/` with PRD, advancement tracker, technical plan, and legal analysis
+- ✅ **Git Repository**: [abdomarrok/amr-iirad](https://github.com/abdomarrok/amr-iirad)
+- ✅ **BUILD SUCCESS**: 27 Java source files compile cleanly
 
 ---
 
-## Next Step — Phase 1: Data Layer
+## Next Step — Phase 3: UI Layer
 
-Create the **Model** and **Repository** classes. Follow this order strictly (dependencies):
+Build the **FXML screens** and **Controllers** using AtlantaFX theme. Priority order:
 
-### Step 1 — Models (in `model/` package)
-
+### Step 1 — Minimal App Shell (make app launchable)
 ```
-FiscalYear.java          → id, yearLabel, isActive, createdAt
-Debtor.java              → id, fullName, idNumber, address, phone, debtorType (enum)
-DebtorType.java          → enum: INDIVIDUAL, COMPANY, STATE_ENTITY
-BudgetChapter.java       → id, code, labelAr, labelFr, parentId, level
-OrderStatus.java         → enum: DRAFT, ISSUED, DISPATCHED, CANCELLED, REDUCED
-RevenueOrder.java        → all revenue_order fields + nested Debtor & BudgetChapter
-RevenueOrderCancellation.java → all cancellation fields + nested RevenueOrder
-CancellationType.java    → enum: FULL_CANCEL, REDUCTION
-DispatchSlip.java        → all dispatch_slip fields + List<RevenueOrder>
+resources/org/marrok/amriirad/css/app.css
+resources/org/marrok/amriirad/view/dashboard-view.fxml
+controller/DashboardController.java
 ```
 
-### Step 2 — Repositories (in `repository/` package)
-
-Each repository uses `DatabaseConnection.getConnection()` directly (no ORM).
-
+### Step 2 — Core Screens
 ```
-FiscalYearRepository.java   → findAll(), findActive(), save(), setActive(id)
-DebtorRepository.java       → findAll(), findById(), search(query), save(), update()
-BudgetChapterRepository.java → findAll(), findByLevel(n), findChildren(parentId)
-RevenueOrderRepository.java → findAll(fiscalYearId), findById(), save(), updateStatus()
-CancellationOrderRepository.java → findByOrderId(), save()
-DispatchSlipRepository.java → findAll(fiscalYearId), findById(), save(), addOrder()
+order-list-view.fxml + RevenueOrderListController.java
+order-form-view.fxml + RevenueOrderFormController.java
+debtor-list-view.fxml + DebtorListController.java
 ```
 
-### Step 3 — Compile Check
+### Step 3 — Secondary Screens
+```
+cancellation-form-view.fxml + CancellationFormController.java
+dispatch-slip-view.fxml + DispatchSlipController.java
+```
 
+### Step 4 — Compile Check
 ```powershell
 ..\mvnw.cmd clean compile
 ```

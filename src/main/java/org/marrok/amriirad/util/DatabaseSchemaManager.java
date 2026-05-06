@@ -62,16 +62,19 @@ public class DatabaseSchemaManager {
                     id                  INT AUTO_INCREMENT PRIMARY KEY,
                     order_number        VARCHAR(20) NOT NULL,
                     fiscal_year_id      INT NOT NULL,
-                    issue_date          DATE NOT NULL,
+                    issue_date          DATE,
                     debtor_id           INT NOT NULL,
                     budget_chapter_id   INT NOT NULL,
-                    object_ar           TEXT NOT NULL COMMENT 'موضوع الإيراد',
+                    object_ar           TEXT COMMENT 'موضوع الإيراد',
                     amount              DECIMAL(18,2) NOT NULL,
                     amount_in_words_ar  TEXT,
                     status              ENUM('DRAFT','ISSUED','DISPATCHED','CANCELLED','REDUCED') NOT NULL DEFAULT 'DRAFT',
                     created_by          VARCHAR(100),
                     created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
                     updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    is_deleted          TINYINT(1) NOT NULL DEFAULT 0,
+                    deleted_at          DATETIME DEFAULT NULL,
+                    deleted_by          VARCHAR(100) DEFAULT NULL,
                     UNIQUE KEY uq_order_number_year (order_number, fiscal_year_id),
                     FOREIGN KEY (fiscal_year_id)    REFERENCES fiscal_year(id)      ON DELETE RESTRICT,
                     FOREIGN KEY (debtor_id)         REFERENCES debtor(id)           ON DELETE RESTRICT,
@@ -91,6 +94,7 @@ public class DatabaseSchemaManager {
                     reduced_amount      DECIMAL(18,2) COMMENT 'Populated only for REDUCTION type',
                     created_by          VARCHAR(100),
                     created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    is_deleted          TINYINT(1) NOT NULL DEFAULT 0,
                     FOREIGN KEY (original_order_id) REFERENCES revenue_order(id) ON DELETE RESTRICT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """);
@@ -101,11 +105,12 @@ public class DatabaseSchemaManager {
                     id              INT AUTO_INCREMENT PRIMARY KEY,
                     slip_number     VARCHAR(20) NOT NULL,
                     fiscal_year_id  INT NOT NULL,
-                    dispatch_date   DATE NOT NULL,
+                    dispatch_date   DATE,
                     treasury_ref    VARCHAR(100),
                     total_amount    DECIMAL(18,2) NOT NULL,
                     created_by      VARCHAR(100),
                     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    is_deleted      TINYINT(1) NOT NULL DEFAULT 0,
                     FOREIGN KEY (fiscal_year_id) REFERENCES fiscal_year(id) ON DELETE RESTRICT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """);
@@ -151,6 +156,14 @@ public class DatabaseSchemaManager {
                 JOIN fiscal_year   fy ON ro.fiscal_year_id    = fy.id
                 JOIN debtor        d  ON ro.debtor_id         = d.id
                 JOIN budget_chapter bc ON ro.budget_chapter_id = bc.id;
+            """);
+
+            // 9. Seed Sample Data (Optional)
+            stmt.execute("""
+                INSERT IGNORE INTO budget_chapter (id, code, label_ar, label_fr, level) VALUES
+                (1, '01', 'الإيرادات الجبائية', 'Recettes Fiscales', 1),
+                (2, '01.01', 'الضرائب المباشرة', 'Impôts Directs', 2),
+                (3, '02', 'إيرادات الأملاك', 'Produits du Domaine', 1);
             """);
 
             logger.info("Schema migrations completed successfully.");

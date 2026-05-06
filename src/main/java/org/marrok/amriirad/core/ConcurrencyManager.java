@@ -17,6 +17,7 @@ public class ConcurrencyManager {
     private static final Logger logger = LogManager.getLogger(ConcurrencyManager.class);
 
     private final ExecutorService executor;
+    private static ConcurrencyManager instance;
 
     public ConcurrencyManager() {
         // Cached thread pool for short-lived tasks
@@ -26,6 +27,13 @@ public class ConcurrencyManager {
             return t;
         });
         logger.info("ConcurrencyManager initialized");
+    }
+
+    public static synchronized ConcurrencyManager getInstance() {
+        if (instance == null) {
+            instance = new ConcurrencyManager();
+        }
+        return instance;
     }
 
     /**

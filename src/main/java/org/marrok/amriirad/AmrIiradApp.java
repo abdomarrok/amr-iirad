@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.marrok.amriirad.util.AppMode;
 import org.marrok.amriirad.util.AppSettings;
 import org.marrok.amriirad.util.DatabaseConnection;
 import org.marrok.amriirad.util.DatabaseSchemaManager;
@@ -18,25 +19,44 @@ public class AmrIiradApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         logger.info("Starting Amr-Iirad application...");
 
-        // Step 1: Initialize database connection based on saved mode
-        DatabaseConnection.initialize(AppSettings.getAppMode());
-
-        // Step 2: Run schema migrations (idempotent)
-        DatabaseSchemaManager.runMigrations();
-
-        // Step 3: Load the mode-selection or login screen
-        // (If mode was never set, go to mode-selection first)
-        String fxml = AppSettings.isModeConfigured()
-                ? "/org/marrok/amriirad/view/login-view.fxml"
-                : "/org/marrok/amriirad/view/mode-selection-view.fxml";
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-        Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-
         primaryStage.setTitle("نظام أوامر الإيراد");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+
+        if (!AppSettings.isModeConfigured()) {
+            // First run → show mode selection (no DB init needed yet)
+            showView(primaryStage, "/org/marrok/amriirad/view/mode-selection-view.fxml", false);
+        } else {
+            // Mode already configured → initialize DB then show dashboard
+            try {
+                AppMode mode = AppSettings.getAppMode();
+                if (mode == AppMode.SERVER) {
+                    // Apply saved server config
+                    DatabaseConnection.configure(
+                            AppSettings.getDbHost(),
+                            AppSettings.getDbPort(),
+                            AppSettings.getDbUser(),
+                            ""
+                    );
+                }
+                DatabaseConnection.initialize(mode);
+                DatabaseSchemaManager.runMigrations();
+                showView(primaryStage, "/org/marrok/amriirad/view/dashboard-view.fxml", true);
+            } catch (Exception e) {
+                logger.error("Database initialization failed, showing mode selection", e);
+                // Fall back to mode selection if DB fails
+                AppSettings.clearAll();
+                showView(primaryStage, "/org/marrok/amriirad/view/mode-selection-view.fxml", false);
+            }
+        }
+    }
+
+    private void showView(Stage stage, String fxmlPath, boolean maximize) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(
+                getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
+        stage.setScene(scene);
+        if (maximize) stage.setMaximized(true);
+        stage.show();
     }
 
     @Override

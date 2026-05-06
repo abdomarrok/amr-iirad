@@ -23,7 +23,7 @@ public class DatabaseConnection {
     // Connection parameters (defaults for local embedded mode)
     private static String DATABASE_NAME = "amr_iirad";
     private static String DATABASE_HOST = "localhost";
-    private static int    DATABASE_PORT = 3307;
+    private static int    DATABASE_PORT = 3306;
     private static String DATABASE_USER = "root";
     private static String DATABASE_PASSWORD = "";
 
