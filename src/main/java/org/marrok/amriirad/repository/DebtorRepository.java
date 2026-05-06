@@ -45,7 +45,7 @@ public class DebtorRepository {
     // -------------------------------------------------------------------------
 
     public Debtor save(Debtor d) throws SQLException {
-        String sql = "INSERT INTO debtor (full_name, id_number, address, phone, debtor_type) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO debtor (full_name, id_number, address, phone, bank_account, cnas_number, nif_number, debtor_type) VALUES (?,?,?,?,?,?,?,?)";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             bind(ps, d);
@@ -59,11 +59,11 @@ public class DebtorRepository {
     }
 
     public void update(Debtor d) throws SQLException {
-        String sql = "UPDATE debtor SET full_name=?, id_number=?, address=?, phone=?, debtor_type=? WHERE id=?";
+        String sql = "UPDATE debtor SET full_name=?, id_number=?, address=?, phone=?, bank_account=?, cnas_number=?, nif_number=?, debtor_type=? WHERE id=?";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
-            bind(ps, d);
-            ps.setInt(6, d.getId());
+             bind(ps, d);
+            ps.setInt(9, d.getId());
             ps.executeUpdate();
         }
         logger.info("Updated debtor id={}", d.getId());
@@ -93,7 +93,10 @@ public class DebtorRepository {
         ps.setString(2, d.getIdNumber());
         ps.setString(3, d.getAddress());
         ps.setString(4, d.getPhone());
-        ps.setString(5, d.getDebtorType().name());
+        ps.setString(5, d.getBankAccount());
+        ps.setString(6, d.getCnasNumber());
+        ps.setString(7, d.getNifNumber());
+        ps.setString(8, d.getDebtorType().name());
     }
 
     private Debtor map(ResultSet rs) throws SQLException {
@@ -103,6 +106,9 @@ public class DebtorRepository {
         d.setIdNumber(rs.getString("id_number"));
         d.setAddress(rs.getString("address"));
         d.setPhone(rs.getString("phone"));
+        d.setBankAccount(rs.getString("bank_account"));
+        d.setCnasNumber(rs.getString("cnas_number"));
+        d.setNifNumber(rs.getString("nif_number"));
         d.setDebtorType(DebtorType.valueOf(rs.getString("debtor_type")));
         Timestamp ts = rs.getTimestamp("created_at");
         if (ts != null) d.setCreatedAt(ts.toLocalDateTime());

@@ -25,6 +25,9 @@ public class DebtorFormController implements Initializable {
     @FXML private TextField idNumberField;
     @FXML private TextField addressField;
     @FXML private TextField phoneField;
+    @FXML private TextField bankAccountField;
+    @FXML private TextField cnasNumberField;
+    @FXML private TextField nifNumberField;
     @FXML private Label errorLabel;
     @FXML private Button saveBtn;
 
@@ -58,6 +61,9 @@ public class DebtorFormController implements Initializable {
         idNumberField.setText(debtor.getIdNumber());
         addressField.setText(debtor.getAddress());
         phoneField.setText(debtor.getPhone());
+        bankAccountField.setText(debtor.getBankAccount());
+        cnasNumberField.setText(debtor.getCnasNumber());
+        nifNumberField.setText(debtor.getNifNumber());
     }
 
     @FXML
@@ -69,6 +75,9 @@ public class DebtorFormController implements Initializable {
         currentDebtor.setIdNumber(idNumberField.getText().trim());
         currentDebtor.setAddress(addressField.getText().trim());
         currentDebtor.setPhone(phoneField.getText().trim());
+        currentDebtor.setBankAccount(bankAccountField.getText() != null ? bankAccountField.getText().trim() : "");
+        currentDebtor.setCnasNumber(cnasNumberField.getText() != null ? cnasNumberField.getText().trim() : "");
+        currentDebtor.setNifNumber(nifNumberField.getText() != null ? nifNumberField.getText().trim() : "");
 
         ConcurrencyManager.getInstance().runAsync(
             () -> {

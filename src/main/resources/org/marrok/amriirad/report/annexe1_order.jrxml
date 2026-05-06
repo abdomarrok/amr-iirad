@@ -1,49 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0 -->
-<jasperReport name="annexe1_order" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1d731fb3-e69c-48be-8f3a-f1001dfa1f0a">
+<jasperReport name="annexe1_order" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
 	<property name="net.sf.jasperreports.default.pdf.font.name" value="Traditional Arabic"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	
+	<!-- Parameters -->
 	<parameter name="ORDER_NUMBER" class="java.lang.String"/>
+	<parameter name="FISCAL_YEAR" class="java.lang.String"/>
+	<parameter name="ISSUE_DATE" class="java.lang.String"/>
 	<parameter name="DEBTOR_NAME" class="java.lang.String"/>
+	<parameter name="DEBTOR_ADDRESS" class="java.lang.String"/>
+	<parameter name="DEBTOR_ACCOUNT" class="java.lang.String"/>
+	<parameter name="DEBTOR_CNAS" class="java.lang.String"/>
+	<parameter name="DEBTOR_NIF" class="java.lang.String"/>
 	<parameter name="AMOUNT" class="java.lang.String"/>
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
-	<parameter name="DATE" class="java.lang.String"/>
-	<parameter name="CHAPTER" class="java.lang.String"/>
-	<parameter name="ARTICLE" class="java.lang.String"/>
-	<parameter name="REASON" class="java.lang.String"/>
+	<parameter name="REASON_AR" class="java.lang.String"/>
+	<parameter name="LIQUIDATION_BASIS" class="java.lang.String"/>
+	<parameter name="BUDGET_CHAPTER" class="java.lang.String"/>
+	<parameter name="TREASURY_REF" class="java.lang.String"/>
 	
-	<title height="80" splitType="Stretch">
-		<element kind="staticText" uuid="f0d11be5-5552-47d3-bc8e-cfbe629555c8" x="0" y="20" width="555" height="30" fontName="Traditional Arabic" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<text><![CDATA[الملحق 1: أمر إيراد (نسخة الإدارة)]]></text>
+	<!-- PAGE HEADER -->
+	<pageHeader height="110" splitType="Stretch">
+		<element kind="staticText" x="0" y="5" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[الجمهورية الجزائرية الديمقراطية الشعبية]]></text>
 		</element>
-	</title>
+		<element kind="staticText" x="0" y="20" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[وزارة العدل]]></text>
+		</element>
+		<element kind="staticText" x="0" y="35" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[المدرسة العليا للقضاء]]></text>
+		</element>
+		<element kind="staticText" x="0" y="70" width="555" height="25" fontName="Traditional Arabic" fontSize="20.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[أمر بالإيراد]]></text>
+		</element>
+	</pageHeader>
 	
 	<detail>
-		<band height="300" splitType="Stretch">
-			<element kind="textField" uuid="a123b456-7890-1234-5678-abcdef123456" x="280" y="20" width="270" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["رقم الأمر: " + $P{ORDER_NUMBER}]]></expression>
+		<band height="680" splitType="Stretch">
+			<!-- Top Box with Metadata -->
+			<element kind="rectangle" x="50" y="10" width="505" height="130" mode="Transparent">
+				<pen lineWidth="0.75"/>
 			</element>
-			<element kind="textField" uuid="b123b456-7890-1234-5678-abcdef123456" x="0" y="20" width="270" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["التاريخ: " + $P{DATE}]]></expression>
+			
+			<!-- Labels and Values inside Top Box -->
+			<!-- Row 1 -->
+			<element kind="textField" x="430" y="15" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["السنة المالية:"]]></expression>
 			</element>
-			<element kind="textField" uuid="c123b456-7890-1234-5678-abcdef123456" x="0" y="60" width="550" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["المدين: " + $P{DEBTOR_NAME}]]></expression>
+			<element kind="rectangle" x="350" y="15" width="80" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" uuid="d123b456-7890-1234-5678-abcdef123456" x="0" y="100" width="550" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["السبب: " + $P{REASON}]]></expression>
+			<element kind="textField" x="350" y="15" width="75" height="15" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
+				<expression><![CDATA[$P{FISCAL_YEAR}]]></expression>
 			</element>
-			<element kind="textField" uuid="e123b456-7890-1234-5678-abcdef123456" x="280" y="140" width="270" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["الباب: " + $P{CHAPTER}]]></expression>
+			
+			<element kind="textField" x="200" y="15" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["محفظة البرامج:"]]></expression>
 			</element>
-			<element kind="textField" uuid="f123b456-7890-1234-5678-abcdef123456" x="0" y="140" width="270" height="25" fontName="Traditional Arabic" fontSize="14.0" hTextAlign="Right">
-				<expression><![CDATA["المادة: " + $P{ARTICLE}]]></expression>
+			<element kind="rectangle" x="55" y="15" width="145" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" uuid="0123b456-7890-1234-5678-abcdef123456" x="0" y="180" width="550" height="25" fontName="Traditional Arabic" fontSize="14.0" bold="true" hTextAlign="Right">
-				<expression><![CDATA["المبلغ بالأرقام: " + $P{AMOUNT} + " د.ج"]]></expression>
+			
+			<!-- Row 2 -->
+			<element kind="textField" x="430" y="35" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["البرنامج:"]]></expression>
 			</element>
-			<element kind="textField" uuid="1123b456-7890-1234-5678-abcdef123456" x="0" y="220" width="550" height="25" fontName="Traditional Arabic" fontSize="14.0" bold="true" hTextAlign="Right">
-				<expression><![CDATA["المبلغ بالحروف: " + $P{AMOUNT_WORDS}]]></expression>
+			<element kind="rectangle" x="350" y="35" width="80" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<element kind="textField" x="200" y="35" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["البرنامج الفرعي:"]]></expression>
+			</element>
+			<element kind="rectangle" x="55" y="35" width="145" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<!-- Row 3 -->
+			<element kind="textField" x="430" y="55" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["النشاط:"]]></expression>
+			</element>
+			<element kind="rectangle" x="350" y="55" width="80" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<element kind="textField" x="200" y="55" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["النشاط الفرعي:"]]></expression>
+			</element>
+			<element kind="rectangle" x="55" y="55" width="145" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<!-- Row 4 -->
+			<element kind="textField" x="430" y="75" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["الصنف / الصنف الفرعي:"]]></expression>
+			</element>
+			<element kind="rectangle" x="350" y="75" width="80" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<element kind="textField" x="200" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["رقم الأمر:"]]></expression>
+			</element>
+			<element kind="rectangle" x="55" y="75" width="145" height="15" mode="Transparent">
+				<pen lineWidth="0.5"/>
+			</element>
+			<element kind="textField" x="55" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA[$P{ORDER_NUMBER}]]></expression>
+			</element>
+			
+			<!-- Main Paragraph -->
+			<element kind="textField" x="50" y="150" width="505" height="70" fontName="Traditional Arabic" fontSize="11.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+				<expression><![CDATA["يطلب من " + $P{DEBTOR_NAME} + " أن يدفع لصندوق المحاسب العمومي للمدرسة العليا للقضاء، وهو المؤهل وفقاً لأحكام المرسوم التنفيذي رقم 46-93 المؤرخ في 06 فبراير 1993 أن يقوم بالتحصيل على الحساب الجاري رقم " + $P{TREASURY_REF} + "، البند " + $P{BUDGET_CHAPTER} + ". المبلغ المحدد أدناه، للأسباب المذكورة أدناه."]]></expression>
+			</element>
+			
+			<!-- Three Columns Table -->
+			<element kind="rectangle" x="50" y="230" width="505" height="100" mode="Transparent">
+				<pen lineWidth="0.75"/>
+			</element>
+			<!-- Vertical Dividers -->
+			<element kind="line" x="217" y="230" width="1" height="100">
+				<pen lineWidth="0.5"/>
+			</element>
+			<element kind="line" x="384" y="230" width="1" height="100">
+				<pen lineWidth="0.5"/>
+			</element>
+			<!-- Horizontal Divider for Header -->
+			<element kind="line" x="50" y="255" width="505" height="1">
+				<pen lineWidth="0.5"/>
+			</element>
+			
+			<!-- Column Headers -->
+			<element kind="textField" x="384" y="235" width="171" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["أساس التصفية"]]></expression>
+			</element>
+			<element kind="textField" x="217" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["الأسباب"]]></expression>
+			</element>
+			<element kind="textField" x="50" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["المعنون"]]></expression>
+			</element>
+			
+			<!-- Column Values -->
+			<element kind="textField" x="389" y="260" width="161" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+				<expression><![CDATA[$P{LIQUIDATION_BASIS}]]></expression>
+			</element>
+			<element kind="textField" x="222" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+				<expression><![CDATA[$P{REASON_AR}]]></expression>
+			</element>
+			<element kind="textField" x="55" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="9.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+				<expression><![CDATA[$P{DEBTOR_NAME} + "\n" + $P{DEBTOR_ADDRESS} + "\n" + "الحساب: " + $P{DEBTOR_ACCOUNT} + "\nCNAS: " + $P{DEBTOR_CNAS} + "\nNIF: " + $P{DEBTOR_NIF}]]></expression>
+			</element>
+			
+			<!-- Amount Section -->
+			<element kind="textField" x="50" y="340" width="505" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["المبلغ المراد تحصيله:"]]></expression>
+			</element>
+			<element kind="textField" x="50" y="360" width="505" height="25" fontName="Traditional Arabic" fontSize="14.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["مبلغ " + $P{AMOUNT} + " دينار جزائري"]]></expression>
+			</element>
+			
+			<element kind="textField" x="50" y="390" width="505" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["يتضمن الأمر بالإيراد مبلغ:"]]></expression>
+			</element>
+			<element kind="textField" x="50" y="410" width="505" height="40" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA[$P{AMOUNT_WORDS}]]></expression>
+			</element>
+			
+			<!-- Footer Section -->
+			<element kind="line" x="350" y="580" width="200" height="1">
+				<pen lineWidth="0.75"/>
+			</element>
+			<element kind="textField" x="350" y="585" width="200" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["الآمر بالصرف"]]></expression>
+			</element>
+			
+			<element kind="line" x="50" y="580" width="200" height="1">
+				<pen lineWidth="0.75"/>
+			</element>
+			<element kind="textField" x="50" y="590" width="200" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
+				<expression><![CDATA["حرر في ............... بتاريخ " + $P{ISSUE_DATE}]]></expression>
 			</element>
 		</band>
 	</detail>

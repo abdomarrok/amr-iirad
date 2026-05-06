@@ -38,6 +38,9 @@ public class DatabaseSchemaManager {
                     id_number       VARCHAR(50),
                     address         TEXT,
                     phone           VARCHAR(30),
+                    bank_account    VARCHAR(100),
+                    cnas_number     VARCHAR(50),
+                    nif_number      VARCHAR(50),
                     debtor_type     ENUM('INDIVIDUAL', 'COMPANY', 'STATE_ENTITY') NOT NULL DEFAULT 'INDIVIDUAL',
                     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -138,6 +141,11 @@ public class DatabaseSchemaManager {
                     details     TEXT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """);
+            
+            // -- Migration for existing debtor table --
+            stmt.execute("ALTER TABLE debtor ADD COLUMN IF NOT EXISTS bank_account VARCHAR(100)");
+            stmt.execute("ALTER TABLE debtor ADD COLUMN IF NOT EXISTS cnas_number VARCHAR(50)");
+            stmt.execute("ALTER TABLE debtor ADD COLUMN IF NOT EXISTS nif_number VARCHAR(50)");
 
             // -- Summary view --
             stmt.execute("""

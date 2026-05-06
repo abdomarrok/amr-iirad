@@ -72,8 +72,34 @@
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-javaflow</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
             <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-excel-poi</artifactId>
+            <version>7.0.0</version>
+        </dependency>
+        <!--  needed for  jasper dtae format   -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.17.2</version>
         </dependency>
 
         <!-- Database -->

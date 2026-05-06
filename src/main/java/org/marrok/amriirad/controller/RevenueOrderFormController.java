@@ -269,14 +269,38 @@ public class RevenueOrderFormController implements Initializable {
         ConcurrencyManager.getInstance().runAsync(
             () -> {
                 java.util.Map<String, Object> params = new java.util.HashMap<>();
+                
+                // Order & Fiscal Year
                 params.put("ORDER_NUMBER", currentOrder.getOrderNumber() != null ? currentOrder.getOrderNumber() : "");
-                params.put("DEBTOR_NAME", currentOrder.getDebtor() != null ? currentOrder.getDebtor().getFullName() : "");
-                params.put("AMOUNT", currentOrder.getAmount() != null ? currentOrder.getAmount().toString() : "");
-                params.put("AMOUNT_WORDS", currentOrder.getAmount() != null ? tafqeetService.toArabicWords(currentOrder.getAmount()) : "");
-                params.put("DATE", currentOrder.getIssueDate() != null ? currentOrder.getIssueDate().toString() : "");
-                params.put("CHAPTER", currentOrder.getBudgetChapter() != null ? currentOrder.getBudgetChapter().getCode() : "");
-                params.put("ARTICLE", "");
-                params.put("REASON", currentOrder.getObjectAr() != null ? currentOrder.getObjectAr() : "");
+                params.put("FISCAL_YEAR", currentOrder.getFiscalYear() != null ? 
+                    String.valueOf(currentOrder.getFiscalYear().getYearLabel()) : "");
+                params.put("ISSUE_DATE", currentOrder.getIssueDate() != null ? 
+                    currentOrder.getIssueDate().toString() : "");
+                
+                // Debtor Information (from Debtor entity)
+                org.marrok.amriirad.model.Debtor debtor = currentOrder.getDebtor();
+                params.put("DEBTOR_NAME", debtor != null ? debtor.getFullName() : "");
+                params.put("DEBTOR_ADDRESS", debtor != null ? debtor.getAddress() : "");
+                params.put("DEBTOR_ACCOUNT", debtor != null ? (debtor.getBankAccount() != null ? debtor.getBankAccount() : "") : "");
+                params.put("DEBTOR_CNAS", debtor != null ? (debtor.getCnasNumber() != null ? debtor.getCnasNumber() : "") : "");
+                params.put("DEBTOR_NIF", debtor != null ? (debtor.getNifNumber() != null ? debtor.getNifNumber() : "") : "");
+                
+                // Budget Information
+                params.put("BUDGET_CHAPTER", currentOrder.getBudgetChapter() != null ? 
+                    currentOrder.getBudgetChapter().getCode() : "");
+                
+                // Financial Information
+                params.put("AMOUNT", currentOrder.getAmount() != null ? 
+                    String.format("%,.2f", currentOrder.getAmount()) : "0.00");
+                params.put("AMOUNT_WORDS", currentOrder.getAmount() != null ? 
+                    tafqeetService.toArabicWords(currentOrder.getAmount()) : "");
+                
+                // Content Fields
+                params.put("REASON_AR", currentOrder.getObjectAr() != null ? 
+                    currentOrder.getObjectAr() : "");
+                params.put("LIQUIDATION_BASIS", currentOrder.getObjectAr() != null ? 
+                    currentOrder.getObjectAr() : "");
+                params.put("TREASURY_REF", "1980000034/55"); // TODO: Make configurable via AppSettings
                 
                 reportService.showReportWithParamsOnly(reportPath, params);
                 return true;

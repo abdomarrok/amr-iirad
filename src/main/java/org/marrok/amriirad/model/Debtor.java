@@ -10,6 +10,9 @@ public class Debtor {
     private String idNumber;        // رقم التعريف / السجل التجاري
     private String address;         // العنوان
     private String phone;           // الهاتف
+    private String bankAccount;     // الحساب البنكي / الجاري
+    private String cnasNumber;      // رقم الضمان الاجتماعي
+    private String nifNumber;       // رقم التعريف الجبائي
     private DebtorType debtorType;  // النوع
     private LocalDateTime createdAt;
 
@@ -43,6 +46,15 @@ public class Debtor {
 
     public String getPhone()                    { return phone; }
     public void setPhone(String p)              { this.phone = p; }
+
+    public String getBankAccount()              { return bankAccount; }
+    public void setBankAccount(String b)        { this.bankAccount = b; }
+
+    public String getCnasNumber()               { return cnasNumber; }
+    public void setCnasNumber(String c)         { this.cnasNumber = c; }
+
+    public String getNifNumber()                { return nifNumber; }
+    public void setNifNumber(String n)          { this.nifNumber = n; }
 
     public DebtorType getDebtorType()           { return debtorType; }
     public void setDebtorType(DebtorType t)     { this.debtorType = t; }
