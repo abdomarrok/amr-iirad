@@ -166,6 +166,27 @@ public class DatabaseSchemaManager {
                 (3, '02', 'إيرادات الأملاك', 'Produits du Domaine', 1);
             """);
 
+            // 10. Auto-seed Fiscal Year if empty or none active
+            boolean hasActive = false;
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM fiscal_year WHERE is_active = TRUE")) {
+                if (rs.next() && rs.getInt(1) > 0) hasActive = true;
+            }
+
+            if (!hasActive) {
+                try (var rsCount = stmt.executeQuery("SELECT id FROM fiscal_year ORDER BY year_label DESC LIMIT 1")) {
+                    if (rsCount.next()) {
+                        // Activate latest existing
+                        stmt.execute("UPDATE fiscal_year SET is_active = TRUE WHERE id = " + rsCount.getInt(1));
+                        logger.info("Automatically activated existing fiscal year ID: {}", rsCount.getInt(1));
+                    } else {
+                        // Create and activate current year
+                        String currentYear = String.valueOf(java.time.LocalDate.now().getYear());
+                        stmt.execute("INSERT INTO fiscal_year (year_label, is_active) VALUES ('" + currentYear + "', TRUE)");
+                        logger.info("Auto-seeded and activated current fiscal year: {}", currentYear);
+                    }
+                }
+            }
+
             logger.info("Schema migrations completed successfully.");
 
         } catch (SQLException e) {

@@ -20,10 +20,17 @@ public class DispatchSlipService {
 
     private static final Logger logger = LogManager.getLogger(DispatchSlipService.class);
 
-    private final DispatchSlipRepository slipRepo  = new DispatchSlipRepository();
-    private final RevenueOrderRepository orderRepo = new RevenueOrderRepository();
-    private final RevenueOrderService    orderSvc  = new RevenueOrderService();
-    private final AuditService           audit     = new AuditService();
+    private final DispatchSlipRepository slipRepo;
+    private final RevenueOrderRepository orderRepo;
+    private final RevenueOrderService    orderSvc;
+    private final AuditService           audit;
+
+    public DispatchSlipService(DispatchSlipRepository slipRepo, RevenueOrderRepository orderRepo, RevenueOrderService orderSvc, AuditService audit) {
+        this.slipRepo = slipRepo;
+        this.orderRepo = orderRepo;
+        this.orderSvc = orderSvc;
+        this.audit = audit;
+    }
 
     /**
      * Creates a new Dispatch Slip with the given orders.

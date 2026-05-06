@@ -94,29 +94,24 @@ public class ServerConfigController implements Initializable {
 
         // Navigate to dashboard
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dashboard-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
+            org.marrok.amriirad.util.DatabaseConnection.initialize(org.marrok.amriirad.util.AppMode.SERVER);
+            org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
+
             Stage stage = (Stage) hostField.getScene().getWindow();
-            stage.setScene(scene);
+            org.marrok.amriirad.util.GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
             stage.setMaximized(true);
         } catch (Exception ex) {
-            logger.error("Failed to load dashboard", ex);
+            logger.error("Failed to initialize database or load dashboard", ex);
             statusLabel.setStyle("-fx-text-fill: -fx-theme-danger;");
-            statusLabel.setText("❌ خطأ في تحميل الشاشة الرئيسية");
+            statusLabel.setText("❌ خطأ في تهيئة قاعدة البيانات");
         }
     }
 
     @FXML
     private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/mode-selection-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) hostField.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load mode selection", ex);
-        }
+        org.marrok.amriirad.util.GeneralUtil.loadScene(
+            (Stage) hostField.getScene().getWindow(),
+            "/org/marrok/amriirad/view/mode-selection-view.fxml"
+        );
     }
 }

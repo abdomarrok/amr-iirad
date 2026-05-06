@@ -28,9 +28,13 @@ public class DebtorFormController implements Initializable {
     @FXML private Label errorLabel;
     @FXML private Button saveBtn;
 
-    private final DebtorRepository debtorRepo = new DebtorRepository();
+    private final DebtorRepository debtorRepo;
     private Debtor currentDebtor;
     private Runnable onSuccess;
+
+    public DebtorFormController(DebtorRepository debtorRepo) {
+        this.debtorRepo = debtorRepo;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

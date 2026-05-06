@@ -18,9 +18,15 @@ public class CancellationOrderService {
 
     private static final Logger logger = LogManager.getLogger(CancellationOrderService.class);
 
-    private final CancellationOrderRepository cancelRepo = new CancellationOrderRepository();
-    private final RevenueOrderRepository      orderRepo  = new RevenueOrderRepository();
-    private final AuditService                audit      = new AuditService();
+    private final CancellationOrderRepository cancelRepo;
+    private final RevenueOrderRepository orderRepo;
+    private final AuditService audit;
+
+    public CancellationOrderService(CancellationOrderRepository cancelRepo, RevenueOrderRepository orderRepo, AuditService audit) {
+        this.cancelRepo = cancelRepo;
+        this.orderRepo = orderRepo;
+        this.audit = audit;
+    }
 
     /**
      * Creates a full cancellation (إلغاء كلي) for an existing revenue order.

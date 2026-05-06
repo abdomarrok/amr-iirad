@@ -12,8 +12,9 @@ import java.util.function.Consumer;
 /**
  * Manages background task execution for non-blocking UI operations.
  * Ensures database and I/O operations don't freeze the JavaFX thread.
+ * Implements Disposable for clean shutdown via AppContext.
  */
-public class ConcurrencyManager {
+public class ConcurrencyManager implements Disposable {
     private static final Logger logger = LogManager.getLogger(ConcurrencyManager.class);
 
     private final ExecutorService executor;
@@ -38,11 +39,6 @@ public class ConcurrencyManager {
 
     /**
      * Execute a task in the background and handle result on JavaFX thread.
-     * 
-     * @param <T>            The result type
-     * @param backgroundWork The work to execute in background
-     * @param onSuccess      Called on JavaFX thread with the result
-     * @param onError        Called on JavaFX thread with any exception
      */
     public <T> void runAsync(
             java.util.concurrent.Callable<T> backgroundWork,
@@ -75,8 +71,6 @@ public class ConcurrencyManager {
 
     /**
      * Execute a simple runnable in the background.
-     * 
-     * @param work The work to execute
      */
     public void runInBackground(Runnable work) {
         executor.submit(() -> {
@@ -90,7 +84,6 @@ public class ConcurrencyManager {
 
     /**
      * Run something on the JavaFX Application Thread.
-     * Safe to call from any thread.
      */
     public static void runOnUI(Runnable work) {
         if (Platform.isFxApplicationThread()) {
@@ -100,9 +93,9 @@ public class ConcurrencyManager {
         }
     }
 
+    @Override
     public void dispose() {
-        logger.info("Shutting down ConcurrencyManager");
+        logger.info("Shutting down ConcurrencyManager...");
         executor.shutdownNow();
     }
 }
-

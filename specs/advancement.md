@@ -13,7 +13,7 @@
 | **Phase 2** | Service Layer: Business Logic + Validation | ✅ مكتمل |
 | **Phase 3** | UI Layer: Screens + FXML + CSS | ✅ مكتمل |
 | **Phase 4** | Reporting: JasperReports (5 Annexes) | ✅ مكتمل |
-| **Phase 5** | Testing + Polish + Packaging | ⏳ لم يبدأ |
+| **Phase 5** | Testing + Polish + Packaging | 🔄 جارٍ |
 
 ---
 
@@ -159,3 +159,9 @@
 | 2026-05-06 | إضافة خاصية إنشاء سنة مالية جديدة مباشرة من لوحة التحكم |
 | 2026-05-06 | إضافة بيانات تجريبية (Seed Data) لمحاور الميزانية في `DatabaseSchemaManager` |
 | 2026-05-06 | ✅ **جاهز للاختبار اليدوي** — جميع المسارات الأساسية مفعلة (BUILD SUCCESS: 38 ملف) |
+| 2026-05-06 | إعادة هيكلة شاملة لاعتماد **Constructor Injection** في كافة الـ Controllers |
+| 2026-05-06 | توحيد نظام التنقل باستخدام نمط **Modal Dialogs** مقتبس من GstockDz |
+| 2026-05-06 | إضافة خاصية **Auto-Seeding** للسنة المالية لضمان وجود سنة مفعلة عند أول تشغيل |
+| 2026-05-06 | إصلاح حجم النوافذ المنبثقة لتناسب المحتوى تلقائياً (`sizeToScene`) |
+| 2026-05-06 | حل مشكلة التقارير الفارغة عبر تفعيل `JREmptyDataSource(1)` للملاحق التي تعتمد على المعاملات |
+| 2026-05-06 | تحديث `pom.xml` وإضافة تبعات JasperReports 7.0 المفقودة (`poi`, `view`) لحل أخطاء الطباعة |

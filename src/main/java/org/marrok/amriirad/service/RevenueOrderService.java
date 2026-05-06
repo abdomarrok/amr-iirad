@@ -26,10 +26,17 @@ public class RevenueOrderService {
 
     private static final Logger logger = LogManager.getLogger(RevenueOrderService.class);
 
-    private final RevenueOrderRepository orderRepo = new RevenueOrderRepository();
-    private final FiscalYearRepository   fyRepo    = new FiscalYearRepository();
-    private final TafqeetService         tafqeet   = new TafqeetService();
-    private final AuditService           audit     = new AuditService();
+    private final RevenueOrderRepository orderRepo;
+    private final AuditService audit;
+    private final FiscalYearRepository fyRepo;
+    private final TafqeetService tafqeet;
+
+    public RevenueOrderService(RevenueOrderRepository orderRepo, AuditService audit) {
+        this.orderRepo = orderRepo;
+        this.audit = audit;
+        this.fyRepo = new FiscalYearRepository(); // We can also inject this if needed
+        this.tafqeet = new TafqeetService();
+    }
 
     // =========================================================================
     // CREATE

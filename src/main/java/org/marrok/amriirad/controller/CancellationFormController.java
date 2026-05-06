@@ -35,7 +35,17 @@ public class CancellationFormController implements Initializable {
 
     private RevenueOrder targetOrder;
     private Runnable onSuccess;
-    private final CancellationOrderService cancellationService = new CancellationOrderService();
+    private final CancellationOrderService cancellationService;
+    private final org.marrok.amriirad.service.ReportService reportService;
+    private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+
+    public CancellationFormController(CancellationOrderService cancellationService,
+                                     org.marrok.amriirad.service.ReportService reportService,
+                                     org.marrok.amriirad.service.TafqeetService tafqeetService) {
+        this.cancellationService = cancellationService;
+        this.reportService = reportService;
+        this.tafqeetService = tafqeetService;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -102,8 +112,6 @@ public class CancellationFormController implements Initializable {
 
     private void printAnnexe(RevenueOrderCancellation cancellation) {
         try {
-            org.marrok.amriirad.service.ReportService reportService = new org.marrok.amriirad.service.ReportService();
-            org.marrok.amriirad.service.TafqeetService tafqeetService = new org.marrok.amriirad.service.TafqeetService();
             
             java.util.Map<String, Object> params = new java.util.HashMap<>();
             params.put("CANCEL_NUMBER", cancellation.getCancellationNumber() != null ? cancellation.getCancellationNumber() : "");
@@ -123,7 +131,7 @@ public class CancellationFormController implements Initializable {
                 reportPath = "/org/marrok/amriirad/report/annexe3_full_cancel.jrxml";
             }
             
-            reportService.showReport(reportPath, params);
+            reportService.showReportWithParamsOnly(reportPath, params);
         } catch (Exception e) {
             logger.error("Failed to auto-print cancellation report", e);
         }

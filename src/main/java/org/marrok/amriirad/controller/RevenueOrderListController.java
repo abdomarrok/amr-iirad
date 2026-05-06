@@ -21,6 +21,8 @@ import org.marrok.amriirad.model.OrderStatus;
 import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.repository.FiscalYearRepository;
 import org.marrok.amriirad.repository.RevenueOrderRepository;
+import org.marrok.amriirad.service.RevenueOrderService;
+import org.marrok.amriirad.util.GeneralUtil;
 
 import java.net.URL;
 import java.util.List;
@@ -46,8 +48,17 @@ public class RevenueOrderListController implements Initializable {
     private ObservableList<RevenueOrder> masterList;
     private FilteredList<RevenueOrder> filteredList;
 
-    private final RevenueOrderRepository orderRepo = new RevenueOrderRepository();
-    private final FiscalYearRepository fyRepo = new FiscalYearRepository();
+    private final RevenueOrderService orderService;
+    private final RevenueOrderRepository orderRepo;
+    private final FiscalYearRepository fyRepo;
+
+    public RevenueOrderListController(RevenueOrderService orderService,
+                                      RevenueOrderRepository orderRepo,
+                                      FiscalYearRepository fyRepo) {
+        this.orderService = orderService;
+        this.orderRepo = orderRepo;
+        this.fyRepo = fyRepo;
+    }
 
     private FiscalYear activeYear;
 
@@ -175,40 +186,25 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void openFormModal(RevenueOrder order) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/order-form-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            
+        Stage stage = (Stage) tableView.getScene().getWindow();
+        String title = order == null ? "إنشاء أمر إيراد" : "تعديل أمر إيراد";
+        
+        FXMLLoader loader = GeneralUtil.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", title);
+        if (loader != null) {
             RevenueOrderFormController controller = loader.getController();
             if (order == null) {
                 controller.initForCreate(this::loadDataAsync);
             } else {
                 controller.initForEdit(order, this::loadDataAsync);
             }
-
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle(order == null ? "إنشاء أمر إيراد" : "تعديل أمر إيراد");
-            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            stage.initOwner(tableView.getScene().getWindow());
-            stage.setResizable(false);
-            stage.show();
-        } catch (Exception e) {
-            logger.error("Failed to open order form modal", e);
         }
     }
 
     @FXML
     private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dashboard-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load dashboard", ex);
-        }
+        org.marrok.amriirad.util.GeneralUtil.loadScene(
+            (Stage) tableView.getScene().getWindow(),
+            "/org/marrok/amriirad/view/dashboard-view.fxml"
+        );
     }
 }

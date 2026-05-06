@@ -579,6 +579,9 @@ amr-iirad/
 - [ ] Test print output for RTL Arabic layout accuracy and Tafqeet correctly populating.
 
 ### Phase 4 — Polish & Merge Readiness
+- [x] Architectural Migration: Implemented strict Constructor Injection for DI.
+- [x] Navigation Standardization: Standardized on Modal Dialogs for forms (GstockDz pattern).
+- [x] Database Robustness: Added auto-seeding for Fiscal Years and schema migration fixes.
 - [ ] Bilingual support (Arabic primary, French secondary).
 - [ ] Audit log viewer screen.
 - [ ] Full business rule test coverage.

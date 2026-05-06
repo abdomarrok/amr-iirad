@@ -43,12 +43,26 @@ public class RevenueOrderFormController implements Initializable {
     @FXML private Button printAdminBtn;
     @FXML private Button printDebtorBtn;
 
-    private final FiscalYearRepository fyRepo = new FiscalYearRepository();
-    private final DebtorRepository debtorRepo = new DebtorRepository();
-    private final BudgetChapterRepository chapterRepo = new BudgetChapterRepository();
-    private final RevenueOrderService orderService = new RevenueOrderService();
-    private final org.marrok.amriirad.service.ReportService reportService = new org.marrok.amriirad.service.ReportService();
-    private final org.marrok.amriirad.service.TafqeetService tafqeetService = new org.marrok.amriirad.service.TafqeetService();
+    private final FiscalYearRepository fyRepo;
+    private final DebtorRepository debtorRepo;
+    private final BudgetChapterRepository chapterRepo;
+    private final RevenueOrderService orderService;
+    private final org.marrok.amriirad.service.ReportService reportService;
+    private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+
+    public RevenueOrderFormController(FiscalYearRepository fyRepo, 
+                                     DebtorRepository debtorRepo, 
+                                     BudgetChapterRepository chapterRepo, 
+                                     RevenueOrderService orderService,
+                                     org.marrok.amriirad.service.ReportService reportService,
+                                     org.marrok.amriirad.service.TafqeetService tafqeetService) {
+        this.fyRepo = fyRepo;
+        this.debtorRepo = debtorRepo;
+        this.chapterRepo = chapterRepo;
+        this.orderService = orderService;
+        this.reportService = reportService;
+        this.tafqeetService = tafqeetService;
+    }
 
     private FiscalYear activeYear;
     private RevenueOrder currentOrder;
@@ -138,24 +152,11 @@ public class RevenueOrderFormController implements Initializable {
 
     @FXML
     private void handleNewDebtor() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/debtor-form-view.fxml"));
-            javafx.scene.layout.VBox root = loader.load();
-            
+        Stage owner = (Stage) saveBtn.getScene().getWindow();
+        javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
+        if (loader != null) {
             DebtorFormController controller = loader.getController();
             controller.initForCreate(() -> loadDropdownData());
-
-            Stage stage = new Stage();
-            stage.setTitle("إضافة مدين جديد");
-            stage.initOwner(saveBtn.getScene().getWindow());
-            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            
-            javafx.scene.Scene scene = new javafx.scene.Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception ex) {
-            logger.error("Failed to open debtor form", ex);
         }
     }
 
@@ -277,7 +278,7 @@ public class RevenueOrderFormController implements Initializable {
                 params.put("ARTICLE", "");
                 params.put("REASON", currentOrder.getObjectAr() != null ? currentOrder.getObjectAr() : "");
                 
-                reportService.showReport(reportPath, params);
+                reportService.showReportWithParamsOnly(reportPath, params);
                 return true;
             },
             res -> logger.info("Print triggered for {}", reportPath),

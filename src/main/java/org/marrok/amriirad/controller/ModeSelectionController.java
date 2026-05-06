@@ -126,33 +126,29 @@ public class ModeSelectionController implements Initializable {
             if (selectedMode == AppMode.SERVER) {
                 navigateToServerConfig();
             } else {
-                navigateToDashboard();
+                try {
+                    // Initialize DB for local mode immediately
+                    org.marrok.amriirad.util.DatabaseConnection.initialize(selectedMode);
+                    org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
+                    navigateToDashboard();
+                } catch (Exception ex) {
+                    logger.error("Failed to initialize local database", ex);
+                    // Show error or alert?
+                }
             }
         });
     }
 
     private void navigateToServerConfig() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/server-config-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) continueBtn.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load server config view", ex);
-        }
+        org.marrok.amriirad.util.GeneralUtil.loadScene(
+            (Stage) continueBtn.getScene().getWindow(),
+            "/org/marrok/amriirad/view/server-config-view.fxml"
+        );
     }
 
     private void navigateToDashboard() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dashboard-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) continueBtn.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setMaximized(true);
-        } catch (Exception ex) {
-            logger.error("Failed to load dashboard view", ex);
-        }
+        Stage stage = (Stage) continueBtn.getScene().getWindow();
+        org.marrok.amriirad.util.GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+        stage.setMaximized(true);
     }
 }

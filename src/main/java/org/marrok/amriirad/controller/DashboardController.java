@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import org.marrok.amriirad.util.GeneralUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.model.FiscalYear;
@@ -34,8 +36,13 @@ public class DashboardController implements Initializable {
     @FXML private Label totalAmountLabel;
     @FXML private Label statusBar;
 
-    private final FiscalYearRepository fyRepo = new FiscalYearRepository();
-    private final RevenueOrderRepository orderRepo = new RevenueOrderRepository();
+    private final FiscalYearRepository fyRepo;
+    private final RevenueOrderRepository orderRepo;
+
+    public DashboardController(FiscalYearRepository fyRepo, RevenueOrderRepository orderRepo) {
+        this.fyRepo = fyRepo;
+        this.orderRepo = orderRepo;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -116,61 +123,29 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleNewOrder() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/order-form-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        FXMLLoader loader = GeneralUtil.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", "إنشاء أمر إيراد جديد");
+        if (loader != null) {
             RevenueOrderFormController controller = loader.getController();
-            controller.initForCreate(() -> refreshStats());
-
-            javafx.stage.Stage stage = (javafx.stage.Stage) totalOrdersLabel.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load order form view", ex);
-            statusBar.setText("❌ خطأ في فتح نموذج الطلب");
+            controller.initForCreate(this::refreshStats);
         }
     }
 
     @FXML
     private void handleOrderList() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/order-list-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            javafx.stage.Stage stage = (javafx.stage.Stage) totalOrdersLabel.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load order list view", ex);
-            statusBar.setText("❌ خطأ في فتح القائمة");
-        }
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/order-list-view.fxml");
     }
 
     @FXML
     private void handleDebtors() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/debtor-list-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            javafx.stage.Stage stage = (javafx.stage.Stage) totalOrdersLabel.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load debtor list view", ex);
-            statusBar.setText("❌ خطأ في فتح إدارة المدينين");
-        }
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/debtor-list-view.fxml");
     }
 
     @FXML
     private void handleDispatch() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dispatch-slip-view.fxml"));
-            javafx.scene.Scene scene = new javafx.scene.Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            javafx.stage.Stage stage = (javafx.stage.Stage) totalOrdersLabel.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load dispatch slip view", ex);
-            statusBar.setText("❌ خطأ في فتح بوردرو الإرسال");
-        }
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dispatch-slip-view.fxml");
     }
 }

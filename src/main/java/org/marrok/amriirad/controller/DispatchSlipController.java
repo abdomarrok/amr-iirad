@@ -51,8 +51,20 @@ public class DispatchSlipController implements Initializable {
     private ObservableList<DispatchSlip> masterSlipsList;
     private FilteredList<DispatchSlip> filteredSlipsList;
 
-    private final DispatchSlipRepository slipRepo = new DispatchSlipRepository();
-    private final org.marrok.amriirad.repository.FiscalYearRepository fyRepo = new org.marrok.amriirad.repository.FiscalYearRepository();
+    private final DispatchSlipRepository slipRepo;
+    private final org.marrok.amriirad.repository.FiscalYearRepository fyRepo;
+    private final org.marrok.amriirad.service.ReportService reportService;
+    private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+
+    public DispatchSlipController(DispatchSlipRepository slipRepo, 
+                                  org.marrok.amriirad.repository.FiscalYearRepository fyRepo,
+                                  org.marrok.amriirad.service.ReportService reportService,
+                                  org.marrok.amriirad.service.TafqeetService tafqeetService) {
+        this.slipRepo = slipRepo;
+        this.fyRepo = fyRepo;
+        this.reportService = reportService;
+        this.tafqeetService = tafqeetService;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -170,9 +182,6 @@ public class DispatchSlipController implements Initializable {
             logger.info("Printing Annexe 5 for slip: {}", selected.getSlipNumber());
             
             try {
-                org.marrok.amriirad.service.ReportService reportService = new org.marrok.amriirad.service.ReportService();
-                org.marrok.amriirad.service.TafqeetService tafqeetService = new org.marrok.amriirad.service.TafqeetService();
-                
                 java.util.Map<String, Object> params = new java.util.HashMap<>();
                 params.put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "");
                 params.put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00");
@@ -222,14 +231,9 @@ public class DispatchSlipController implements Initializable {
 
     @FXML
     private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dashboard-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) slipsTable.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load dashboard", ex);
-        }
+        org.marrok.amriirad.util.GeneralUtil.loadScene(
+            (Stage) slipsTable.getScene().getWindow(),
+            "/org/marrok/amriirad/view/dashboard-view.fxml"
+        );
     }
 }

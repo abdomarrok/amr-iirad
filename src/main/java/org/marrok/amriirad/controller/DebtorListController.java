@@ -43,7 +43,11 @@ public class DebtorListController implements Initializable {
     private ObservableList<Debtor> masterList;
     private FilteredList<Debtor> filteredList;
 
-    private final DebtorRepository debtorRepo = new DebtorRepository();
+    private final DebtorRepository debtorRepo;
+
+    public DebtorListController(DebtorRepository debtorRepo) {
+        this.debtorRepo = debtorRepo;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -138,37 +142,19 @@ public class DebtorListController implements Initializable {
 
     @FXML
     private void handleNewDebtor() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/debtor-form-view.fxml"));
-            VBox root = loader.load();
-            
+        Stage owner = (Stage) tableView.getScene().getWindow();
+        javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
+        if (loader != null) {
             DebtorFormController controller = loader.getController();
             controller.initForCreate(() -> loadDataAsync());
-
-            Stage stage = new Stage();
-            stage.setTitle("إضافة مدين جديد");
-            stage.initOwner(tableView.getScene().getWindow());
-            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
-            
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception ex) {
-            logger.error("Failed to open debtor form", ex);
         }
     }
 
     @FXML
     private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/dashboard-view.fxml"));
-            Scene scene = new Scene(loader.load());
-            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception ex) {
-            logger.error("Failed to load dashboard", ex);
-        }
+        org.marrok.amriirad.util.GeneralUtil.loadScene(
+            (Stage) tableView.getScene().getWindow(),
+            "/org/marrok/amriirad/view/dashboard-view.fxml"
+        );
     }
 }

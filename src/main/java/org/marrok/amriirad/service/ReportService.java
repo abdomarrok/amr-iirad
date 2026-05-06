@@ -60,10 +60,27 @@ public class ReportService {
     public void showReport(String reportPath, Map<String, Object> parameters) {
         try (Connection connection = DatabaseConnection.getConnection()) {
             JasperReport jasperReport = compileReport(reportPath);
+            // If the report has no query, fillReport with Connection might return empty if whenNoDataType is not set.
+            // But we'll follow standard pattern.
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
             viewReport(jasperPrint);
         } catch (Exception e) {
             logger.error("Error generating report: " + reportPath, e);
+            throw new RuntimeException("خطأ في توليد التقرير", e);
+        }
+    }
+
+    /**
+     * Generates and displays a report using only parameters (no DB query).
+     * This ensures at least one page is generated for reports using only parameters.
+     */
+    public void showReportWithParamsOnly(String reportPath, Map<String, Object> parameters) {
+        try {
+            JasperReport jasperReport = compileReport(reportPath);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource(1));
+            viewReport(jasperPrint);
+        } catch (Exception e) {
+            logger.error("Error generating parameter-only report: " + reportPath, e);
             throw new RuntimeException("خطأ في توليد التقرير", e);
         }
     }
