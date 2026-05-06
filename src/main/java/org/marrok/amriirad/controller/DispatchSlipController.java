@@ -171,8 +171,18 @@ public class DispatchSlipController implements Initializable {
 
     @FXML
     private void handleNewSlip() {
-        // TODO: Navigate to slip creation form (selecting available ISSUED orders)
         logger.info("Opening new dispatch slip creation modal...");
+        Stage stage = (Stage) slipsTable.getScene().getWindow();
+        FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(
+            stage, 
+            "/org/marrok/amriirad/view/dispatch-slip-form-view.fxml", 
+            "إنشاء بوردرو إرسال جديد"
+        );
+        
+        if (loader != null) {
+            DispatchSlipFormController controller = loader.getController();
+            controller.initData(this::loadSlipsAsync);
+        }
     }
 
     @FXML

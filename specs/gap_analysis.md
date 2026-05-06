@@ -16,7 +16,7 @@ The project has achieved approximately **85%** of the core functional requiremen
 | **Issuance** | Formal issuance with validation. | ✅ Implemented. | Verify validation rules in `RevenueOrderService`. |
 | **Cancellation** | Full cancellation of issued orders. | ✅ Implemented. | None. |
 | **Reduction** | Partial reduction of issued orders. | ✅ Implemented. | None. |
-| **Dispatch Slips** | Grouping orders into a slip. | ❌ Service exists, UI missing. | **CRITICAL:** Need Dispatch Form UI. |
+| **Dispatch Slips** | Grouping orders into a slip. | ✅ Implemented. | Integrated with creation form and Annexe 5. |
 
 ### B. Data Management
 | Feature | Specified | Current State | Gap / Action |
