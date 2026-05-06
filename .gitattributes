@@ -1,0 +1,21 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Java source files — LF in repo
+*.java text eol=lf
+*.xml  text eol=lf
+*.fxml text eol=lf
+*.css  text eol=lf
+*.md   text eol=lf
+*.sql  text eol=lf
+*.properties text eol=lf
+*.jrxml text eol=lf
+
+# Binaries — no conversion
+*.jar binary
+*.gz  binary
+*.enc binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jasper binary
