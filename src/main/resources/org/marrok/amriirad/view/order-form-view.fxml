@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox prefWidth="600" spacing="20" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.RevenueOrderFormController">
+    <padding>
+        <Insets bottom="24" left="24" right="24" top="24"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <FontIcon iconLiteral="fas-file-invoice" iconSize="24" styleClass="icon-primary"/>
+        <Label fx:id="titleLabel" styleClass="text-title" text="إنشاء أمر إيراد جديد"/>
+    </HBox>
+
+    <Label styleClass="text-small, text-muted" text="يتم إنشاء رقم الأمر والمبلغ بالحروف تلقائياً عند الحفظ."/>
+
+    <!-- Form Area -->
+    <VBox styleClass="card" spacing="16">
+        <padding>
+            <Insets bottom="20" left="20" right="20" top="20"/>
+        </padding>
+
+        <GridPane hgap="16" vgap="16">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="120" halignment="RIGHT"/>
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+
+            <Label styleClass="form-label" text="السنة المالية:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="fiscalYearField" editable="false" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label styleClass="form-label" text="تاريخ الإصدار:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <DatePicker fx:id="issueDatePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label styleClass="form-label" text="المدين:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <ComboBox fx:id="debtorCombo" prefWidth="250" promptText="اختر المدين..."/>
+                <Button styleClass="btn-outline" onAction="#handleNewDebtor">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-plus" iconSize="12"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <Label styleClass="form-label" text="محور الميزانية:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <ComboBox fx:id="budgetChapterCombo" prefWidth="300" promptText="اختر البند/المحور..." GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label styleClass="form-label" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <TextField fx:id="amountField" promptText="0.00" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="200"/>
+
+            <Label styleClass="form-label" text="الموضوع (الأسباب):" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
+            <TextArea fx:id="objectField" prefRowCount="3" promptText="موضوع الإيراد وأساس التصفية..." GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        </GridPane>
+    </VBox>
+
+    <Label fx:id="errorLabel" styleClass="text-small" style="-fx-text-fill: -fx-theme-danger;" wrapText="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button fx:id="printAdminBtn" styleClass="btn-outline" text="طباعة الملحق 1" onAction="#handlePrintAdmin" managed="false" visible="false">
+            <graphic>
+                <FontIcon iconLiteral="fas-print" iconSize="14"/>
+            </graphic>
+        </Button>
+        <Button fx:id="printDebtorBtn" styleClass="btn-outline" text="طباعة الملحق 2" onAction="#handlePrintDebtor" managed="false" visible="false">
+            <graphic>
+                <FontIcon iconLiteral="fas-print" iconSize="14"/>
+            </graphic>
+        </Button>
+        <HBox HBox.hgrow="ALWAYS" />
+        <Button styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
+        <Button fx:id="saveBtn" styleClass="btn-primary" text="حفظ (كـ مسودة)" onAction="#handleSave">
+            <graphic>
+                <FontIcon iconLiteral="fas-save" iconSize="14" styleClass="icon-light"/>
+            </graphic>
+        </Button>
+        <Button fx:id="issueBtn" styleClass="btn-primary" style="-fx-background-color: #3498db;" text="إصدار نهائي" onAction="#handleIssue" managed="false" visible="false">
+            <graphic>
+                <FontIcon iconLiteral="fas-check-circle" iconSize="14" styleClass="icon-light"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+</VBox>

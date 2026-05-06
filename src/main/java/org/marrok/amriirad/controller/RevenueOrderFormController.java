@@ -1,0 +1,290 @@
+package org.marrok.amriirad.controller;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.marrok.amriirad.core.ConcurrencyManager;
+import org.marrok.amriirad.model.BudgetChapter;
+import org.marrok.amriirad.model.Debtor;
+import org.marrok.amriirad.model.FiscalYear;
+import org.marrok.amriirad.model.RevenueOrder;
+import org.marrok.amriirad.model.OrderStatus;
+import org.marrok.amriirad.repository.BudgetChapterRepository;
+import org.marrok.amriirad.repository.DebtorRepository;
+import org.marrok.amriirad.repository.FiscalYearRepository;
+import org.marrok.amriirad.service.RevenueOrderService;
+
+import java.math.BigDecimal;
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+public class RevenueOrderFormController implements Initializable {
+
+    private static final Logger logger = LogManager.getLogger(RevenueOrderFormController.class);
+
+    @FXML private Label titleLabel;
+    @FXML private TextField fiscalYearField;
+    @FXML private DatePicker issueDatePicker;
+    @FXML private ComboBox<Debtor> debtorCombo;
+    @FXML private ComboBox<BudgetChapter> budgetChapterCombo;
+    @FXML private TextField amountField;
+    @FXML private TextArea objectField;
+    @FXML private Label errorLabel;
+    @FXML private Button saveBtn;
+    @FXML private Button issueBtn;
+
+    @FXML private Button printAdminBtn;
+    @FXML private Button printDebtorBtn;
+
+    private final FiscalYearRepository fyRepo = new FiscalYearRepository();
+    private final DebtorRepository debtorRepo = new DebtorRepository();
+    private final BudgetChapterRepository chapterRepo = new BudgetChapterRepository();
+    private final RevenueOrderService orderService = new RevenueOrderService();
+    private final org.marrok.amriirad.service.ReportService reportService = new org.marrok.amriirad.service.ReportService();
+    private final org.marrok.amriirad.service.TafqeetService tafqeetService = new org.marrok.amriirad.service.TafqeetService();
+
+    private FiscalYear activeYear;
+    private RevenueOrder currentOrder;
+    private Runnable onSuccess;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        issueDatePicker.setValue(LocalDate.now());
+        loadDropdownData();
+    }
+
+    public void initForCreate(Runnable onSuccessCallback) {
+        this.onSuccess = onSuccessCallback;
+        this.currentOrder = new RevenueOrder();
+        titleLabel.setText("إنشاء أمر إيراد جديد");
+    }
+
+    public void initForEdit(RevenueOrder order, Runnable onSuccessCallback) {
+        this.onSuccess = onSuccessCallback;
+        this.currentOrder = order;
+        titleLabel.setText("تعديل أمر إيراد: " + order.getOrderNumber());
+
+        issueDatePicker.setValue(order.getIssueDate());
+        amountField.setText(order.getAmount() != null ? order.getAmount().toString() : "");
+        objectField.setText(order.getObjectAr());
+        
+        if (order.getStatus() == OrderStatus.DRAFT) {
+            issueBtn.setVisible(true);
+            issueBtn.setManaged(true);
+        } else {
+            // Lock fields if not draft
+            saveBtn.setDisable(true);
+            issueBtn.setDisable(true);
+            amountField.setDisable(true);
+            objectField.setDisable(true);
+            debtorCombo.setDisable(true);
+            budgetChapterCombo.setDisable(true);
+            issueDatePicker.setDisable(true);
+
+            // Show print buttons since it's issued
+            printAdminBtn.setVisible(true);
+            printAdminBtn.setManaged(true);
+            printDebtorBtn.setVisible(true);
+            printDebtorBtn.setManaged(true);
+        }
+    }
+
+    private void loadDropdownData() {
+        ConcurrencyManager.getInstance().runAsync(
+            () -> {
+                Optional<FiscalYear> activeFy = fyRepo.findActive();
+                activeFy.ifPresent(fy -> activeYear = fy);
+                var debtors = debtorRepo.findAll();
+                var chapters = chapterRepo.findAll();
+                return new Object[]{debtors, chapters};
+            },
+            result -> {
+                if (activeYear != null) {
+                    fiscalYearField.setText(activeYear.getYearLabel());
+                    currentOrder.setFiscalYear(activeYear);
+                } else {
+                    errorLabel.setText("❌ لا توجد سنة مالية مفعّلة.");
+                    saveBtn.setDisable(true);
+                }
+
+                Object[] arr = (Object[]) result;
+                debtorCombo.setItems(FXCollections.observableArrayList((java.util.List<Debtor>) arr[0]));
+                budgetChapterCombo.setItems(FXCollections.observableArrayList((java.util.List<BudgetChapter>) arr[1]));
+
+                if (currentOrder.getDebtor() != null) {
+                    debtorCombo.getItems().stream()
+                        .filter(d -> d.getId() == currentOrder.getDebtor().getId())
+                        .findFirst().ifPresent(debtorCombo.getSelectionModel()::select);
+                }
+                if (currentOrder.getBudgetChapter() != null) {
+                    budgetChapterCombo.getItems().stream()
+                        .filter(c -> c.getId() == currentOrder.getBudgetChapter().getId())
+                        .findFirst().ifPresent(budgetChapterCombo.getSelectionModel()::select);
+                }
+            },
+            err -> {
+                logger.error("Failed to load form data", err);
+                errorLabel.setText("❌ خطأ في تحميل البيانات الأساسية.");
+            }
+        );
+    }
+
+    @FXML
+    private void handleNewDebtor() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/debtor-form-view.fxml"));
+            javafx.scene.layout.VBox root = loader.load();
+            
+            DebtorFormController controller = loader.getController();
+            controller.initForCreate(() -> loadDropdownData());
+
+            Stage stage = new Stage();
+            stage.setTitle("إضافة مدين جديد");
+            stage.initOwner(saveBtn.getScene().getWindow());
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            
+            javafx.scene.Scene scene = new javafx.scene.Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/org/marrok/amriirad/css/app.css").toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception ex) {
+            logger.error("Failed to open debtor form", ex);
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        if (!validateForm()) return;
+        populateOrder();
+
+        ConcurrencyManager.getInstance().runAsync(
+            () -> {
+                if (currentOrder.getId() == 0) {
+                    currentOrder.setCreatedBy("admin"); // TODO: Use real user
+                    orderService.createOrder(currentOrder);
+                } else {
+                    orderService.updateOrder(currentOrder);
+                }
+                return true;
+            },
+            res -> {
+                closeWindow();
+                if (onSuccess != null) onSuccess.run();
+            },
+            err -> {
+                logger.error("Failed to save order", err);
+                errorLabel.setText("❌ " + err.getMessage());
+            }
+        );
+    }
+
+    @FXML
+    private void handleIssue() {
+        if (!validateForm()) return;
+        populateOrder();
+
+        ConcurrencyManager.getInstance().runAsync(
+            () -> {
+                orderService.updateOrder(currentOrder); // Save changes first
+                orderService.issueOrder(currentOrder.getId(), "admin"); // Then issue
+                return true;
+            },
+            res -> {
+                closeWindow();
+                if (onSuccess != null) onSuccess.run();
+            },
+            err -> {
+                logger.error("Failed to issue order", err);
+                errorLabel.setText("❌ " + err.getMessage());
+            }
+        );
+    }
+
+    private boolean validateForm() {
+        errorLabel.setText("");
+        if (debtorCombo.getValue() == null) {
+            errorLabel.setText("❌ يجب اختيار المدين");
+            return false;
+        }
+        if (budgetChapterCombo.getValue() == null) {
+            errorLabel.setText("❌ يجب اختيار محور الميزانية");
+            return false;
+        }
+        try {
+            BigDecimal amt = new BigDecimal(amountField.getText().trim());
+            if (amt.compareTo(BigDecimal.ZERO) <= 0) {
+                errorLabel.setText("❌ المبلغ يجب أن يكون أكبر من صفر");
+                return false;
+            }
+        } catch (Exception e) {
+            errorLabel.setText("❌ المبلغ غير صالح");
+            return false;
+        }
+        if (objectField.getText() == null || objectField.getText().trim().isEmpty()) {
+            errorLabel.setText("❌ يجب إدخال موضوع الإيراد (الأسباب)");
+            return false;
+        }
+        return true;
+    }
+
+    private void populateOrder() {
+        currentOrder.setIssueDate(issueDatePicker.getValue());
+        currentOrder.setDebtor(debtorCombo.getValue());
+        currentOrder.setBudgetChapter(budgetChapterCombo.getValue());
+        currentOrder.setAmount(new BigDecimal(amountField.getText().trim()));
+        currentOrder.setObjectAr(objectField.getText().trim());
+    }
+
+    @FXML
+    private void handleCancel() {
+        closeWindow();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) saveBtn.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handlePrintAdmin() {
+        printAnnexe("/org/marrok/amriirad/report/annexe1_order.jrxml");
+    }
+
+    @FXML
+    private void handlePrintDebtor() {
+        printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy.jrxml");
+    }
+
+    private void printAnnexe(String reportPath) {
+        if (currentOrder == null || currentOrder.getId() == 0) return;
+        
+        ConcurrencyManager.getInstance().runAsync(
+            () -> {
+                java.util.Map<String, Object> params = new java.util.HashMap<>();
+                params.put("ORDER_NUMBER", currentOrder.getOrderNumber() != null ? currentOrder.getOrderNumber() : "");
+                params.put("DEBTOR_NAME", currentOrder.getDebtor() != null ? currentOrder.getDebtor().getFullName() : "");
+                params.put("AMOUNT", currentOrder.getAmount() != null ? currentOrder.getAmount().toString() : "");
+                params.put("AMOUNT_WORDS", currentOrder.getAmount() != null ? tafqeetService.toArabicWords(currentOrder.getAmount()) : "");
+                params.put("DATE", currentOrder.getIssueDate() != null ? currentOrder.getIssueDate().toString() : "");
+                params.put("CHAPTER", currentOrder.getBudgetChapter() != null ? currentOrder.getBudgetChapter().getCode() : "");
+                params.put("ARTICLE", "");
+                params.put("REASON", currentOrder.getObjectAr() != null ? currentOrder.getObjectAr() : "");
+                
+                reportService.showReport(reportPath, params);
+                return true;
+            },
+            res -> logger.info("Print triggered for {}", reportPath),
+            err -> {
+                logger.error("Print failed", err);
+                errorLabel.setText("❌ خطأ في الطباعة: " + err.getMessage());
+            }
+        );
+    }
+}

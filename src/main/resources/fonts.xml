@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Traditional Arabic">
+        <normal>org/marrok/amriirad/fonts/trado.ttf</normal>
+        <bold>org/marrok/amriirad/fonts/trado.ttf</bold>
+        <italic>org/marrok/amriirad/fonts/trado.ttf</italic>
+        <boldItalic>org/marrok/amriirad/fonts/trado.ttf</boldItalic>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+    <fontFamily name="Andalus">
+        <normal>org/marrok/amriirad/fonts/Andalus.ttf</normal>
+        <bold>org/marrok/amriirad/fonts/Andalus.ttf</bold>
+        <italic>org/marrok/amriirad/fonts/Andalus.ttf</italic>
+        <boldItalic>org/marrok/amriirad/fonts/Andalus.ttf</boldItalic>
+        <pdfEncoding>Identity-H</pdfEncoding>
+        <pdfEmbedded>true</pdfEmbedded>
+    </fontFamily>
+</fontFamilies>

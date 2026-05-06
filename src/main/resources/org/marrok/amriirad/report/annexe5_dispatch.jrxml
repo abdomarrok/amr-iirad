@@ -1,0 +1,80 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0 -->
+<jasperReport name="annexe5_dispatch" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5d731fb3-e69c-48be-8f3a-f1001dfa1f0a">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
+	<property name="net.sf.jasperreports.default.pdf.font.name" value="Traditional Arabic"/>
+	
+	<parameter name="SLIP_NUMBER" class="java.lang.String"/>
+	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
+	<parameter name="TOTAL_WORDS" class="java.lang.String"/>
+	<parameter name="DATE" class="java.lang.String"/>
+	
+	<field name="orderNumber" class="java.lang.String"/>
+	<field name="debtorName" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	
+	<title height="80" splitType="Stretch">
+		<element kind="staticText" uuid="30d11be5-5552-47d3-bc8e-cfbe629555c8" x="0" y="20" width="555" height="30" fontName="Traditional Arabic" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[الملحق 5: بوردرو إرسال أوامر الإيراد]]></text>
+		</element>
+		<element kind="textField" uuid="3123b456-7890-1234-5678-abcdef123456" x="280" y="55" width="270" height="20" fontName="Traditional Arabic" fontSize="12.0" hTextAlign="Right">
+			<expression><![CDATA["رقم البوردرو: " + $P{SLIP_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="3223b456-7890-1234-5678-abcdef123456" x="0" y="55" width="270" height="20" fontName="Traditional Arabic" fontSize="12.0" hTextAlign="Right">
+			<expression><![CDATA["التاريخ: " + $P{DATE}]]></expression>
+		</element>
+	</title>
+	
+	<columnHeader height="20" splitType="Stretch">
+		<element kind="staticText" uuid="40d11be5-5552-47d3-bc8e-cfbe629555c8" mode="Opaque" backcolor="#E0E0E0" x="400" y="0" width="150" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[رقم الأمر]]></text>
+			<box>
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="50d11be5-5552-47d3-bc8e-cfbe629555c8" mode="Opaque" backcolor="#E0E0E0" x="150" y="0" width="250" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[المدين]]></text>
+			<box>
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="60d11be5-5552-47d3-bc8e-cfbe629555c8" mode="Opaque" backcolor="#E0E0E0" x="0" y="0" width="150" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[المبلغ]]></text>
+			<box>
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+			</box>
+		</element>
+	</columnHeader>
+	
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" uuid="3323b456-7890-1234-5678-abcdef123456" x="400" y="0" width="150" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{orderNumber}]]></expression>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="3423b456-7890-1234-5678-abcdef123456" x="150" y="0" width="250" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Right" vTextAlign="Middle">
+				<paragraph rightIndent="5"/>
+				<expression><![CDATA[$F{debtorName}]]></expression>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="3523b456-7890-1234-5678-abcdef123456" x="0" y="0" width="150" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{amount}]]></expression>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+	
+	<summary height="60" splitType="Stretch">
+		<element kind="textField" uuid="3623b456-7890-1234-5678-abcdef123456" x="0" y="10" width="550" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+			<expression><![CDATA["المجموع العام: " + $P{TOTAL_AMOUNT} + " د.ج"]]></expression>
+		</element>
+		<element kind="textField" uuid="3723b456-7890-1234-5678-abcdef123456" x="0" y="35" width="550" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+			<expression><![CDATA["المجموع بالحروف: " + $P{TOTAL_WORDS}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="680" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.DashboardController">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox alignment="CENTER" spacing="20" style="-fx-background-color: -fx-theme-bg-secondary; -fx-padding: 12 24;">
+            <Label styleClass="text-heading" text="نظام أوامر الإيراد" HBox.hgrow="ALWAYS"/>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label styleClass="text-small" text="السنة المالية:"/>
+                <ComboBox fx:id="fiscalYearCombo" promptText="اختر السنة"/>
+                <Button styleClass="btn-outline" onAction="#handleAddFiscalYear" prefWidth="32" prefHeight="32">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-plus" iconSize="12" styleClass="icon-primary"/>
+                    </graphic>
+                </Button>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="24">
+            <padding>
+                <Insets bottom="24" left="24" right="24" top="24"/>
+            </padding>
+
+            <!-- Stats Row -->
+            <HBox spacing="16" alignment="CENTER">
+                <!-- Total Orders -->
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
+                    <FontIcon iconLiteral="fas-file-invoice" iconSize="28" styleClass="icon-primary"/>
+                    <Label fx:id="totalOrdersLabel" styleClass="stat-value" text="0"/>
+                    <Label styleClass="stat-label" text="إجمالي الأوامر"/>
+                </VBox>
+
+                <!-- Issued -->
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
+                    <FontIcon iconLiteral="fas-check-circle" iconSize="28" style="-fx-fill: #3498db; -fx-icon-color: #3498db;"/>
+                    <Label fx:id="issuedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #3498db;"/>
+                    <Label styleClass="stat-label" text="أوامر مُصدرة"/>
+                </VBox>
+
+                <!-- Dispatched -->
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
+                    <FontIcon iconLiteral="fas-truck" iconSize="28" style="-fx-fill: #27ae60; -fx-icon-color: #27ae60;"/>
+                    <Label fx:id="dispatchedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #27ae60;"/>
+                    <Label styleClass="stat-label" text="أوامر مُرسلة"/>
+                </VBox>
+
+                <!-- Total Amount -->
+                <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
+                    <FontIcon iconLiteral="fas-coins" iconSize="28" style="-fx-fill: #f39c12; -fx-icon-color: #f39c12;"/>
+                    <Label fx:id="totalAmountLabel" styleClass="stat-value" text="0.00" style="-fx-text-fill: #f39c12;"/>
+                    <Label styleClass="stat-label" text="المبلغ الإجمالي (د.ج)"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Action Buttons -->
+            <Label styleClass="text-subheading" text="إجراءات سريعة"/>
+
+            <FlowPane hgap="16" vgap="16" alignment="CENTER">
+
+                <!-- New Revenue Order -->
+                <Button fx:id="newOrderBtn" styleClass="btn-primary" onAction="#handleNewOrder" prefWidth="220" prefHeight="80"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-plus-circle" iconSize="24" styleClass="icon-light"/>
+                            <Label text="أمر إيراد جديد" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Revenue Orders List -->
+                <Button fx:id="orderListBtn" styleClass="btn-outline" onAction="#handleOrderList" prefWidth="220" prefHeight="80"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-list-alt" iconSize="24" styleClass="icon-primary"/>
+                            <Label text="قائمة الأوامر" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Debtors -->
+                <Button fx:id="debtorsBtn" styleClass="btn-outline" onAction="#handleDebtors" prefWidth="220" prefHeight="80"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-users" iconSize="24" styleClass="icon-primary"/>
+                            <Label text="إدارة المدينين" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Dispatch Slips -->
+                <Button fx:id="dispatchBtn" styleClass="btn-outline" onAction="#handleDispatch" prefWidth="220" prefHeight="80"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-paper-plane" iconSize="24" styleClass="icon-primary"/>
+                            <Label text="بوردرو الإرسال" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+            </FlowPane>
+
+        </VBox>
+    </center>
+
+    <!-- BOTTOM BAR -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="12" style="-fx-background-color: -fx-theme-bg-tertiary; -fx-padding: 8 16;">
+            <Label fx:id="statusBar" styleClass="text-small, text-muted" text="جاهز" HBox.hgrow="ALWAYS"/>
+            <Label styleClass="text-small, text-muted" text="Amr-Iirad v1.0"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

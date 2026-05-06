@@ -1,0 +1,51 @@
+/*
+ * ============================================
+ * Amr-Iirad Theme Variables
+ * ============================================
+ * Adapted from GstockDz theme.css for the Revenue Order system.
+ * All CSS variables use -fx-theme- prefix.
+ */
+
+.root {
+    /* ========== PRIMARY COLORS (Deep Teal — Government/Financial) ========== */
+    -fx-theme-primary: #0e7c7b;
+    -fx-theme-primary-hover: #0a5f5e;
+    -fx-theme-primary-light: #e0f2f1;
+
+    /* ========== SECONDARY COLORS ========== */
+    -fx-theme-secondary: #2c3e50;
+    -fx-theme-secondary-hover: #1a252f;
+
+    /* ========== STATUS COLORS ========== */
+    -fx-theme-success: #27ae60;
+    -fx-theme-success-hover: #219a52;
+    -fx-theme-warning: #f39c12;
+    -fx-theme-warning-hover: #d68910;
+    -fx-theme-danger: #e74c3c;
+    -fx-theme-danger-hover: #c0392b;
+    -fx-theme-info: #17a2b8;
+
+    /* ========== BACKGROUND COLORS ========== */
+    -fx-theme-bg-primary: #f0f4f5;
+    -fx-theme-bg-secondary: #ffffff;
+    -fx-theme-bg-tertiary: #e8ecee;
+    -fx-theme-bg-dark: #2c3e50;
+    -fx-theme-bg-hover: #eaecef;
+
+    /* ========== TEXT COLORS ========== */
+    -fx-theme-text-primary: #2c3e50;
+    -fx-theme-text-secondary: #7f8c8d;
+    -fx-theme-text-light: #ffffff;
+    -fx-theme-text-muted: #95a5a6;
+
+    /* ========== BORDER COLORS ========== */
+    -fx-theme-border: #ced4da;
+    -fx-theme-border-light: #e0e0e0;
+
+    /* ========== ORDER STATUS COLORS ========== */
+    -fx-theme-status-draft: #95a5a6;
+    -fx-theme-status-issued: #3498db;
+    -fx-theme-status-dispatched: #27ae60;
+    -fx-theme-status-cancelled: #e74c3c;
+    -fx-theme-status-reduced: #f39c12;
+}
