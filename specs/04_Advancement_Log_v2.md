@@ -1,6 +1,6 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
 > **Latest Update:** 2026-05-07  
-> **Current Focus:** Phase 6 — Deployment & Final Handover
+> **Current Focus:** Phase 5 — Final Polish & Stabilization
 
 ---
 
@@ -14,7 +14,6 @@
 | **Phase 3** | UI Layer & Design System | ✅ Complete |
 | **Phase 4** | Reporting & Jasper Integration | ✅ Complete |
 | **Phase 5** | Stability, RTL & Final Polish | ✅ Complete |
-| **Phase 6** | Deployment & Final Handover | 🔄 In Progress |
 
 ---
 
@@ -66,7 +65,7 @@
 1. ✅ **UX Expansion**: ~~Add "Edit Debtor" support~~ **DONE** — and `+` quick-add button for Budget Chapters **DONE**.
 2. ✅ **Advanced Visualization**: ~~Create a modern "Order Details" modal~~ **DONE** with graphical status timeline **DONE**.
 3. ✅ **Testing**: ~~Implement unit tests~~ **DONE** for `RevenueOrderService` (20+ test cases).
-4. [ ] **Deployment**: Finalize installer packaging and backup utilities.
+4. [ ] **QA & Final Review**: Conduct final code review and UI consistency checks.
 5. ✅ **Audit Log Viewer**: Created dedicated UI to browse audit trail.
 6. ✅ **Performance Optimization**: Indexed key database queries for faster loading.
 
