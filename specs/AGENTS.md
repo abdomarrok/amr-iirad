@@ -142,7 +142,7 @@ All tables use `ENGINE=InnoDB` and `utf8mb4` charset.
 
 ## Current State — Phase 2 COMPLETE ✅
 
-- ✅ **Phase 0** Complete (Structure, Utils, DB Manager, App Entry)
+- ✅ **Phase 0** Complete (Structure, Utils, DB Manager, org.marrok.amriirad.App Entry)
 - ✅ **Phase 1** Complete — All 6 Models, 3 Enums, 6 Repositories
 - ✅ **Phase 2** Complete — All 5 Services with full business rule enforcement:
     - ✅ `RevenueOrderService` (RO-01→RO-12, INS-01, INS-02, state machine)
@@ -161,7 +161,7 @@ All tables use `ENGINE=InnoDB` and `utf8mb4` charset.
 
 Build the **FXML screens** and **Controllers** using AtlantaFX theme. Priority order:
 
-### Step 1 — Minimal App Shell (make app launchable)
+### Step 1 — Minimal org.marrok.amriirad.App Shell (make app launchable)
 ```
 resources/org/marrok/amriirad/css/app.css
 resources/org/marrok/amriirad/view/dashboard-view.fxml

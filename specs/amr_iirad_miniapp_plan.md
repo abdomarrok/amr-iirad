@@ -1,4 +1,4 @@
-# أمر بالإيراد — Mini-App Project Plan
+# أمر بالإيراد — Mini-org.marrok.amriirad.App Project Plan
 ### Revenue Order Management System — Independent Module
 
 > **Document Status:** Implementation Phase — Phase 4 Complete, ready for Testing/Packaging.
@@ -605,7 +605,7 @@ amr-iirad/
 
 When the mini-app is mature enough to merge into WGEBUDG:
 
-| Mini-App Table | WGEBUDG Equivalent | Action on Merge |
+| Mini-org.marrok.amriirad.App Table | WGEBUDG Equivalent | Action on Merge |
 |---|---|---|
 | `revenue_order` | `revenue_entry` (partial overlap) | Extend `revenue_entry` schema or create dedicated `revenue_order` table |
 | `debtor` | `debtor` table in WGEBUDG | **Direct reuse** — table already exists |

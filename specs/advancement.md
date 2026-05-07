@@ -1,4 +1,4 @@
-# سجل التقدم التطويري — Amr-Iirad Mini-App
+# سجل التقدم التطويري — Amr-Iirad Mini-org.marrok.amriirad.App
 > آخر تحديث: 2026-05-06  
 > المرحلة الحالية: **Phase 5 — Testing + Polish + Packaging**
 

@@ -184,7 +184,7 @@ Ces règles sont **déduites du texte légal** et doivent être implémentées d
 
 ---
 
-## 6. Correspondance Annexes → Écrans du Mini-App
+## 6. Correspondance Annexes → Écrans du Mini-org.marrok.amriirad.App
 
 | Annexe officielle | Écran correspondant | Action utilisateur |
 |---|---|---|
