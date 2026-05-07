@@ -1,6 +1,6 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
 > **Latest Update:** 2026-05-07  
-> **Current Focus:** Phase 5 — Final Polish & Stabilization
+> **Current Focus:** Phase 6 — Maintenance & Feature Expansion
 
 ---
 
@@ -14,10 +14,17 @@
 | **Phase 3** | UI Layer & Design System | ✅ Complete |
 | **Phase 4** | Reporting & Jasper Integration | ✅ Complete |
 | **Phase 5** | Stability, RTL & Final Polish | ✅ Complete |
+| **Phase 6** | Maintenance & Security | 🚧 Active |
 
 ---
 
 ## 🔧 Recent Achievements (Stabilization Phase)
+
+### 📅 2026-05-07 (Night): Security Hardening & Dispatch Module
+- ✅ **Full RBAC Enforcement**: Integrated `AuthService` into all core controllers (`RevenueOrderList`, `RevenueOrderForm`, `DebtorList`, `Dashboard`).
+- ✅ **Action-Level Permissions**: Secured critical actions (Create, Edit, Print) with `authService.canDo()` checks and user-friendly error dialogs.
+- ✅ **Dispatch Slips Activation**: Enabled the "Bordereaux d'Envoi" feature, registered controllers in `AppContext`, and fixed FXML controller resolution issues.
+- ✅ **Permission Matrix Expansion**: Added granular permissions (`dispatch.*`, `settings.manage`, `budget_chapter.manage`) to the database seed logic.
 
 ### 📅 2026-05-07 (Late Evening): Compilation & Runtime Stabilization
 - ✅ **BaseFormController Pattern**: Introduced a unified base class for all modal forms to handle window management, standard error display, and concurrency.

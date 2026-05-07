@@ -48,10 +48,14 @@ public class DashboardController implements Initializable {
 
     private final FiscalYearRepository fyRepo;
     private final RevenueOrderRepository orderRepo;
+    private final org.marrok.amriirad.service.AuthService authService;
 
-    public DashboardController(FiscalYearRepository fyRepo, RevenueOrderRepository orderRepo) {
+    public DashboardController(FiscalYearRepository fyRepo, 
+                               RevenueOrderRepository orderRepo,
+                               org.marrok.amriirad.service.AuthService authService) {
         this.fyRepo = fyRepo;
         this.orderRepo = orderRepo;
+        this.authService = authService;
     }
 
     @Override
@@ -118,6 +122,10 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleNewOrder() {
+        if (!authService.canDo("revenue_order.create")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية إنشاء أمر إيراد جديد.");
+            return;
+        }
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
         FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/orders/order-form-view.fxml", "إنشاء أمر إيراد جديد");
         if (loader != null) {
@@ -140,7 +148,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void handleViewSlips() {
-        // Implementation for dispatch slips if view exists
-        DialogHelper.showInfo("قريباً", "هذه الميزة ستتوفر في التحديث القادم.");
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dispatch/dispatch-slip-view.fxml");
     }
 }

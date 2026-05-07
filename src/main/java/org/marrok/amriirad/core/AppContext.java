@@ -139,7 +139,7 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
         // Controllers (Explicit registrations for complex ones or sub-packages)
         if (clazz == org.marrok.amriirad.controller.dashboard.DashboardController.class) 
-            return new org.marrok.amriirad.controller.dashboard.DashboardController(fiscalYearRepository, revenueOrderRepository);
+            return new org.marrok.amriirad.controller.dashboard.DashboardController(fiscalYearRepository, revenueOrderRepository, authService);
         
         if (clazz == org.marrok.amriirad.controller.users.UserManagementController.class) 
             return new org.marrok.amriirad.controller.users.UserManagementController(userRepository);
@@ -151,10 +151,10 @@ public class AppContext implements Disposable {
             return new org.marrok.amriirad.controller.users.UserFormController(userRepository, roleRepository);
         
         if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderListController.class) 
-            return new org.marrok.amriirad.controller.orders.RevenueOrderListController(revenueOrderService, revenueOrderRepository, fiscalYearRepository, concurrencyManager);
+            return new org.marrok.amriirad.controller.orders.RevenueOrderListController(revenueOrderService, revenueOrderRepository, fiscalYearRepository, authService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderFormController.class) 
-            return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, concurrencyManager);
+            return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, authService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.orders.OrderDetailsController.class) 
             return new org.marrok.amriirad.controller.orders.OrderDetailsController(reportService, tafqeetService, institutionService, concurrencyManager);
@@ -166,10 +166,16 @@ public class AppContext implements Disposable {
             return new org.marrok.amriirad.controller.orders.CancellationFormController(cancellationOrderService, reportService, tafqeetService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.debtors.DebtorListController.class) 
-            return new org.marrok.amriirad.controller.debtors.DebtorListController(debtorRepository, concurrencyManager);
+            return new org.marrok.amriirad.controller.debtors.DebtorListController(debtorRepository, authService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.debtors.DebtorFormController.class) 
             return new org.marrok.amriirad.controller.debtors.DebtorFormController(debtorRepository, concurrencyManager);
+            
+        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipController.class) 
+            return new org.marrok.amriirad.controller.dispatch.DispatchSlipController(dispatchSlipRepository, fiscalYearRepository, reportService, tafqeetService, institutionService, authService, concurrencyManager);
+            
+        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipFormController.class) 
+            return new org.marrok.amriirad.controller.dispatch.DispatchSlipFormController(fiscalYearRepository, revenueOrderRepository, dispatchSlipService, reportService, tafqeetService, authService, concurrencyManager);
             
         if (clazz == org.marrok.amriirad.controller.settings.EnterpriseInfoController.class) 
             return new org.marrok.amriirad.controller.settings.EnterpriseInfoController(institutionService);
@@ -185,12 +191,6 @@ public class AppContext implements Disposable {
 
         if (clazz == org.marrok.amriirad.controller.login.LoginController.class) 
             return new org.marrok.amriirad.controller.login.LoginController(authService, concurrencyManager);
-
-        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipController.class)
-            return new org.marrok.amriirad.controller.dispatch.DispatchSlipController(dispatchSlipRepository, fiscalYearRepository, reportService, tafqeetService, institutionService, concurrencyManager);
-
-        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipFormController.class)
-            return new org.marrok.amriirad.controller.dispatch.DispatchSlipFormController(fiscalYearRepository, revenueOrderRepository, dispatchSlipService, reportService, tafqeetService, concurrencyManager);
 
         if (clazz == TopBarController.class) return new TopBarController(fiscalYearRepository, authService);
         if (clazz == FooterController.class) return new FooterController(authService);

@@ -54,7 +54,7 @@ The application adheres to high-end design principles to ensure a professional, 
 
 ## 4. Pending / Next Steps
 1. ✅ **Audit Log Viewer**: A dedicated UI to browse the `audit_log` table — **IMPLEMENTED**.
-2. **Permission Enforcement**: While the matrix exists, fine-grained UI component masking based on `authService.canDo()` should be strictly applied to all new features.
+2. ✅ **Permission Enforcement**: Integrated a comprehensive Permission Matrix using `authService.canDo()` across all core controllers and UI actions — **IMPLEMENTED**.
 3. **Report Fine-Tuning**: Ensure all 5 Jasper Annexes align with the latest regulatory tweaks mentioned in `instruction_08_2023_analysis.md`.
 
 ---

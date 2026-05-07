@@ -61,6 +61,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
     private final DispatchSlipService slipService;
     private final ReportService reportService;
     private final TafqeetService tafqeetService;
+    private final org.marrok.amriirad.service.AuthService authService;
 
     // Data
     private ObservableList<OrderWrapper> allOrders;
@@ -72,6 +73,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
                                       DispatchSlipService slipService,
                                       ReportService reportService,
                                       TafqeetService tafqeetService,
+                                      org.marrok.amriirad.service.AuthService authService,
                                       org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         super(concurrencyManager);
         this.fyRepo = fyRepo;
@@ -79,6 +81,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         this.slipService = slipService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.authService = authService;
     }
 
     @Override
@@ -234,6 +237,10 @@ public class DispatchSlipFormController extends BaseFormController implements ja
 
     @FXML
     private void handleSave() throws SQLException {
+        if (!authService.canDo("dispatch.create")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية إنشاء بوردرو إرسال.");
+            return;
+        }
         if (!validateForm()) {
             return;
         }

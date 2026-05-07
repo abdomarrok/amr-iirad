@@ -59,6 +59,7 @@ public class DispatchSlipController implements Initializable {
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
     private final org.marrok.amriirad.service.InstitutionService institutionService;
+    private final org.marrok.amriirad.service.AuthService authService;
     private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public DispatchSlipController(DispatchSlipRepository slipRepo, 
@@ -66,12 +67,14 @@ public class DispatchSlipController implements Initializable {
                                   org.marrok.amriirad.service.ReportService reportService,
                                   org.marrok.amriirad.service.TafqeetService tafqeetService,
                                   org.marrok.amriirad.service.InstitutionService institutionService,
+                                  org.marrok.amriirad.service.AuthService authService,
                                   org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.slipRepo = slipRepo;
         this.fyRepo = fyRepo;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
         this.institutionService = institutionService;
+        this.authService = authService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -165,6 +168,10 @@ public class DispatchSlipController implements Initializable {
 
     @FXML
     private void handleNewSlip() {
+        if (!authService.canDo("dispatch.create")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية إنشاء بوردرو إرسال جديد.");
+            return;
+        }
         Stage stage = (Stage) slipsTable.getScene().getWindow();
         FXMLLoader loader = SceneManager.openModal(
             stage, 
@@ -180,6 +187,10 @@ public class DispatchSlipController implements Initializable {
 
     @FXML
     private void handlePrint() {
+        if (!authService.canDo("dispatch.print")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية طباعة بوردروات الإرسال.");
+            return;
+        }
         DispatchSlip selected = slipsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             logger.info("Printing Annexe 5 for slip: {}", selected.getSlipNumber());

@@ -45,5 +45,5 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 ## 5. Future Roadmap
 - [x] Phase 5.1: **Enhanced Visualization** — Modern order details view and visual audit timeline.
 - [x] Phase 5.2: **Extended CRUD** — Implement "Edit Debtor" functionality and direct "Budget Chapter" creation from the order form.
-- [x] Phase 5.3: **Testing & QA** — Comprehensive unit testing coverage for service layers.
+- [x] Phase 5.3: **Security & QA** — Full RBAC integration, Dispatch Slips activation, and unit test coverage.
 

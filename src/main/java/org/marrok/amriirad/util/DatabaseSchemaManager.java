@@ -317,6 +317,11 @@ public class DatabaseSchemaManager {
         
         // Budget Chapters
         insertPermission(stmt, "budget_chapter.manage", "action", "budget_chapter", "إدارة بنود الميزانية");
+
+        // Dispatch Slips
+        insertPermission(stmt, "dispatch.view", "view", "dispatch", "عرض بوردروات الإرسال");
+        insertPermission(stmt, "dispatch.create", "action", "dispatch", "إنشاء بوردرو إرسال");
+        insertPermission(stmt, "dispatch.print", "action", "dispatch", "طباعة بوردرو إرسال");
         
         // Roles & Permissions assigned to Admin by default
         stmt.execute("INSERT IGNORE INTO role_permission (role_id, permission_id) SELECT 1, id FROM permission");
