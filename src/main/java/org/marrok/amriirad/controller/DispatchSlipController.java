@@ -55,15 +55,18 @@ public class DispatchSlipController implements Initializable {
     private final org.marrok.amriirad.repository.FiscalYearRepository fyRepo;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public DispatchSlipController(DispatchSlipRepository slipRepo, 
                                   org.marrok.amriirad.repository.FiscalYearRepository fyRepo,
                                   org.marrok.amriirad.service.ReportService reportService,
-                                  org.marrok.amriirad.service.TafqeetService tafqeetService) {
+                                  org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                  org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.slipRepo = slipRepo;
         this.fyRepo = fyRepo;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -143,7 +146,7 @@ public class DispatchSlipController implements Initializable {
         loadingIndicator.setVisible(true);
         loadingIndicator.setManaged(true);
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 var fy = fyRepo.findActive();
                 if (fy.isPresent()) {

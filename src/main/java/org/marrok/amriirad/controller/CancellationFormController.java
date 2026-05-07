@@ -38,13 +38,16 @@ public class CancellationFormController implements Initializable {
     private final CancellationOrderService cancellationService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public CancellationFormController(CancellationOrderService cancellationService,
                                      org.marrok.amriirad.service.ReportService reportService,
-                                     org.marrok.amriirad.service.TafqeetService tafqeetService) {
+                                     org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                     org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.cancellationService = cancellationService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class CancellationFormController implements Initializable {
             cancellation.setReducedAmount(new BigDecimal(reducedAmountField.getText().trim()));
         }
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 if (cancellation.getCancellationType() == CancellationType.REDUCTION) {
                     cancellationService.reduceOrder(cancellation);

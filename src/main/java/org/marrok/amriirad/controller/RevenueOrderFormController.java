@@ -49,19 +49,22 @@ public class RevenueOrderFormController implements Initializable {
     private final RevenueOrderService orderService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public RevenueOrderFormController(FiscalYearRepository fyRepo, 
                                      DebtorRepository debtorRepo, 
                                      BudgetChapterRepository chapterRepo, 
                                      RevenueOrderService orderService,
                                      org.marrok.amriirad.service.ReportService reportService,
-                                     org.marrok.amriirad.service.TafqeetService tafqeetService) {
+                                     org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                     org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.fyRepo = fyRepo;
         this.debtorRepo = debtorRepo;
         this.chapterRepo = chapterRepo;
         this.orderService = orderService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     private FiscalYear activeYear;
@@ -111,7 +114,7 @@ public class RevenueOrderFormController implements Initializable {
     }
 
     private void loadDropdownData() {
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 Optional<FiscalYear> activeFy = fyRepo.findActive();
                 activeFy.ifPresent(fy -> activeYear = fy);
@@ -165,7 +168,7 @@ public class RevenueOrderFormController implements Initializable {
         if (!validateForm()) return;
         populateOrder();
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 if (currentOrder.getId() == 0) {
                     currentOrder.setCreatedBy("admin"); // TODO: Use real user
@@ -191,7 +194,7 @@ public class RevenueOrderFormController implements Initializable {
         if (!validateForm()) return;
         populateOrder();
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 orderService.updateOrder(currentOrder); // Save changes first
                 orderService.issueOrder(currentOrder.getId(), "admin"); // Then issue
@@ -266,7 +269,7 @@ public class RevenueOrderFormController implements Initializable {
     private void printAnnexe(String reportPath) {
         if (currentOrder == null || currentOrder.getId() == 0) return;
         
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 java.util.Map<String, Object> params = new java.util.HashMap<>();
                 

@@ -126,15 +126,36 @@ public class ModeSelectionController implements Initializable {
             if (selectedMode == AppMode.SERVER) {
                 navigateToServerConfig();
             } else {
-                try {
-                    // Initialize DB for local mode immediately
-                    org.marrok.amriirad.util.DatabaseConnection.initialize(selectedMode);
-                    org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
-                    navigateToDashboard();
-                } catch (Exception ex) {
-                    logger.error("Failed to initialize local database", ex);
-                    // Show error or alert?
-                }
+                // Disable UI while initializing to prevent double-clicks
+                continueBtn.setDisable(true);
+                localBtn.setDisable(true);
+                serverBtn.setDisable(true);
+                continueBtn.setText("جاري التهيئة...");
+
+                // Initialize DB on background thread to avoid freezing the UI
+                Thread initThread = new Thread(() -> {
+                    try {
+                        org.marrok.amriirad.util.DatabaseConnection.initialize(selectedMode);
+                        org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
+                        javafx.application.Platform.runLater(this::navigateToDashboard);
+                    } catch (Exception ex) {
+                        logger.error("Failed to initialize local database", ex);
+                        javafx.application.Platform.runLater(() -> {
+                            continueBtn.setDisable(false);
+                            localBtn.setDisable(false);
+                            serverBtn.setDisable(false);
+                            continueBtn.setText("متابعة");
+                            org.marrok.amriirad.util.GeneralUtil.showAlertWithOutTimelimit(
+                                javafx.scene.control.Alert.AlertType.ERROR,
+                                "خطأ",
+                                "فشل تهيئة قاعدة البيانات المحلية: " + ex.getMessage()
+                            );
+                        });
+                    }
+                });
+                initThread.setDaemon(true);
+                initThread.setName("LocalDB-Init");
+                initThread.start();
             }
         });
     }

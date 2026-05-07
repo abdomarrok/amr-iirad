@@ -59,6 +59,7 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
     private final DispatchSlipService slipService;
     private final ReportService reportService;
     private final TafqeetService tafqeetService;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     // Data
     private ObservableList<OrderWrapper> allOrders;
@@ -69,12 +70,14 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
                                       RevenueOrderRepository orderRepo,
                                       DispatchSlipService slipService,
                                       ReportService reportService,
-                                      TafqeetService tafqeetService) {
+                                      TafqeetService tafqeetService,
+                                      org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.fyRepo = fyRepo;
         this.orderRepo = orderRepo;
         this.slipService = slipService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -156,7 +159,7 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
         loadingIndicator.setManaged(true);
         errorLabel.setText("");
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 var activeFy = fyRepo.findActive();
                 if (activeFy.isEmpty()) {
@@ -258,7 +261,7 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
         slip.setFiscalYear(activeFy.get());
 
         // Save asynchronously
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 try {
                     slipService.createSlip(slip);

@@ -51,13 +51,16 @@ public class RevenueOrderListController implements Initializable {
     private final RevenueOrderService orderService;
     private final RevenueOrderRepository orderRepo;
     private final FiscalYearRepository fyRepo;
+    private final ConcurrencyManager concurrencyManager;
 
     public RevenueOrderListController(RevenueOrderService orderService,
                                       RevenueOrderRepository orderRepo,
-                                      FiscalYearRepository fyRepo) {
+                                      FiscalYearRepository fyRepo,
+                                      ConcurrencyManager concurrencyManager) {
         this.orderService = orderService;
         this.orderRepo = orderRepo;
         this.fyRepo = fyRepo;
+        this.concurrencyManager = concurrencyManager;
     }
 
     private FiscalYear activeYear;
@@ -95,15 +98,7 @@ public class RevenueOrderListController implements Initializable {
         
         colStatus.setCellValueFactory(cell -> {
             var status = cell.getValue().getStatus();
-            String arStatus = "-";
-            switch(status) {
-                case DRAFT: arStatus = "مسودة"; break;
-                case ISSUED: arStatus = "مُصدر"; break;
-                case DISPATCHED: arStatus = "مُرسل"; break;
-                case CANCELLED: arStatus = "مُلغى"; break;
-                case REDUCED: arStatus = "مُخفض"; break;
-            }
-            return new SimpleStringProperty(arStatus);
+            return new SimpleStringProperty(status != null ? status.getArabicLabel() : "-");
         });
 
         // Basic styling for status column cells could be added here via CellFactory
@@ -112,6 +107,19 @@ public class RevenueOrderListController implements Initializable {
     private void setupFilters() {
         statusFilterCombo.getItems().addAll(OrderStatus.values());
         statusFilterCombo.getItems().add(0, null); // "All" option
+
+        // Display Arabic labels in the filter combo
+        statusFilterCombo.setConverter(new javafx.util.StringConverter<OrderStatus>() {
+            @Override
+            public String toString(OrderStatus status) {
+                return status != null ? status.getArabicLabel() : "الكل";
+            }
+
+            @Override
+            public OrderStatus fromString(String string) {
+                return null;
+            }
+        });
 
         // Bind filter to input changes
         searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
@@ -153,7 +161,7 @@ public class RevenueOrderListController implements Initializable {
         loadingIndicator.setVisible(true);
         loadingIndicator.setManaged(true);
         
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 Optional<FiscalYear> activeFy = fyRepo.findActive();
                 if (activeFy.isPresent()) {

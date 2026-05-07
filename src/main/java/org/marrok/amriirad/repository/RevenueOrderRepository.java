@@ -16,27 +16,50 @@ public class RevenueOrderRepository {
 
     private static final Logger logger = LogManager.getLogger(RevenueOrderRepository.class);
 
-    private final FiscalYearRepository fyRepo = new FiscalYearRepository();
-    private final DebtorRepository debtorRepo = new DebtorRepository();
-    private final BudgetChapterRepository bcRepo = new BudgetChapterRepository();
+    /**
+     * Base JOIN query that eagerly loads fiscal_year, debtor, and budget_chapter
+     * in a single round-trip — eliminates the N+1 problem.
+     */
+    private static final String BASE_SELECT = """
+        SELECT ro.*,
+               fy.year_label   AS fy_year_label,
+               fy.is_active    AS fy_is_active,
+               d.full_name     AS d_full_name,
+               d.id_number     AS d_id_number,
+               d.address       AS d_address,
+               d.phone         AS d_phone,
+               d.bank_account  AS d_bank_account,
+               d.cnas_number   AS d_cnas_number,
+               d.nif_number    AS d_nif_number,
+               d.debtor_type   AS d_debtor_type,
+               bc.code         AS bc_code,
+               bc.label_ar     AS bc_label_ar,
+               bc.label_fr     AS bc_label_fr,
+               bc.parent_id    AS bc_parent_id,
+               bc.level        AS bc_level
+        FROM revenue_order ro
+        JOIN fiscal_year   fy ON ro.fiscal_year_id    = fy.id
+        JOIN debtor        d  ON ro.debtor_id         = d.id
+        JOIN budget_chapter bc ON ro.budget_chapter_id = bc.id
+        """;
 
     // -------------------------------------------------------------------------
     // READ
     // -------------------------------------------------------------------------
 
     public List<RevenueOrder> findAll(int fiscalYearId) throws SQLException {
-        String sql = "SELECT * FROM revenue_order WHERE fiscal_year_id = ? AND is_deleted = 0 ORDER BY created_at DESC";
+        String sql = BASE_SELECT + " WHERE ro.fiscal_year_id = ? AND ro.is_deleted = 0 ORDER BY ro.created_at DESC";
         return query(sql, ps -> ps.setInt(1, fiscalYearId));
     }
 
     public Optional<RevenueOrder> findById(int id) throws SQLException {
-        String sql = "SELECT * FROM revenue_order WHERE id = ? AND is_deleted = 0";
+        String sql = BASE_SELECT + " WHERE ro.id = ? AND ro.is_deleted = 0";
         List<RevenueOrder> r = query(sql, ps -> ps.setInt(1, id));
         return r.isEmpty() ? Optional.empty() : Optional.of(r.get(0));
     }
 
     public List<RevenueOrder> findByStatus(int fiscalYearId, OrderStatus status) throws SQLException {
-        String sql = "SELECT * FROM revenue_order WHERE fiscal_year_id = ? AND status = ? AND is_deleted = 0";
+        String sql = BASE_SELECT + " WHERE ro.fiscal_year_id = ? AND ro.status = ? AND ro.is_deleted = 0";
         return query(sql, ps -> {
             ps.setInt(1, fiscalYearId);
             ps.setString(2, status.name());
@@ -52,7 +75,7 @@ public class RevenueOrderRepository {
                      "object_ar, amount, amount_in_words_ar, status, created_by) VALUES (?,?,?,?,?,?,?,?,?,?)";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            bind(ps, ro);
+            bindInsert(ps, ro);
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) ro.setId(keys.getInt(1));
@@ -121,7 +144,7 @@ public class RevenueOrderRepository {
         return list;
     }
 
-    private void bind(PreparedStatement ps, RevenueOrder ro) throws SQLException {
+    private void bindInsert(PreparedStatement ps, RevenueOrder ro) throws SQLException {
         ps.setString(1, ro.getOrderNumber());
         ps.setInt(2, ro.getFiscalYear().getId());
         ps.setDate(3, ro.getIssueDate() != null ? Date.valueOf(ro.getIssueDate()) : null);
@@ -134,30 +157,62 @@ public class RevenueOrderRepository {
         ps.setString(10, ro.getCreatedBy());
     }
 
+    /**
+     * Maps a ResultSet row to a RevenueOrder with all relationships
+     * populated inline from the JOIN — no additional queries needed.
+     */
     private RevenueOrder map(ResultSet rs) throws SQLException {
         RevenueOrder ro = new RevenueOrder();
         ro.setId(rs.getInt("id"));
         ro.setOrderNumber(rs.getString("order_number"));
-        
-        // Lazy-ish loading of linked entities (can be optimized with JOINs later)
-        ro.setFiscalYear(fyRepo.findById(rs.getInt("fiscal_year_id")).orElse(null));
-        ro.setDebtor(debtorRepo.findById(rs.getInt("debtor_id")).orElse(null));
-        ro.setBudgetChapter(bcRepo.findById(rs.getInt("budget_chapter_id")).orElse(null));
-        
+
+        // Fiscal Year — inline from JOIN
+        FiscalYear fy = new FiscalYear();
+        fy.setId(rs.getInt("fiscal_year_id"));
+        fy.setYearLabel(rs.getString("fy_year_label"));
+        fy.setActive(rs.getBoolean("fy_is_active"));
+        ro.setFiscalYear(fy);
+
+        // Debtor — inline from JOIN
+        Debtor debtor = new Debtor();
+        debtor.setId(rs.getInt("debtor_id"));
+        debtor.setFullName(rs.getString("d_full_name"));
+        debtor.setIdNumber(rs.getString("d_id_number"));
+        debtor.setAddress(rs.getString("d_address"));
+        debtor.setPhone(rs.getString("d_phone"));
+        debtor.setBankAccount(rs.getString("d_bank_account"));
+        debtor.setCnasNumber(rs.getString("d_cnas_number"));
+        debtor.setNifNumber(rs.getString("d_nif_number"));
+        String debtorTypeStr = rs.getString("d_debtor_type");
+        if (debtorTypeStr != null) debtor.setDebtorType(DebtorType.valueOf(debtorTypeStr));
+        ro.setDebtor(debtor);
+
+        // Budget Chapter — inline from JOIN
+        BudgetChapter bc = new BudgetChapter();
+        bc.setId(rs.getInt("budget_chapter_id"));
+        bc.setCode(rs.getString("bc_code"));
+        bc.setLabelAr(rs.getString("bc_label_ar"));
+        bc.setLabelFr(rs.getString("bc_label_fr"));
+        int parentId = rs.getInt("bc_parent_id");
+        bc.setParentId(rs.wasNull() ? null : parentId);
+        bc.setLevel(rs.getInt("bc_level"));
+        ro.setBudgetChapter(bc);
+
+        // Scalar fields
         Date issueDate = rs.getDate("issue_date");
         if (issueDate != null) ro.setIssueDate(issueDate.toLocalDate());
-        
+
         ro.setObjectAr(rs.getString("object_ar"));
         ro.setAmount(rs.getBigDecimal("amount"));
         ro.setAmountInWordsAr(rs.getString("amount_in_words_ar"));
         ro.setStatus(OrderStatus.valueOf(rs.getString("status")));
         ro.setCreatedBy(rs.getString("created_by"));
-        
+
         Timestamp tsC = rs.getTimestamp("created_at");
         if (tsC != null) ro.setCreatedAt(tsC.toLocalDateTime());
         Timestamp tsU = rs.getTimestamp("updated_at");
         if (tsU != null) ro.setUpdatedAt(tsU.toLocalDateTime());
-        
+
         return ro;
     }
 }

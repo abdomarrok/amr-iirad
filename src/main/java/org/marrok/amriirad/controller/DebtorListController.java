@@ -44,9 +44,11 @@ public class DebtorListController implements Initializable {
     private FilteredList<Debtor> filteredList;
 
     private final DebtorRepository debtorRepo;
+    private final ConcurrencyManager concurrencyManager;
 
-    public DebtorListController(DebtorRepository debtorRepo) {
+    public DebtorListController(DebtorRepository debtorRepo, ConcurrencyManager concurrencyManager) {
         this.debtorRepo = debtorRepo;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -66,21 +68,26 @@ public class DebtorListController implements Initializable {
         
         colType.setCellValueFactory(cell -> {
             var type = cell.getValue().getDebtorType();
-            String arType = "-";
-            if (type != null) {
-                switch(type) {
-                    case INDIVIDUAL: arType = "شخص طبيعي"; break;
-                    case COMPANY: arType = "شخص معنوي (شركة)"; break;
-                    case STATE_ENTITY: arType = "هيئة عمومية"; break;
-                }
-            }
-            return new SimpleStringProperty(arType);
+            return new SimpleStringProperty(type != null ? type.getArabicLabel() : "-");
         });
     }
 
     private void setupFilters() {
         typeFilterCombo.getItems().addAll(DebtorType.values());
         typeFilterCombo.getItems().add(0, null); // "All"
+
+        // Display Arabic labels in the filter combo
+        typeFilterCombo.setConverter(new javafx.util.StringConverter<DebtorType>() {
+            @Override
+            public String toString(DebtorType type) {
+                return type != null ? type.getArabicLabel() : "الكل";
+            }
+
+            @Override
+            public DebtorType fromString(String string) {
+                return null;
+            }
+        });
 
         searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
         typeFilterCombo.valueProperty().addListener((obs, oldV, newV) -> updatePredicate());
@@ -120,7 +127,7 @@ public class DebtorListController implements Initializable {
         loadingIndicator.setVisible(true);
         loadingIndicator.setManaged(true);
         
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> debtorRepo.findAll(),
             debtors -> {
                 masterList = FXCollections.observableArrayList(debtors);

@@ -32,16 +32,33 @@ public class DebtorFormController implements Initializable {
     @FXML private Button saveBtn;
 
     private final DebtorRepository debtorRepo;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
     private Debtor currentDebtor;
     private Runnable onSuccess;
 
-    public DebtorFormController(DebtorRepository debtorRepo) {
+    public DebtorFormController(DebtorRepository debtorRepo, org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.debtorRepo = debtorRepo;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         typeCombo.setItems(FXCollections.observableArrayList(DebtorType.values()));
+
+        // Display Arabic labels instead of raw enum names
+        typeCombo.setConverter(new javafx.util.StringConverter<DebtorType>() {
+            @Override
+            public String toString(DebtorType type) {
+                return type != null ? type.getArabicLabel() : "";
+            }
+
+            @Override
+            public DebtorType fromString(String string) {
+                // Not needed for non-editable ComboBox
+                return null;
+            }
+        });
+
         typeCombo.setValue(DebtorType.INDIVIDUAL);
     }
 
@@ -79,7 +96,7 @@ public class DebtorFormController implements Initializable {
         currentDebtor.setCnasNumber(cnasNumberField.getText() != null ? cnasNumberField.getText().trim() : "");
         currentDebtor.setNifNumber(nifNumberField.getText() != null ? nifNumberField.getText().trim() : "");
 
-        ConcurrencyManager.getInstance().runAsync(
+        concurrencyManager.runAsync(
             () -> {
                 if (currentDebtor.getId() == 0) {
                     debtorRepo.save(currentDebtor);

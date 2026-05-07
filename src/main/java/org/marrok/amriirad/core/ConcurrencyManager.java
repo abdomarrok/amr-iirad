@@ -18,8 +18,6 @@ public class ConcurrencyManager implements Disposable {
     private static final Logger logger = LogManager.getLogger(ConcurrencyManager.class);
 
     private final ExecutorService executor;
-    private static ConcurrencyManager instance;
-
     public ConcurrencyManager() {
         // Cached thread pool for short-lived tasks
         this.executor = Executors.newCachedThreadPool(r -> {
@@ -28,13 +26,6 @@ public class ConcurrencyManager implements Disposable {
             return t;
         });
         logger.info("ConcurrencyManager initialized");
-    }
-
-    public static synchronized ConcurrencyManager getInstance() {
-        if (instance == null) {
-            instance = new ConcurrencyManager();
-        }
-        return instance;
     }
 
     /**

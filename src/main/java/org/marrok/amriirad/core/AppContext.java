@@ -77,7 +77,9 @@ public class AppContext implements Disposable {
 
         this.revenueOrderService = new RevenueOrderService(
                 revenueOrderRepository,
-                auditService
+                auditService,
+                fiscalYearRepository,
+                tafqeetService
         );
         this.cancellationOrderService = new CancellationOrderService(
                 cancellationOrderRepository,

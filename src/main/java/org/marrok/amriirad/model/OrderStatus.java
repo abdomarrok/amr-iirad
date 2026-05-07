@@ -7,9 +7,20 @@ package org.marrok.amriirad.model;
  *              ISSUED → REDUCED   (partial reduction)
  */
 public enum OrderStatus {
-    DRAFT,
-    ISSUED,
-    DISPATCHED,
-    CANCELLED,
-    REDUCED
+    DRAFT("مسودة"),
+    ISSUED("مُصدر"),
+    DISPATCHED("مُرسل"),
+    CANCELLED("مُلغى"),
+    REDUCED("مُخفض");
+
+    private final String arabicLabel;
+
+    OrderStatus(String arabicLabel) {
+        this.arabicLabel = arabicLabel;
+    }
+
+    /** Returns the Arabic display label for this status. */
+    public String getArabicLabel() {
+        return arabicLabel;
+    }
 }

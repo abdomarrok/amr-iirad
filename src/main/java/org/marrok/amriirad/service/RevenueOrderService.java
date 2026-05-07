@@ -31,11 +31,12 @@ public class RevenueOrderService {
     private final FiscalYearRepository fyRepo;
     private final TafqeetService tafqeet;
 
-    public RevenueOrderService(RevenueOrderRepository orderRepo, AuditService audit) {
+    public RevenueOrderService(RevenueOrderRepository orderRepo, AuditService audit,
+                               FiscalYearRepository fyRepo, TafqeetService tafqeet) {
         this.orderRepo = orderRepo;
         this.audit = audit;
-        this.fyRepo = new FiscalYearRepository(); // We can also inject this if needed
-        this.tafqeet = new TafqeetService();
+        this.fyRepo = fyRepo;
+        this.tafqeet = tafqeet;
     }
 
     // =========================================================================
