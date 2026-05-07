@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.core.AppContext;
 import org.marrok.amriirad.util.*;
+import javafx.scene.text.Font;
 
 public class AmrIiradApp extends Application {
 
@@ -18,6 +19,13 @@ public class AmrIiradApp extends Application {
         logger.info("Starting Amr-Iirad application...");
 
         primaryStage.setTitle("نظام أوامر الإيراد");
+
+        // Load fonts
+        try {
+            Font.loadFont(getClass().getResourceAsStream("/org/marrok/amriirad/fonts/Cairo-Variable.ttf"), 14);
+        } catch (Exception e) {
+            logger.warn("Failed to load Cairo font, using fallback system font");
+        }
 
         if (!AppSettings.isModeConfigured()) {
                 SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");

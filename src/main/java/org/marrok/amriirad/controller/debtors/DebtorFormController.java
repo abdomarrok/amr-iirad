@@ -26,7 +26,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
     @FXML private ComboBox<DebtorType> typeCombo;
     @FXML private TextField fullNameField;
     @FXML private TextField idNumberField;
-    @FXML private TextField addressField;
+    @FXML private TextArea addressField;
     @FXML private TextField phoneField;
     @FXML private TextField bankAccountField;
     @FXML private TextField cnasNumberField;
@@ -78,9 +78,9 @@ public class DebtorFormController extends BaseFormController implements Initiali
         idNumberField.setText(debtor.getIdNumber());
         addressField.setText(debtor.getAddress());
         phoneField.setText(debtor.getPhone());
-        bankAccountField.setText(debtor.getBankAccount());
-        cnasNumberField.setText(debtor.getCnasNumber());
-        nifNumberField.setText(debtor.getNifNumber());
+        if (bankAccountField != null) bankAccountField.setText(debtor.getBankAccount());
+        if (cnasNumberField != null) cnasNumberField.setText(debtor.getCnasNumber());
+        if (nifNumberField != null) nifNumberField.setText(debtor.getNifNumber());
     }
 
     @FXML
@@ -89,13 +89,13 @@ public class DebtorFormController extends BaseFormController implements Initiali
         clearError();
 
         currentDebtor.setDebtorType(typeCombo.getValue());
-        currentDebtor.setFullName(fullNameField.getText().trim());
-        currentDebtor.setIdNumber(idNumberField.getText().trim());
-        currentDebtor.setAddress(addressField.getText().trim());
-        currentDebtor.setPhone(phoneField.getText().trim());
-        currentDebtor.setBankAccount(bankAccountField.getText() != null ? bankAccountField.getText().trim() : "");
-        currentDebtor.setCnasNumber(cnasNumberField.getText() != null ? cnasNumberField.getText().trim() : "");
-        currentDebtor.setNifNumber(nifNumberField.getText() != null ? nifNumberField.getText().trim() : "");
+        currentDebtor.setFullName(fullNameField.getText() != null ? fullNameField.getText().trim() : "");
+        currentDebtor.setIdNumber(idNumberField.getText() != null ? idNumberField.getText().trim() : "");
+        currentDebtor.setAddress(addressField.getText() != null ? addressField.getText().trim() : "");
+        currentDebtor.setPhone(phoneField.getText() != null ? phoneField.getText().trim() : "");
+        currentDebtor.setBankAccount(bankAccountField != null && bankAccountField.getText() != null ? bankAccountField.getText().trim() : "");
+        currentDebtor.setCnasNumber(cnasNumberField != null && cnasNumberField.getText() != null ? cnasNumberField.getText().trim() : "");
+        currentDebtor.setNifNumber(nifNumberField != null && nifNumberField.getText() != null ? nifNumberField.getText().trim() : "");
 
         concurrencyManager.runAsync(
             () -> {

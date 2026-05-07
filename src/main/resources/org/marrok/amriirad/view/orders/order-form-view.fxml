@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefWidth="700" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<VBox prefWidth="750" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="org.marrok.amriirad.controller.orders.RevenueOrderFormController">
     <padding>
         <Insets bottom="25" left="25" right="25" top="25"/>
     </padding>
 
     <!-- Header -->
-    <HBox alignment="CENTER_LEFT" spacing="12">
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="modal-header">
         <FontIcon iconLiteral="fas-file-invoice" iconSize="24" styleClass="icon-primary"/>
         <Label fx:id="titleLabel" styleClass="text-subheading" text="إنشاء أمر إيراد جديد"/>
     </HBox>
@@ -27,7 +27,7 @@
 
         <GridPane hgap="20" vgap="15">
             <columnConstraints>
-                <ColumnConstraints prefWidth="130" halignment="RIGHT"/>
+                <ColumnConstraints prefWidth="140" halignment="LEFT"/>
                 <ColumnConstraints hgrow="ALWAYS" />
             </columnConstraints>
 

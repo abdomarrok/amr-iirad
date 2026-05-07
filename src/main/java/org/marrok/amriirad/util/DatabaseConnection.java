@@ -40,12 +40,24 @@ public class DatabaseConnection {
      */
     public static void initialize(AppMode mode) throws Exception {
         if (mode == AppMode.LOCAL) {
-            logger.info("Starting embedded MariaDB4j database...");
-            embeddedDatabase = new EmbeddedDatabase();
+            if (embeddedDatabase == null) {
+                embeddedDatabase = new EmbeddedDatabase();
+            }
             embeddedDatabase.start();
             DATABASE_PORT = embeddedDatabase.getPort();
-            logger.info("Embedded DB started on port {}", DATABASE_PORT);
+            DATABASE_HOST = "localhost";
+            DATABASE_USER = "root";
+            DATABASE_PASSWORD = "";
+        } else {
+            // If we were in local mode, we might want to stop it, 
+            // but usually we keep it running for the session if the user might switch back.
+            // For now, just ensure we use the configured server params.
         }
+
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
+        }
+
         initializePool();
         // Ensure target database exists
         try (Connection c = dataSource.getConnection();

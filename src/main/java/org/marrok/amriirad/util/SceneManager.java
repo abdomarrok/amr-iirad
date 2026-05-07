@@ -97,6 +97,10 @@ public class SceneManager {
         scene.getStylesheets().clear();
         String css = SceneManager.class.getResource("/org/marrok/amriirad/css/app.css").toExternalForm();
         scene.getStylesheets().add(css);
+        
+        // Force RTL globally
+        scene.getRoot().setNodeOrientation(javafx.geometry.NodeOrientation.RIGHT_TO_LEFT);
+        
         // Ensure standard cursor
         scene.setCursor(javafx.scene.Cursor.DEFAULT);
     }

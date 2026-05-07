@@ -16,8 +16,13 @@ public class EmbeddedDatabase {
 
     private DB db;
     private int port;
+    private boolean running = false;
 
     public void start() throws Exception {
+        if (running) {
+            logger.info("Embedded MariaDB4j is already running.");
+            return;
+        }
         logger.info("Starting embedded MariaDB4j database...");
         DBConfigurationBuilder config = DBConfigurationBuilder.newBuilder();
         config.setPort(DEFAULT_PORT);
@@ -26,13 +31,15 @@ public class EmbeddedDatabase {
         db = DB.newEmbeddedDB(config.build());
         db.start();
         port = DEFAULT_PORT;
+        running = true;
         logger.info("Embedded MariaDB4j started on port {}", port);
     }
 
     public void stop() {
-        if (db != null) {
+        if (db != null && running) {
             try {
                 db.stop();
+                running = false;
                 logger.info("Embedded MariaDB4j stopped.");
             } catch (Exception e) {
                 logger.error("Error stopping embedded database", e);

@@ -9,10 +9,16 @@
 
 /* ========== GLOBAL RESET ========== */
 
+@font-face {
+    font-family: 'Cairo';
+    src: url('../fonts/Cairo-Variable.ttf');
+}
+
 .root {
-    -fx-font-family: "System";
+    -fx-font-family: 'Cairo', 'Segoe UI', 'System';
     -fx-font-size: 14px;
     -fx-background-color: -fx-theme-bg-primary;
+    -fx-node-orientation: right-to-left;
 }
 
 /* ========== LAYOUT ========== */
@@ -338,6 +344,23 @@
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-text-fill: -fx-theme-text-primary;
+}
+
+.modal-pane {
+    -fx-background-color: -fx-theme-bg-primary;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.modal-header {
+    -fx-padding: 0 0 15 0;
+    -fx-border-color: transparent transparent -fx-theme-border-light transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Ensure labels in GridPane stick to fields in RTL */
+.grid-pane .label {
+    -fx-padding: 0 0 0 10;
 }
 
 /* ========== SHARED COMPONENTS ========== */

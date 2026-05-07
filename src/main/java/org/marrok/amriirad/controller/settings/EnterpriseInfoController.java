@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import org.marrok.amriirad.model.InstitutionInfo;
 import org.marrok.amriirad.service.InstitutionService;
 import org.marrok.amriirad.util.DialogHelper;
+import org.marrok.amriirad.util.SceneManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -81,6 +82,13 @@ public class EnterpriseInfoController implements Initializable {
     }
 
     private void close() {
-        ((Stage) nameArField.getScene().getWindow()).close();
+        Stage stage = (Stage) nameArField.getScene().getWindow();
+        org.marrok.amriirad.service.AuthService auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
+        
+        if (auth.getCurrentUser() != null) {
+            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard/dashboard-view.fxml");
+        } else {
+            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login/login-view.fxml");
+        }
     }
 }
