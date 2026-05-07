@@ -17,6 +17,13 @@ import org.marrok.amriirad.model.OrderStatus;
 import org.marrok.amriirad.service.ReportService;
 import org.marrok.amriirad.service.TafqeetService;
 import org.marrok.amriirad.service.InstitutionService;
+import org.marrok.amriirad.service.CancellationOrderService;
+import org.marrok.amriirad.util.ReportParamBuilder;
+
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.marrok.amriirad.util.ReportParamBuilder;
 import java.net.URL;
@@ -43,18 +50,30 @@ public class OrderDetailsController extends BaseFormController implements Initia
     @FXML private VBox timelineContainer;
     @FXML private Button printAdminBtn;
     @FXML private Button printDebtorBtn;
+    @FXML private Button printCancelBtn;
+    @FXML private Button printReduceBtn;
+    @FXML private Button cancelActionBtn;
+    @FXML private Button reduceActionBtn;
 
     private final ReportService reportService;
     private final TafqeetService tafqeetService;
     private final InstitutionService institutionService;
+    private final CancellationOrderService cancellationService;
+    private final org.marrok.amriirad.service.AuthService authService;
+    
     private RevenueOrder currentOrder;
 
     public OrderDetailsController(ReportService reportService, TafqeetService tafqeetService, 
-                                 InstitutionService institutionService, ConcurrencyManager concurrencyManager) {
+                                 InstitutionService institutionService, 
+                                 CancellationOrderService cancellationService,
+                                 org.marrok.amriirad.service.AuthService authService,
+                                 ConcurrencyManager concurrencyManager) {
         super(concurrencyManager);
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
         this.institutionService = institutionService;
+        this.cancellationService = cancellationService;
+        this.authService = authService;
     }
 
     @Override
@@ -119,16 +138,39 @@ public class OrderDetailsController extends BaseFormController implements Initia
         // Set object
         objectLabel.setText(currentOrder.getObjectAr() != null ? currentOrder.getObjectAr() : "-");
 
-        // Show print buttons only if order is issued
-        if (currentOrder.getStatus() != OrderStatus.DRAFT) {
-            printAdminBtn.setVisible(true);
-            printAdminBtn.setManaged(true);
-            printDebtorBtn.setVisible(true);
-            printDebtorBtn.setManaged(true);
-        }
+        // Visibility logic based on status
+        updateButtonVisibility();
 
         // Build timeline
         buildStatusTimeline();
+    }
+
+    private void updateButtonVisibility() {
+        boolean isDraft = currentOrder.getStatus() == OrderStatus.DRAFT;
+        boolean isIssued = currentOrder.getStatus() == OrderStatus.ISSUED;
+        boolean isCancelled = currentOrder.getStatus() == OrderStatus.CANCELLED;
+        boolean isReduced = currentOrder.getStatus() == OrderStatus.REDUCED;
+        boolean isDispatched = currentOrder.getStatus() == OrderStatus.DISPATCHED;
+
+        // Common print buttons (Annex 1 & 2) shown for anything but draft
+        setBtnVisible(printAdminBtn, !isDraft);
+        setBtnVisible(printDebtorBtn, !isDraft);
+
+        // Cancellation/Reduction specific buttons
+        setBtnVisible(printCancelBtn, isCancelled);
+        setBtnVisible(printReduceBtn, isReduced);
+
+        // Actions: can cancel/reduce if ISSUED (and not dispatched)
+        boolean canManage = authService.canDo("orders.edit");
+        setBtnVisible(cancelActionBtn, isIssued && canManage);
+        setBtnVisible(reduceActionBtn, isIssued && canManage);
+    }
+
+    private void setBtnVisible(Button btn, boolean visible) {
+        if (btn != null) {
+            btn.setVisible(visible);
+            btn.setManaged(visible);
+        }
     }
 
     private void buildStatusTimeline() {
@@ -141,26 +183,29 @@ public class OrderDetailsController extends BaseFormController implements Initia
         addTimelineItem("مسودة (DRAFT)", currentOrder.getCreatedAt(), "تم إنشاء الأمر في نظام", true, "fas-file-alt");
 
         // ISSUED status (if applicable)
-        if (currentOrder.getStatus().ordinal() >= OrderStatus.ISSUED.ordinal()) {
+        if (currentOrder.getStatus().ordinal() >= OrderStatus.ISSUED.ordinal() || isCancelledOrReduced()) {
             addTimelineItem("مُصدّر (ISSUED)", currentOrder.getUpdatedAt(), "تم إصدار الأمر رسمياً", 
                 currentOrder.getStatus() == OrderStatus.ISSUED, "fas-check-circle");
         }
 
         // DISPATCHED status (if applicable)
-        if (currentOrder.getStatus().ordinal() >= OrderStatus.DISPATCHED.ordinal()) {
-            addTimelineItem("مُرسل (DISPATCHED)", currentOrder.getUpdatedAt(), "تم إرسال الأمر للخزينة", 
-                currentOrder.getStatus() == OrderStatus.DISPATCHED, "fas-paper-plane");
+        if (currentOrder.getStatus() == OrderStatus.DISPATCHED) {
+            addTimelineItem("مُرسل (DISPATCHED)", currentOrder.getUpdatedAt(), "تم إرسال الأمر للخزينة", true, "fas-paper-plane");
         }
 
         // CANCELLED status (if applicable)
         if (currentOrder.getStatus() == OrderStatus.CANCELLED) {
-            addTimelineItem("ملغى (CANCELLED)", currentOrder.getUpdatedAt(), "تم إلغاء الأمر", true, "fas-times-circle");
+            addTimelineItem("ملغى (CANCELLED)", currentOrder.getUpdatedAt(), "تم إلغاء الأمر كلياً (ملحق 3)", true, "fas-times-circle");
         }
 
         // REDUCED status (if applicable)
         if (currentOrder.getStatus() == OrderStatus.REDUCED) {
-            addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تعديل مبلغ الأمر", true, "fas-compress");
+            addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تخفيض مبلغ الأمر (ملحق 4)", true, "fas-compress");
         }
+    }
+
+    private boolean isCancelledOrReduced() {
+        return currentOrder.getStatus() == OrderStatus.CANCELLED || currentOrder.getStatus() == OrderStatus.REDUCED;
     }
 
     private void addTimelineItem(String statusName, Object timestamp, String description, boolean isActive, String icon) {
@@ -222,6 +267,34 @@ public class OrderDetailsController extends BaseFormController implements Initia
         printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy.jrxml");
     }
 
+    @FXML
+    private void handlePrintCancel() {
+        fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe3_full_cancel.jrxml");
+    }
+
+    @FXML
+    private void handlePrintReduce() {
+        fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction.jrxml");
+    }
+
+    private void fetchCancellationAndPrint(String reportPath) {
+        concurrencyManager.runAsync(
+            () -> cancellationService.findByOrderId(currentOrder.getId()),
+            opt -> {
+                opt.ifPresentOrElse(
+                    c -> {
+                        Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                            .withCancellation(c)
+                            .build();
+                        reportService.showReportWithParamsOnly(reportPath, params);
+                    },
+                    () -> showError("تعذر العثور على سجل الإلغاء/التخفيض.")
+                );
+            },
+            err -> showError("خطأ في جلب بيانات الإلغاء: " + err.getMessage())
+        );
+    }
+
     private void printAnnexe(String reportPath) {
         if (currentOrder == null) {
             showError("No order data available");
@@ -240,6 +313,39 @@ public class OrderDetailsController extends BaseFormController implements Initia
             res -> logger.info("Print triggered for {}", reportPath),
             err -> showError("خطأ في الطباعة: " + err.getMessage())
         );
+    }
+
+    @FXML
+    private void handleCancelAction() {
+        openCancellationForm();
+    }
+
+    @FXML
+    private void handleReduceAction() {
+        openCancellationForm();
+    }
+
+    private void openCancellationForm() {
+        Stage stage = (Stage) titleLabel.getScene().getWindow();
+        javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.SceneManager.openModal(
+            stage, "/org/marrok/amriirad/view/orders/cancellation-form-view.fxml", "إلغاء / تخفيض أمر الإيراد");
+        
+        if (loader != null) {
+            CancellationFormController controller = loader.getController();
+            controller.initData(currentOrder, () -> {
+                // Refresh order data and UI
+                refreshOrder();
+            });
+        }
+    }
+
+    private void refreshOrder() {
+        // We need to reload order from repo to get updated status
+        // For now, we'll just close and let the list view handle it, 
+        // OR better, we could have a reference to the service here.
+        // Actually, let's just close the details for now to be safe, 
+        // or re-fetch if we had the repository.
+        closeWindow();
     }
 
     @FXML

@@ -30,16 +30,20 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 ---
 
 ## 2. Design System: "The GstockDz Premium Look"
-The application adheres to high-end design principles to ensure a professional, modern feel.
+The application adheres to high-end design principles to ensure a professional, modern feel, utilizing the `Cairo` font family for all Arabic text.
 
-### 2.1 CSS Strategy
-- `theme.css`: Defines the design tokens (colors, spacing, shadows).
-- `app.css`: The main stylesheet. Imports `theme.css` and defines component styles.
-- **Styling Rules**: Use existing CSS classes (`.card`, `.btn-primary`, `.text-heading`, `.stat-value`). Avoid ad-hoc inline styles unless absolutely necessary for dynamic color-coding.
+### 2.1 CSS Strategy (Tiered Orchestration)
+The CSS system is now structured to prevent style leakage and ensure theme consistency:
+- **`app.css`**: The main entry point loaded by `SceneManager`. It acts as the orchestrator.
+- **`master.css`**: Defines global application patterns, typography, and imports the base design system.
+- **`tableview.css`**: Specialized styling for data grids (imported from GstockDz), providing advanced spacing, zebra-padding, and hover states.
+- **`theme.css`**: Defines the foundational design tokens (HSL colors, status-aware variables, and shadows).
 
-### 2.2 UI Components
+### 2.2 UI Principles & Components
+- **Typography**: The `Cairo` font is mandatory and applied at the `.root` level via `master.css`.
 - **TopBar**: Contains global actions (Back, Fiscal Year selection, User Management, Settings, Logout).
 - **Footer**: Displays system status and current user info.
+- **Data Grids**: All tables should use the standard `TableView` or `.data-table` classes to benefit from the premium `tableview.css` styling.
 - **Cards**: Use the `.card` class for container-based layouts to achieve the modern, elevated look.
 
 ---

@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class EnterpriseInfoController implements Initializable {
 
+    @FXML private org.marrok.amriirad.controller.shared.TopBarController topBarController;
     @FXML private TextField nameArField;
     @FXML private TextField nameFrField;
     @FXML private TextField officerArField;
@@ -34,6 +35,9 @@ public class EnterpriseInfoController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        if (topBarController != null) {
+            topBarController.setBackVisible(true);
+        }
         loadData();
     }
 

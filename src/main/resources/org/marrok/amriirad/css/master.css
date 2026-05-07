@@ -1,6 +1,11 @@
 @import "theme.css";
+@import "tableview.css";
 
 /* Base Styles */
+.root {
+    -fx-font-family: "Cairo";
+}
+
 .main-background {
     -fx-background-color: -fx-theme-bg-primary;
 }
@@ -61,16 +66,6 @@
 }
 .btn-danger:hover {
     -fx-background-color: -fx-theme-danger-hover;
-}
-
-/* TableView Styling */
-.table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: -fx-theme-border-light;
-}
-
-.table-view .column-header {
-    -fx-background-color: -fx-theme-bg-tertiary;
 }
 
 /* Shared Components Styling */

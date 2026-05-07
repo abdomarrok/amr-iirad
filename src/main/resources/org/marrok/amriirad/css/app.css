@@ -1,11 +1,4 @@
-/*
- * ============================================
- * Amr-Iirad — Main Application Stylesheet
- * ============================================
- * Single entry point. Import order matters.
- */
-
-@import url("theme.css");
+@import url("master.css");
 
 /* ========== GLOBAL RESET ========== */
 
@@ -17,7 +10,6 @@
 .root {
     -fx-font-family: 'Cairo', 'Segoe UI', 'System';
     -fx-font-size: 14px;
-    -fx-background-color: -fx-theme-bg-primary;
     -fx-node-orientation: right-to-left;
 }
 
@@ -224,33 +216,7 @@
 
 /* ========== TABLE VIEW ========== */
 
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: -fx-theme-border-light;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
-
-.table-view .column-header {
-    -fx-background-color: -fx-theme-bg-secondary;
-    -fx-border-color: transparent transparent -fx-theme-border-light transparent;
-    -fx-font-weight: bold;
-    -fx-padding: 10 5;
-}
-
-.table-view .table-row-cell {
-    -fx-cell-size: 45px;
-    -fx-border-color: transparent transparent -fx-theme-border-light transparent;
-}
-
-.table-view .table-row-cell:odd {
-    -fx-background-color: #fafafa;
-}
-
-.table-view .table-row-cell:selected {
-    -fx-background-color: -fx-theme-primary-light;
-    -fx-text-fill: -fx-theme-primary;
-}
+/* Handled by tableview.css via master.css */
 
 /* ========== STATUS BADGES ========== */
 

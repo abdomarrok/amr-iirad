@@ -16,7 +16,10 @@ This folder contains the complete documentation, architectural blueprints, and l
     *The Progress Log (Current).* A clean record of development milestones starting from the major stabilization and refactoring phase.
 
 5.  **[05_AI_Agent_Guidelines.md](./05_AI_Agent_Guidelines.md)**  
-    *Agent Context.* Project-specific guidelines and "fingerprints" for AI coding assistants to ensure consistency in development.
+    *Agent Context.* Project-specific guidelines and "fingerprints" for AI coding assistants.
+
+6.  **[AGENTS_GUIDE.md](./AGENTS_GUIDE.md)**  
+    *The Developer's Handbook.* **MANDATORY READING.** Codifies core coding patterns, DI architecture, UI orchestration, and business rules for next-phase development.
 
 ---
 

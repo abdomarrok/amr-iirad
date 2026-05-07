@@ -20,6 +20,14 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-07 (Late Night): Reporting Unification & Design System Polish
+- ✅ **Annexes 1-4 Printing**: Fully restored and enhanced order-specific reporting in `OrderDetailsController`. Support added for Annex 1 (Admin Order), Annex 2 (Debtor), Annex 3 (Cancellation), and Annex 4 (Reduction).
+- ✅ **Cancellation & Reduction Workflows**: Integrated `CancellationOrderService` into the Order Details view, enabling secure, RBAC-guarded order lifecycle management.
+- ✅ **GstockDz Design Import**: Successfully imported and adapted the premium table styling from GstockDz. Created `tableview.css` with improved spacing, zebra-padding, and hover effects.
+- ✅ **CSS Orchestration Refactor**: Unified the styling system by routing all styles through `app.css` → `master.css` → `tableview.css` / `theme.css`.
+- ✅ **Global Typography**: Enforced the `Cairo` font-family application globally at the `.root` level for professional Arabic UI consistency.
+- ✅ **Settings Navigation**: Fixed navigation dead-ends in Enterprise and Audit Log views by standardizing on `BorderPane` with integrated `TopBar` back-button support.
+
 ### 📅 2026-05-07 (Night): Security Hardening & Dispatch Module
 - ✅ **Full RBAC Enforcement**: Integrated `AuthService` into all core controllers (`RevenueOrderList`, `RevenueOrderForm`, `DebtorList`, `Dashboard`).
 - ✅ **Action-Level Permissions**: Secured critical actions (Create, Edit, Print) with `authService.canDo()` checks and user-friendly error dialogs.

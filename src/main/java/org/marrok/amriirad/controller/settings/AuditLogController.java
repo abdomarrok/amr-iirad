@@ -20,6 +20,7 @@ public class AuditLogController {
     private final AuditLogService auditLogService;
     private final ConcurrencyManager concurrencyManager;
 
+    @FXML private org.marrok.amriirad.controller.shared.TopBarController topBarController;
     @FXML private TableView<AuditLog> logTable;
     @FXML private TableColumn<AuditLog, Long> colId;
     @FXML private TableColumn<AuditLog, String> colTable;
@@ -37,6 +38,9 @@ public class AuditLogController {
 
     @FXML
     public void initialize() {
+        if (topBarController != null) {
+            topBarController.setBackVisible(true);
+        }
         setupColumns();
         loadLogs();
     }

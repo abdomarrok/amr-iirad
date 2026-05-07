@@ -28,7 +28,7 @@
                 <HBox spacing="10.0" alignment="CENTER_RIGHT">
                     <TextField fx:id="searchField" promptText="بحث عن مدين..." prefWidth="250.0" styleClass="text-field-search" />
                     <ComboBox fx:id="typeFilterCombo" promptText="نوع المدين" prefWidth="150.0" />
-                    <Button fx:id="addDebtorBtn" onAction="#handleNewDebtor" styleClass="btn-primary" text="مدين جديد">
+                    <Button fx:id="addDebtorBtn" onAction="#handleAddDebtor" styleClass="btn-primary" text="مدين جديد">
                         <graphic><FontIcon iconLiteral="fas-user-plus" styleClass="icon-white"/></graphic>
                     </Button>
                 </HBox>

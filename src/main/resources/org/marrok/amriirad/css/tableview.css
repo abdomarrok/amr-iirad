@@ -1,0 +1,89 @@
+/* Table View Styles adapted from GstockDz for amr-iirad */
+
+.table-view, .data-table {
+    -fx-control-inner-background: -fx-theme-bg-secondary;
+    -fx-selection-bar: -fx-theme-primary-light;
+    -fx-selection-bar-non-focused: -fx-theme-bg-tertiary;
+    -fx-font-size: 13px;
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: -fx-theme-border-light;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -fx-theme-bg-tertiary;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-background-color: -fx-theme-bg-tertiary;
+    -fx-border-color: transparent -fx-theme-border-light -fx-theme-border-light transparent;
+    -fx-border-width: 0 1 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-theme-text-primary;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 12px 15px;
+}
+
+.table-view .cell {
+    -fx-cell-size: 45;
+    -fx-text-fill: -fx-theme-text-primary;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 15px;
+    -fx-border-color: transparent -fx-theme-border-light transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-border-color: transparent transparent -fx-theme-border-light transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafbfc;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: -fx-theme-bg-hover;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -fx-theme-primary-light;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: -fx-theme-primary;
+}
+
+/* Scroll bar styles */
+.table-view .scroll-bar:horizontal,
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.table-view .scroll-bar .thumb {
+    -fx-background-color: #cbd5e0;
+    -fx-background-radius: 10;
+}
+
+.table-view .scroll-bar .thumb:hover {
+    -fx-background-color: #a0aec0;
+}
+
+/* Corner region */
+.table-view .column-header-background .show-hide-columns-button {
+    -fx-background-color: -fx-theme-bg-tertiary;
+}
+
+/* Status specific row coloring if needed */
+.table-row-cell.status-draft {
+    /* Example style */
+}

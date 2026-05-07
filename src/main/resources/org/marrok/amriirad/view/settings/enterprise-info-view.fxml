@@ -5,72 +5,82 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefWidth="650" spacing="20.0" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="org.marrok.amriirad.controller.settings.EnterpriseInfoController">
-    <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-    </padding>
+<BorderPane prefHeight="720" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.settings.EnterpriseInfoController">
+    <top>
+        <fx:include fx:id="topBar" source="../shared/top-bar.fxml" />
+    </top>
 
-    <!-- Header -->
-    <HBox alignment="CENTER_LEFT" spacing="15">
-        <FontIcon iconLiteral="fas-university" iconSize="32" styleClass="icon-primary" />
-        <VBox>
-            <Label styleClass="text-subheading" text="إعدادات المؤسسة" />
-            <Label styleClass="text-small, text-muted" text="المعلومات التي ستظهر على وثائق أمر الإيراد والتقارير" />
+    <center>
+        <VBox maxWidth="800" spacing="20.0" styleClass="main-container">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <FontIcon iconLiteral="fas-university" iconSize="32" styleClass="icon-primary" />
+                <VBox>
+                    <Label styleClass="text-subheading" text="إعدادات المؤسسة" />
+                    <Label styleClass="text-small, text-muted" text="المعلومات التي ستظهر على وثائق أمر الإيراد والتقارير" />
+                </VBox>
+            </HBox>
+
+            <Separator />
+
+            <!-- Form -->
+            <VBox styleClass="card" spacing="20">
+                <GridPane hgap="20" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    
+                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label styleClass="form-label" text="اسم المؤسسة (بالعربية)" />
+                        <TextField fx:id="nameArField" promptText="مثلاً: المدرسة العليا للقضاء" />
+                    </VBox>
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label styleClass="form-label" text="اسم المؤسسة (بالفرنسية)" />
+                        <TextField fx:id="nameFrField" promptText="e.g. Ecole Supérieure de la Magistrature" />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="الآمر بالصرف" />
+                        <TextField fx:id="officerArField" promptText="مثلاً: المدير أو الأمين العام" />
+                    </VBox>
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="الولاية" />
+                        <TextField fx:id="wilayaArField" promptText="مثلاً: الجزائر" />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                        <Label styleClass="form-label" text="حساب الخزينة (النص التعليلي)" />
+                        <TextField fx:id="treasuryAccountField" promptText="مثلاً: حساب الخزينة رقم..." />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                        <Label styleClass="form-label" text="رقم الحساب الجاري (RIB)" />
+                        <TextField fx:id="ribField" promptText="0000 0000 0000 0000 00" />
+                    </VBox>
+
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                        <Label styleClass="form-label" text="العنوان الكامل" />
+                        <TextField fx:id="addressField" promptText="العنوان..." />
+                    </VBox>
+                </GridPane>
+            </VBox>
+
+            <!-- Actions -->
+            <HBox alignment="CENTER_RIGHT" spacing="12">
+                <Button onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" prefWidth="100" />
+                <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ التغييرات" prefWidth="150">
+                    <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white" /></graphic>
+                </Button>
+            </HBox>
         </VBox>
-    </HBox>
+    </center>
 
-    <Separator />
-
-    <!-- Form -->
-    <VBox styleClass="card" spacing="20">
-        
-        <GridPane hgap="20" vgap="20">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            </columnConstraints>
-            
-            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                <Label styleClass="form-label" text="اسم المؤسسة (بالعربية)" />
-                <TextField fx:id="nameArField" promptText="مثلاً: المدرسة العليا للقضاء" />
-            </VBox>
-            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <Label styleClass="form-label" text="اسم المؤسسة (بالفرنسية)" />
-                <TextField fx:id="nameFrField" promptText="e.g. Ecole Supérieure de la Magistrature" />
-            </VBox>
-
-            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <Label styleClass="form-label" text="الآمر بالصرف" />
-                <TextField fx:id="officerArField" promptText="مثلاً: المدير أو الأمين العام" />
-            </VBox>
-            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                <Label styleClass="form-label" text="الولاية" />
-                <TextField fx:id="wilayaArField" promptText="مثلاً: الجزائر" />
-            </VBox>
-
-            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                <Label styleClass="form-label" text="حساب الخزينة (النص التعليلي)" />
-                <TextField fx:id="treasuryAccountField" promptText="مثلاً: حساب الخزينة رقم..." />
-            </VBox>
-
-            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
-                <Label styleClass="form-label" text="رقم الحساب الجاري (RIB)" />
-                <TextField fx:id="ribField" promptText="0000 0000 0000 0000 00" />
-            </VBox>
-
-            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
-                <Label styleClass="form-label" text="العنوان الكامل" />
-                <TextField fx:id="addressField" promptText="العنوان..." />
-            </VBox>
-        </GridPane>
-    </VBox>
-
-    <!-- Actions -->
-    <HBox alignment="CENTER_RIGHT" spacing="12">
-        <Button onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" prefWidth="100" />
-        <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ التغييرات" prefWidth="150">
-            <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white" /></graphic>
-        </Button>
-    </HBox>
-</VBox>
+    <bottom>
+        <fx:include fx:id="footer" source="../shared/footer.fxml" />
+    </bottom>
+</BorderPane>

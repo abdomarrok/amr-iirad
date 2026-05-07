@@ -157,7 +157,7 @@ public class AppContext implements Disposable {
             return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, authService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.orders.OrderDetailsController.class) 
-            return new org.marrok.amriirad.controller.orders.OrderDetailsController(reportService, tafqeetService, institutionService, concurrencyManager);
+            return new org.marrok.amriirad.controller.orders.OrderDetailsController(reportService, tafqeetService, institutionService, cancellationOrderService, authService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.orders.BudgetChapterFormController.class) 
             return new org.marrok.amriirad.controller.orders.BudgetChapterFormController(budgetChapterRepository, concurrencyManager);

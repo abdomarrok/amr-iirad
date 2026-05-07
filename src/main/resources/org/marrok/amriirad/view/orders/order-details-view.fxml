@@ -131,13 +131,28 @@
 
     <!-- Buttons -->
     <HBox spacing="12" alignment="CENTER_RIGHT">
-        <Button styleClass="btn-outline" text="طباعة الملحق 1" onAction="#handlePrintAdmin" managed="false" visible="false">
+        <Button fx:id="printAdminBtn" styleClass="btn-outline" text="طباعة الملحق 1" onAction="#handlePrintAdmin" managed="false" visible="false">
             <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
         </Button>
-        <Button styleClass="btn-outline" text="طباعة الملحق 2" onAction="#handlePrintDebtor" managed="false" visible="false">
+        <Button fx:id="printDebtorBtn" styleClass="btn-outline" text="طباعة الملحق 2" onAction="#handlePrintDebtor" managed="false" visible="false">
             <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
         </Button>
+        <Button fx:id="printCancelBtn" styleClass="btn-outline" text="طباعة الملحق 3" onAction="#handlePrintCancel" managed="false" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #f44336;"/></graphic>
+        </Button>
+        <Button fx:id="printReduceBtn" styleClass="btn-outline" text="طباعة الملحق 4" onAction="#handlePrintReduce" managed="false" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #9c27b0;"/></graphic>
+        </Button>
+        
         <HBox HBox.hgrow="ALWAYS" />
+        
+        <Button fx:id="reduceActionBtn" styleClass="btn-secondary" text="تخفيض الأمر" onAction="#handleReduceAction" managed="false" visible="false">
+            <graphic><FontIcon iconLiteral="fas-compress" styleClass="icon-white"/></graphic>
+        </Button>
+        <Button fx:id="cancelActionBtn" styleClass="btn-danger" text="إلغاء الأمر" onAction="#handleCancelAction" managed="false" visible="false">
+            <graphic><FontIcon iconLiteral="fas-times-circle" styleClass="icon-white"/></graphic>
+        </Button>
+        
         <Button styleClass="btn-outline" text="إغلاق" onAction="#handleClose"/>
     </HBox>
 
