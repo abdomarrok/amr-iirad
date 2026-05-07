@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox prefWidth="550" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="org.marrok.amriirad.controller.debtors.DebtorFormController">
+    <padding>
+        <Insets bottom="25" left="25" right="25" top="25"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <FontIcon iconLiteral="fas-user-edit" iconSize="24" styleClass="icon-primary"/>
+        <Label fx:id="titleLabel" styleClass="text-subheading" text="إضافة مدين جديد"/>
+    </HBox>
+
+    <Separator />
+
+    <!-- Form Area -->
+    <VBox styleClass="card" spacing="20">
+        <padding>
+            <Insets bottom="20" left="20" right="20" top="20"/>
+        </padding>
+
+        <GridPane hgap="20" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="120" halignment="RIGHT"/>
+                <ColumnConstraints hgrow="ALWAYS" />
+            </columnConstraints>
+
+            <Label styleClass="form-label" text="الاسم الكامل:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="fullNameField" promptText="أدخل الاسم الكامل..." GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label styleClass="form-label" text="نوع المدين:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <ComboBox fx:id="typeCombo" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label styleClass="form-label" text="رقم التعريف:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="idNumberField" promptText="NIN / رقم بطاقة التعريف..." GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label styleClass="form-label" text="رقم الهاتف:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <TextField fx:id="phoneField" promptText="0XXXXXXXXX" GridPane.columnIndex="1" GridPane.rowIndex="3" maxWidth="250"/>
+
+            <Label styleClass="form-label" text="العنوان:" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="TOP"/>
+            <TextArea fx:id="addressField" prefRowCount="3" promptText="أدخل العنوان التفصيلي..." GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        </GridPane>
+    </VBox>
+
+    <Label fx:id="errorLabel" styleClass="text-small, text-danger" wrapText="true"/>
+
+    <!-- Buttons -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
+        <Button fx:id="saveBtn" styleClass="btn-primary" text="حفظ البيانات" onAction="#handleSave">
+            <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
+        </Button>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="720" prefWidth="1200" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.marrok.amriirad.controller.users.PermissionManagementController">
+
+    <top>
+        <fx:include fx:id="topBar" source="../shared/top-bar.fxml" />
+    </top>
+
+    <center>
+        <HBox spacing="20">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <!-- Roles List -->
+            <VBox spacing="10" prefWidth="300" styleClass="card">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label styleClass="text-subheading" text="الأدوار" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="addRoleBtn" onAction="#handleAddNewRole" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-primary"/></graphic>
+                    </Button>
+                </HBox>
+                <ListView fx:id="rolesListView" VBox.vgrow="ALWAYS" />
+                <Button fx:id="deleteRoleBtn" onAction="#handleDeleteRole" styleClass="btn-danger-outline" text="حذف الدور" maxWidth="Infinity">
+                    <graphic><FontIcon iconLiteral="fas-trash" styleClass="icon-danger"/></graphic>
+                </Button>
+            </VBox>
+
+            <!-- Permissions Matrix -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS" styleClass="card">
+
+                
+                <GridPane hgap="15" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="120" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                        <ColumnConstraints prefWidth="120" />
+                        <ColumnConstraints prefWidth="150" />
+                    </columnConstraints>
+                    
+                    <Label text="اسم الدور:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="roleNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    
+                    <Label text="مستوى الصلاحية:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <Spinner fx:id="privilegeLevelSpinner" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                    
+                    <Label text="الوصف:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="roleDescriptionField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                </GridPane>
+
+                <Separator />
+
+                <HBox spacing="20" VBox.vgrow="ALWAYS">
+                    <!-- View Permissions -->
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label styleClass="text-subheading" text="صلاحيات العرض" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleSelectAllView" styleClass="btn-outline" text="تحديد الكل" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="edge-to-edge">
+                            <VBox fx:id="viewPermissionsBox" spacing="10">
+
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+
+                    <Separator orientation="VERTICAL" />
+
+                    <!-- Action Permissions -->
+                    <VBox spacing="10" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label styleClass="text-subheading" text="صلاحيات العمليات" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleSelectAllAction" styleClass="btn-outline" text="تحديد الكل" />
+                        </HBox>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="edge-to-edge">
+                            <VBox fx:id="actionPermissionsBox" spacing="10">
+
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <Button fx:id="cancelBtn" onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" prefWidth="100" />
+                    <Button fx:id="saveBtn" onAction="#handleSave" styleClass="btn-primary" text="حفظ التغييرات" prefWidth="150">
+                        <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
+                    </Button>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <fx:include fx:id="footer" source="../shared/footer.fxml" />
+    </bottom>
+
+</BorderPane>

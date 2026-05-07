@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox prefWidth="500" spacing="25" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="org.marrok.amriirad.controller.settings.ServerConfigController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+
+    <!-- Header -->
+    <VBox alignment="CENTER" spacing="10">
+        <FontIcon iconLiteral="fas-server" iconSize="40" styleClass="icon-primary"/>
+        <Label styleClass="text-subheading" text="إعدادات الخادم"/>
+        <Label styleClass="text-small, text-muted" text="أدخل بيانات الاتصال بقاعدة بيانات MariaDB/MySQL"/>
+    </VBox>
+
+    <Separator />
+
+    <!-- Form -->
+    <VBox styleClass="card" spacing="15">
+        <padding><Insets all="20"/></padding>
+        <VBox spacing="8">
+            <Label styleClass="form-label" text="عنوان الخادم (Host):" />
+            <TextField fx:id="hostField" promptText="localhost أو 192.168.1.X" />
+        </VBox>
+        <VBox spacing="8">
+            <Label styleClass="form-label" text="المنفذ (Port):" />
+            <TextField fx:id="portField" promptText="3306" />
+        </VBox>
+        <VBox spacing="8">
+            <Label styleClass="form-label" text="اسم المستخدم:" />
+            <TextField fx:id="userField" promptText="root" />
+        </VBox>
+        <VBox spacing="8">
+            <Label styleClass="form-label" text="كلمة المرور:" />
+            <PasswordField fx:id="passwordField" />
+        </VBox>
+    </VBox>
+
+    <!-- Actions -->
+    <HBox spacing="12" alignment="CENTER_RIGHT">
+        <Button onAction="#handleBack" styleClass="btn-outline" text="رجوع" prefWidth="100"/>
+        <Button fx:id="testBtn" onAction="#handleTest" styleClass="btn-outline" text="اختبار الاتصال" prefWidth="130">
+            <graphic><FontIcon iconLiteral="fas-network-wired" styleClass="icon-primary"/></graphic>
+        </Button>
+        <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ ومتابعة" prefWidth="130">
+            <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
+        </Button>
+    </HBox>
+
+</VBox>

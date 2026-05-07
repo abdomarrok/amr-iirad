@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="720" prefWidth="1200" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="org.marrok.amriirad.controller.debtors.DebtorListController">
+
+    <top>
+        <fx:include fx:id="topBar" source="../shared/top-bar.fxml" />
+    </top>
+
+    <center>
+        <VBox spacing="20.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <!-- Header Section -->
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label styleClass="text-heading" text="قائمة المدينين" />
+                    <Label styleClass="text-muted" text="إدارة بيانات الأشخاص والمؤسسات المدينة" />
+                </VBox>
+                
+                <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                    <TextField fx:id="searchField" promptText="بحث عن مدين..." prefWidth="250.0" styleClass="text-field-search" />
+                    <ComboBox fx:id="typeFilterCombo" promptText="نوع المدين" prefWidth="150.0" />
+                    <Button fx:id="addDebtorBtn" onAction="#handleNewDebtor" styleClass="btn-primary" text="مدين جديد">
+                        <graphic><FontIcon iconLiteral="fas-user-plus" styleClass="icon-white"/></graphic>
+                    </Button>
+                </HBox>
+            </HBox>
+
+            <!-- Table Section -->
+            <StackPane VBox.vgrow="ALWAYS">
+                <TableView fx:id="tableView" nodeOrientation="RIGHT_TO_LEFT">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="80.0" text="المعرف" />
+                        <TableColumn fx:id="colFullName" prefWidth="250.0" text="الاسم الكامل" />
+                        <TableColumn fx:id="colIdNumber" prefWidth="150.0" text="رقم التعريف" />
+                        <TableColumn fx:id="colType" prefWidth="120.0" text="النوع" />
+                        <TableColumn fx:id="colPhone" prefWidth="150.0" text="رقم الهاتف" />
+                        <TableColumn fx:id="colAddress" prefWidth="250.0" text="العنوان" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+                
+                <ProgressIndicator fx:id="loadingIndicator" visible="false" maxWidth="50" maxHeight="50" />
+            </StackPane>
+        </VBox>
+    </center>
+
+    <bottom>
+        <fx:include fx:id="footer" source="../shared/footer.fxml" />
+    </bottom>
+
+</BorderPane>

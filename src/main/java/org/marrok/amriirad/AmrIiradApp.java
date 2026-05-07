@@ -20,7 +20,7 @@ public class AmrIiradApp extends Application {
         primaryStage.setTitle("نظام أوامر الإيراد");
 
         if (!AppSettings.isModeConfigured()) {
-            SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/mode-selection-view.fxml");
+                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");
         } else {
             try {
                 AppMode mode = AppSettings.getAppMode();
@@ -35,12 +35,12 @@ public class AmrIiradApp extends Application {
                 DatabaseConnection.initialize(mode);
                 DatabaseSchemaManager.runMigrations();
                 
-                // Show login screen
-                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/login-view.fxml");
+                // Load initial scene
+                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/login/login-view.fxml");
             } catch (Exception e) {
                 logger.error("Database initialization failed, showing mode selection", e);
                 AppSettings.clearAll();
-                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/mode-selection-view.fxml");
+                    SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");
             }
         }
     }

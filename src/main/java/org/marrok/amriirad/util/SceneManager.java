@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 public class SceneManager {
     private static final Logger logger = LogManager.getLogger(SceneManager.class);
+    private static String lastLoadedFxml;
 
     public static FXMLLoader loadScene(Stage stage, String fxmlPath) {
         return loadScene(stage, fxmlPath, true); // default to resizable for main views
@@ -23,6 +24,7 @@ public class SceneManager {
 
     public static FXMLLoader loadScene(Stage stage, String fxmlPath, boolean isResizable) {
         try {
+            lastLoadedFxml = fxmlPath;
             logger.info("Loading scene: {}", fxmlPath);
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             loader.setControllerFactory(param -> AppContext.getInstance().createInstance(param));
@@ -81,6 +83,12 @@ public class SceneManager {
             logger.error("Failed to open modal: " + fxmlPath, e);
             DialogHelper.showError("خطأ", "تعذر فتح النافذة المطلوبة.");
             return null;
+        }
+    }
+
+    public static void refresh(Stage stage) {
+        if (lastLoadedFxml != null) {
+            loadScene(stage, lastLoadedFxml);
         }
     }
 

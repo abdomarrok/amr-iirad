@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox spacing="15.0" styleClass="content-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.marrok.amriirad.controller.users.UserFormController">
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+    </padding>
+
+    <Label fx:id="titleLabel" styleClass="header-title" text="إضافة مستخدم جديد" />
+    
+    <GridPane hgap="10.0" vgap="15.0" nodeOrientation="RIGHT_TO_LEFT">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+        
+        <Label text="اسم المستخدم:" GridPane.rowIndex="0" />
+        <TextField fx:id="usernameField" promptText="مثال: admin_1" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        
+        <Label text="الاسم الكامل:" GridPane.rowIndex="1" />
+        <TextField fx:id="fullNameField" promptText="الاسم واللقب" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        
+        <Label text="كلمة المرور:" GridPane.rowIndex="2" />
+        <PasswordField fx:id="passwordField" promptText="اتركه فارغاً للحفاظ على الكلمة الحالية" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        
+        <Label text="الدور / الصلاحية:" GridPane.rowIndex="3" />
+        <ComboBox fx:id="roleCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        
+        <Label text="الحالة:" GridPane.rowIndex="4" />
+        <CheckBox fx:id="activeCheck" selected="true" text="حساب نشط" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
+    </GridPane>
+
+    <Separator />
+
+    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+        <Button onAction="#handleCancel" styleClass="btn-secondary" text="إلغاء" />
+        <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ المعلومات">
+            <graphic><FontIcon iconLiteral="fas-save"/></graphic>
+        </Button>
+    </HBox>
+</VBox>

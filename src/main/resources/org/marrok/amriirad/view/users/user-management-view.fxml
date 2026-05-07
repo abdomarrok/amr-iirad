@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="680" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="org.marrok.amriirad.controller.users.UserManagementController">
+
+    <top>
+        <fx:include fx:id="topBar" source="../shared/top-bar.fxml" />
+    </top>
+
+    <center>
+        <VBox spacing="20.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label styleClass="text-heading" text="إدارة المستخدمين" />
+                    <Label styleClass="text-muted" text="إدارة حسابات المستخدمين وصلاحياتهم" />
+                </VBox>
+                
+                <HBox spacing="10.0">
+                    <Button onAction="#handleRefresh" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تحديث القائمة"/></tooltip>
+                    </Button>
+                    <Button fx:id="addUserBtn" onAction="#handleAddUser" styleClass="btn-primary" text="إضافة مستخدم">
+                        <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-white"/></graphic>
+                    </Button>
+                </HBox>
+            </HBox>
+
+            <TableView fx:id="userTable" VBox.vgrow="ALWAYS" nodeOrientation="RIGHT_TO_LEFT">
+                <columns>
+                    <TableColumn fx:id="idCol" prefWidth="50.0" text="ID" />
+                    <TableColumn fx:id="usernameCol" prefWidth="150.0" text="اسم المستخدم" />
+                    <TableColumn fx:id="fullNameCol" prefWidth="200.0" text="الاسم الكامل" />
+                    <TableColumn fx:id="roleCol" prefWidth="120.0" text="الدور" />
+                    <TableColumn fx:id="statusCol" prefWidth="100.0" text="الحالة" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+                <contextMenu>
+                    <ContextMenu>
+                        <items>
+                            <MenuItem onAction="#handleEditUser" text="تعديل">
+                                <graphic><FontIcon iconLiteral="fas-edit"/></graphic>
+                            </MenuItem>
+                            <MenuItem onAction="#handleDeleteUser" text="حذف">
+                                <graphic><FontIcon iconLiteral="fas-trash" iconColor="red"/></graphic>
+                            </MenuItem>
+                        </items>
+                    </ContextMenu>
+                </contextMenu>
+            </TableView>
+            
+            <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                <Button fx:id="editUserBtn" onAction="#handleEditUser" styleClass="btn-outline" text="تعديل">
+                    <graphic><FontIcon iconLiteral="fas-edit" styleClass="icon-primary"/></graphic>
+                </Button>
+                <Button fx:id="deleteUserBtn" onAction="#handleDeleteUser" styleClass="btn-danger" text="حذف">
+                    <graphic><FontIcon iconLiteral="fas-trash" styleClass="icon-white"/></graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <fx:include fx:id="footer" source="../shared/footer.fxml" />
+    </bottom>
+</BorderPane>

@@ -43,8 +43,18 @@ public class TopBarController implements Initializable {
         checkPermissions();
         loadFiscalYears();
         
-        // Hide back button if on dashboard
-        // We can check the current scene if needed, but for now we'll handle it via a public method
+        fiscalYearCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && !newVal.isActive()) {
+                try {
+                    fyRepo.setActive(newVal.getId());
+                    // Refresh current scene
+                    Stage stage = (Stage) fiscalYearCombo.getScene().getWindow();
+                    SceneManager.refresh(stage);
+                } catch (java.sql.SQLException e) {
+                    logger.error("Failed to set active fiscal year", e);
+                }
+            }
+        });
     }
 
     public void setBackVisible(boolean visible) {
@@ -86,31 +96,45 @@ public class TopBarController implements Initializable {
     @FXML
     private void handleBack() {
         Stage stage = (Stage) backBtn.getScene().getWindow();
-        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard/dashboard-view.fxml");
     }
 
     @FXML
     private void handleAddFiscalYear() {
-        // Implementation logic from Dashboard
-        DialogHelper.showInfo("قريباً", "هذه الميزة ستتوفر في التحديث القادم.");
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(java.time.Year.now().getValue()));
+        dialog.setTitle("سنة مالية جديدة");
+        dialog.setHeaderText("إضافة سنة مالية جديدة للنظام");
+        dialog.setContentText("أدخل السنة (مثال: 2024):");
+        
+        dialog.showAndWait().ifPresent(year -> {
+            if (year.trim().isEmpty()) return;
+            try {
+                fyRepo.save(year.trim());
+                loadFiscalYears();
+                DialogHelper.showInfo("نجاح", "تمت إضافة السنة المالية " + year + " بنجاح.");
+            } catch (java.sql.SQLException e) {
+                logger.error("Failed to add fiscal year", e);
+                DialogHelper.showError("خطأ", "فشل إضافة السنة المالية: " + e.getMessage());
+            }
+        });
     }
 
     @FXML
     private void handleViewUsers() {
         Stage stage = (Stage) viewUsersBtn.getScene().getWindow();
-        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/user-management-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/users/user-management-view.fxml");
     }
 
     @FXML
     private void handleManagePermissions() {
         Stage stage = (Stage) managePermissionsBtn.getScene().getWindow();
-        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/permission-management-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/users/permission-management-view.fxml");
     }
 
     @FXML
     private void handleEnterpriseSettings() {
         Stage stage = (Stage) enterpriseSettingsBtn.getScene().getWindow();
-        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/enterprise-info-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/settings/enterprise-info-view.fxml");
     }
 
     @FXML
@@ -118,7 +142,7 @@ public class TopBarController implements Initializable {
         if (DialogHelper.showConfirmation("تسجيل الخروج", "هل أنت متأكد من رغبتك في تسجيل الخروج؟")) {
             authService.logout();
             Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login-view.fxml");
+            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login/login-view.fxml");
         }
     }
 }
