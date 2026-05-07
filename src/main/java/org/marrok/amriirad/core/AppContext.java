@@ -38,6 +38,7 @@ public class AppContext implements Disposable {
     private RevenueOrderService revenueOrderService;
     private CancellationOrderService cancellationOrderService;
     private DispatchSlipService dispatchSlipService;
+    private AuthService authService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
     private String currentUser = "admin"; // Default for now
 
@@ -96,6 +97,7 @@ public class AppContext implements Disposable {
                 revenueOrderService,
                 auditService
         );
+        this.authService = new AuthService();
     }
 
     /**
@@ -111,6 +113,7 @@ public class AppContext implements Disposable {
         if (clazz == RevenueOrderService.class) return revenueOrderService;
         if (clazz == CancellationOrderService.class) return cancellationOrderService;
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
+        if (clazz == AuthService.class) return authService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -161,6 +164,7 @@ public class AppContext implements Disposable {
         if (clazz == RevenueOrderService.class) return revenueOrderService;
         if (clazz == CancellationOrderService.class) return cancellationOrderService;
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
+        if (clazz == AuthService.class) return authService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;

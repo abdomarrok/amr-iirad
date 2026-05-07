@@ -8,8 +8,21 @@ import org.marrok.amriirad.core.AppContext;
 public class AuthService {
     
     public String getCurrentUsername() {
-        return AppContext.getInstance().getCurrentUser();
+        String user = AppContext.getInstance().getCurrentUser();
+        return user != null ? user : "admin"; // Fallback for transition
     }
-    
-    // Future: handle login/logout here
+
+    public boolean login(String username, String password) {
+        // Simple authentication for now
+        // In a real app, this would query the DB
+        if ("admin".equals(username) && "admin".equals(password)) {
+            AppContext.getInstance().setCurrentUser(username);
+            return true;
+        }
+        return false;
+    }
+
+    public void logout() {
+        AppContext.getInstance().setCurrentUser(null);
+    }
 }

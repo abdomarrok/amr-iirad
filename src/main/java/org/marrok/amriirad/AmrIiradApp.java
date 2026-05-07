@@ -35,9 +35,8 @@ public class AmrIiradApp extends Application {
                 DatabaseConnection.initialize(mode);
                 DatabaseSchemaManager.runMigrations();
                 
-                // Maximize for dashboard
-                primaryStage.setMaximized(true);
-                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+                // Show login screen
+                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/login-view.fxml");
             } catch (Exception e) {
                 logger.error("Database initialization failed, showing mode selection", e);
                 AppSettings.clearAll();

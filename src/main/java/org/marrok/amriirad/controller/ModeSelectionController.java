@@ -139,7 +139,7 @@ public class ModeSelectionController implements Initializable {
                     try {
                         org.marrok.amriirad.util.DatabaseConnection.initialize(selectedMode);
                         org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
-                        javafx.application.Platform.runLater(this::navigateToDashboard);
+                        javafx.application.Platform.runLater(this::navigateToLogin);
                     } catch (Exception ex) {
                         logger.error("Failed to initialize local database", ex);
                         javafx.application.Platform.runLater(() -> {
@@ -165,9 +165,8 @@ public class ModeSelectionController implements Initializable {
         );
     }
 
-    private void navigateToDashboard() {
+    private void navigateToLogin() {
         Stage stage = (Stage) continueBtn.getScene().getWindow();
-        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
-        stage.setMaximized(true);
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login-view.fxml");
     }
 }

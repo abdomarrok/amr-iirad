@@ -103,8 +103,7 @@ public class ServerConfigController implements Initializable {
             DatabaseSchemaManager.runMigrations();
 
             Stage stage = (Stage) saveBtn.getScene().getWindow();
-            stage.setMaximized(true);
-            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login-view.fxml");
         } catch (Exception e) {
             logger.error("Database connection failed", e);
             statusLabel.setStyle("-fx-text-fill: -fx-theme-danger;");

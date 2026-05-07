@@ -48,11 +48,16 @@ amr-iirad/
     │   ├── EmbeddedDatabase.java            ← MariaDB4j (local mode)
     │   └── DatabaseSchemaManager.java       ← DDL: 7 tables + 1 view (idempotent)
     ├── core/
+    │   ├── AppContext.java                  ← Central DI & User Context
     │   └── ConcurrencyManager.java          ← Background task execution (JavaFX-safe)
+    ├── ui/                                  ← Reusable UI Components
+    │   ├── AsyncTableLoader.java            ← Decoupled table loading & filtering
+    │   └── ReportParamBuilder.java          ← Fluent API for report parameters
     ├── model/                               ← [Phase 1] 6 Models + 3 Enums (✅ Done)
     ├── repository/                          ← [Phase 1] 6 JDBC Repositories (✅ Done)
-    ├── service/                             ← [Phase 2] 5 Services (✅ Done)
-    └── controller/                          ← [Phase 3] JavaFX Controllers (pending)
+    ├── service/                             ← [Phase 2] 6 Services (✅ Done)
+    └── controller/                          ← [Phase 3] JavaFX Controllers (✅ Standardized)
+        └── BaseFormController.java          ← Shared logic for all modal forms
 ```
 
 ---
@@ -194,10 +199,14 @@ dispatch-slip-view.fxml + DispatchSlipController.java
 - PascalCase for classes: `RevenueOrderRepository`
 - camelCase for methods/fields: `findByFiscalYear()`
 - Package: `org.marrok.amriirad.*`
-- Controller/View pairs: `RevenueOrderFormController.java` ↔ `order-form-view.fxml`
-- All SQL via plain JDBC with `PreparedStatement` — NO ORM
-- Log with Log4j2: `private static final Logger logger = LogManager.getLogger(MyClass.class);`
-- Arabic UI text goes in the FXML directly (RTL by default)
+- **Architectural Standards (Modern JavaFX)**:
+    - **SceneManager**: Always use for navigation and modal windows.
+    - **DialogHelper**: Use for alerts, confirmations, and progress indicators.
+    - **BaseFormController**: All form controllers MUST extend this for consistent error/success handling.
+    - **AsyncTableLoader**: Use for fetching data and updating UI tables.
+    - **ReportParamBuilder**: Use for mapping entities to JasperReport parameters.
+- Arabic UI text goes in the FXML directly (RTL by default).
+- Always use **Constructor Injection** for controllers via `AppContext`.
 
 ---
 

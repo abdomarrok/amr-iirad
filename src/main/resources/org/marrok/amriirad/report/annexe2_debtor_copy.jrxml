@@ -1,10 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0 -->
-<jasperReport name="annexe2_debtor_copy" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="annexe2_debtor_copy" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e565c062-ed68-47a5-9756-d41ad34234e7">
 	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
 	<property name="net.sf.jasperreports.default.pdf.font.name" value="Traditional Arabic"/>
-	
-	<!-- Parameters -->
 	<parameter name="ORDER_NUMBER" class="java.lang.String"/>
 	<parameter name="FISCAL_YEAR" class="java.lang.String"/>
 	<parameter name="ISSUE_DATE" class="java.lang.String"/>
@@ -19,149 +16,134 @@
 	<parameter name="LIQUIDATION_BASIS" class="java.lang.String"/>
 	<parameter name="BUDGET_CHAPTER" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
-	
 	<pageHeader height="110" splitType="Stretch">
-		<element kind="staticText" x="0" y="5" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="4f8e43d0-35c1-4bd9-a1f2-bfba1290ac2f" x="0" y="5" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[الجمهورية الجزائرية الديمقراطية الشعبية]]></text>
 		</element>
-		<element kind="staticText" x="0" y="20" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="bd569e2d-2e3e-4e8c-b052-e4c653f96c0f" x="0" y="20" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[وزارة العدل]]></text>
 		</element>
-		<element kind="staticText" x="0" y="35" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="db64b5f4-09e4-4707-8137-69816e407bf4" x="0" y="35" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[المدرسة العليا للقضاء]]></text>
 		</element>
-		<element kind="staticText" x="0" y="70" width="555" height="25" fontName="Traditional Arabic" fontSize="18.0" bold="true" hTextAlign="Center">
+		<element kind="staticText" uuid="0fc0af06-ab5f-49ba-b20d-bae40c73aeda" x="0" y="70" width="555" height="25" fontName="Traditional Arabic" fontSize="18.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[أمر بالإيراد (نسخة المدين)]]></text>
 		</element>
 	</pageHeader>
-	
 	<detail>
 		<band height="680" splitType="Stretch">
-			<element kind="rectangle" x="50" y="10" width="505" height="130" mode="Transparent">
+			<element kind="rectangle" uuid="ce577319-57b2-4965-96aa-3ceb81ff995b" mode="Transparent" x="50" y="10" width="505" height="130">
 				<pen lineWidth="0.75"/>
 			</element>
-			<!-- Row 1 -->
-			<element kind="textField" x="430" y="15" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="e3d3a0ec-5cfc-4b90-9373-e93503bc373d" x="430" y="15" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["السنة المالية:"]]></expression>
 			</element>
-			<element kind="rectangle" x="350" y="15" width="80" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="b75d24c6-d366-48aa-a074-4cc8c3fe4498" mode="Transparent" x="350" y="15" width="80" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" x="350" y="15" width="75" height="15" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
+			<element kind="textField" uuid="a5ab0490-4a16-4538-8305-f5aae309553c" x="350" y="15" width="75" height="15" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
 				<expression><![CDATA[$P{FISCAL_YEAR}]]></expression>
 			</element>
-			<element kind="textField" x="200" y="15" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="169fe812-0500-4826-bb6f-3d80b589165f" x="200" y="15" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["محفظة البرامج:"]]></expression>
 			</element>
-			<element kind="rectangle" x="55" y="15" width="145" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="e10fd7a6-4200-4d62-9236-910bf2106f64" mode="Transparent" x="55" y="15" width="145" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			
-			<!-- Row 2 -->
-			<element kind="textField" x="430" y="35" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="d9b8cd4a-b7a1-40f5-ba4a-6b2a3220a935" x="430" y="35" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["البرنامج:"]]></expression>
 			</element>
-			<element kind="rectangle" x="350" y="35" width="80" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="8b0e8903-abb6-4fef-b7c4-2ffb2886a58c" mode="Transparent" x="350" y="35" width="80" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" x="200" y="35" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="3dea5054-5979-478b-8a0a-65c67af31f3f" x="200" y="35" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["البرنامج الفرعي:"]]></expression>
 			</element>
-			<element kind="rectangle" x="55" y="35" width="145" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="340da96b-97f5-4f15-a966-02083fb26256" mode="Transparent" x="55" y="35" width="145" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			
-			<!-- Row 3 -->
-			<element kind="textField" x="430" y="55" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="ed9ef7f3-9e70-4b02-8c92-51da09131d8d" x="430" y="55" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["النشاط:"]]></expression>
 			</element>
-			<element kind="rectangle" x="350" y="55" width="80" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="0f10c8cc-ed72-4c75-ab84-4d12eb478d52" mode="Transparent" x="350" y="55" width="80" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" x="200" y="55" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="ed0b91da-9bfd-470d-b11e-19343206748e" x="200" y="55" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["النشاط الفرعي:"]]></expression>
 			</element>
-			<element kind="rectangle" x="55" y="55" width="145" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="7a48b08c-eb22-4825-a4bc-dc45da6925f1" mode="Transparent" x="55" y="55" width="145" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			
-			<!-- Row 4 -->
-			<element kind="textField" x="430" y="75" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="d9a28a8a-f296-45a5-b2ab-7aa2a645f846" x="430" y="75" width="120" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["الصنف / الصنف الفرعي:"]]></expression>
 			</element>
-			<element kind="rectangle" x="350" y="75" width="80" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="1eef9e6f-8ff1-46b9-b9b4-07b76cd06832" mode="Transparent" x="350" y="75" width="80" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" x="200" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="572f0f5b-bc42-44b0-9904-b3c2c55378be" x="200" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["رقم الأمر:"]]></expression>
 			</element>
-			<element kind="rectangle" x="55" y="75" width="145" height="15" mode="Transparent">
+			<element kind="rectangle" uuid="1b6352ae-fd84-446e-9e2d-d11a6194d9d7" mode="Transparent" x="55" y="75" width="145" height="15">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="textField" x="55" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="43b28a32-0f51-43a0-b48b-739ed17f6ce7" x="55" y="75" width="140" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA[$P{ORDER_NUMBER}]]></expression>
 			</element>
-			
-			<element kind="textField" x="50" y="150" width="505" height="70" fontName="Traditional Arabic" fontSize="11.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+			<element kind="textField" uuid="4de8978d-3af1-43a4-8427-1300b8e5fe12" x="50" y="150" width="505" height="70" fontName="Traditional Arabic" fontSize="11.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
 				<expression><![CDATA["يطلب من " + $P{DEBTOR_NAME} + " أن يدفع لصندوق المحاسب العمومي للمدرسة العليا للقضاء، وهو المؤهل وفقاً لأحكام المرسوم التنفيذي رقم 46-93 المؤرخ في 06 فبراير 1993 أن يقوم بالتحصيل على الحساب الجاري رقم " + $P{TREASURY_REF} + "، البند " + $P{BUDGET_CHAPTER} + ". المبلغ المحدد أدناه، للأسباب المذكورة أدناه."]]></expression>
 			</element>
-			
-			<element kind="rectangle" x="50" y="230" width="505" height="100" mode="Transparent">
+			<element kind="rectangle" uuid="a328a93d-6184-4f1d-8d6d-ed3d8f15f81d" mode="Transparent" x="50" y="230" width="505" height="100">
 				<pen lineWidth="0.75"/>
 			</element>
-			<element kind="line" x="217" y="230" width="1" height="100">
+			<element kind="line" uuid="65c240bb-925c-4b9d-877c-93cdfea67c49" x="217" y="230" width="1" height="100">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="line" x="384" y="230" width="1" height="100">
+			<element kind="line" uuid="f6455878-fcaf-4b27-8bfc-7ea8b93c0797" x="384" y="230" width="1" height="100">
 				<pen lineWidth="0.5"/>
 			</element>
-			<element kind="line" x="50" y="255" width="505" height="1">
+			<element kind="line" uuid="69bdc1e3-f966-49a7-9676-79e15eefebe9" x="50" y="255" width="505" height="1">
 				<pen lineWidth="0.5"/>
 			</element>
-			
-			<element kind="textField" x="384" y="235" width="171" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="2fad4f1d-9a4d-481b-ab34-639493803e06" x="384" y="235" width="171" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["أساس التصفية"]]></expression>
 			</element>
-			<element kind="textField" x="217" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="d6df92dc-55d2-4918-b369-79e1d63222ef" x="217" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["الأسباب"]]></expression>
 			</element>
-			<element kind="textField" x="50" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
-				<expression><![CDATA["المعنون"]]></expression>
+			<element kind="textField" uuid="d4503d50-b1f4-4ea7-9f80-d2e406c9185b" x="50" y="235" width="167" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["المدين"]]></expression>
 			</element>
-			
-			<element kind="textField" x="389" y="260" width="161" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+			<element kind="textField" uuid="94698eda-dda3-4f91-bffa-e29a6eb3ac97" x="389" y="260" width="161" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
 				<expression><![CDATA[$P{LIQUIDATION_BASIS}]]></expression>
 			</element>
-			<element kind="textField" x="222" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+			<element kind="textField" uuid="32ada822-e644-4aca-9a9b-3249d544da0f" x="222" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="10.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
 				<expression><![CDATA[$P{REASON_AR}]]></expression>
 			</element>
-			<element kind="textField" x="55" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="9.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+			<element kind="textField" uuid="d08956ea-f6b8-4df5-9d75-140b567d221f" x="55" y="260" width="157" height="65" fontName="Traditional Arabic" fontSize="9.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
 				<expression><![CDATA[$P{DEBTOR_NAME} + "\n" + $P{DEBTOR_ADDRESS} + "\n" + "الحساب: " + $P{DEBTOR_ACCOUNT} + "\nCNAS: " + $P{DEBTOR_CNAS} + "\nNIF: " + $P{DEBTOR_NIF}]]></expression>
 			</element>
-			
-			<element kind="textField" x="50" y="340" width="505" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="c5091123-ec6c-40c7-a6e3-9cd97f9f8644" x="50" y="340" width="505" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["المبلغ المراد تحصيله:"]]></expression>
 			</element>
-			<element kind="textField" x="50" y="360" width="505" height="25" fontName="Traditional Arabic" fontSize="14.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="170d563b-e5ea-483b-abe2-defb11f1bc17" x="50" y="360" width="505" height="25" fontName="Traditional Arabic" fontSize="14.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["مبلغ " + $P{AMOUNT} + " دينار جزائري"]]></expression>
 			</element>
-			<element kind="textField" x="50" y="390" width="505" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="a2a87b9d-7183-4856-a30a-93526c6c4690" x="50" y="390" width="505" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA["يتضمن الأمر بالإيراد مبلغ:"]]></expression>
 			</element>
-			<element kind="textField" x="50" y="410" width="505" height="40" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+			<element kind="textField" uuid="28c626dd-3137-45e8-be58-f18f35b9cb0b" x="50" y="410" width="505" height="40" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
 				<expression><![CDATA[$P{AMOUNT_WORDS}]]></expression>
 			</element>
-			
-			<element kind="line" x="350" y="580" width="200" height="1">
+			<element kind="line" uuid="9c259364-e0b4-436a-a9a6-a540349d5e42" x="350" y="580" width="200" height="1">
 				<pen lineWidth="0.75"/>
 			</element>
-			<element kind="textField" x="350" y="585" width="200" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="032517a7-4df1-49a3-8972-f5a59961cc44" x="350" y="585" width="200" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["الآمر بالصرف"]]></expression>
 			</element>
-			<element kind="line" x="50" y="580" width="200" height="1">
+			<element kind="line" uuid="d9ced51e-e8de-4d43-8c83-01bf62bb61f0" x="50" y="580" width="200" height="1">
 				<pen lineWidth="0.75"/>
 			</element>
-			<element kind="textField" x="50" y="590" width="200" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
+			<element kind="textField" uuid="0efb836b-de32-417f-80d5-bbd305f8e186" x="50" y="590" width="200" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
 				<expression><![CDATA["حرر في ............... بتاريخ " + $P{ISSUE_DATE}]]></expression>
 			</element>
 		</band>

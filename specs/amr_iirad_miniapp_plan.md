@@ -1,7 +1,7 @@
 # أمر بالإيراد — Mini-org.marrok.amriirad.App Project Plan
 ### Revenue Order Management System — Independent Module
 
-> **Document Status:** Implementation Phase — Phase 4 Complete, ready for Testing/Packaging.
+> **Document Status:** Implementation Phase — Architectural Refactor Complete (Phase 2 & 4 Alignment).
 > **Parent Project:** WGEBUDG (Algerian Public Budget Management)
 > **Institution Context:** Ministry of Justice / Superior School of Magistracy (المدرسة العليا للقضاء)
 > **Reference Documents:**
@@ -564,13 +564,15 @@ amr-iirad/
 - [x] Implement `AuditService` (append-only audit trail).
 - [x] Add soft-delete columns (is_deleted, deleted_at, deleted_by) to revenue_order schema.
 
-### Phase 2 — UI Screens
-- [ ] Login screen & Fiscal year setup.
-- [ ] Debtor Management CRUD screen.
-- [ ] Revenue Order List screen (table with search/filter by status and year).
-- [ ] Revenue Order Form screen (Annexes 1 & 2).
-- [ ] Cancellation/Reduction Form screen (Annexes 3 & 4).
-- [ ] Dispatch Slip screen (Annexe 5).
+### Phase 2 — UI Screens (Standardized & Modernized)
+- [x] Login screen & Fiscal year setup.
+- [x] Debtor Management CRUD screen (Modernized with AsyncTableLoader).
+- [x] Revenue Order List screen (Modernized with AsyncTableLoader).
+- [x] Revenue Order Form screen (Modernized via BaseFormController).
+- [x] Cancellation/Reduction Form screen (Modernized via BaseFormController).
+- [x] Dispatch Slip screen (Modernized via BaseFormController).
+- [x] Standardized Navigation (SceneManager) and Alerts (DialogHelper).
+- [x] Cleaned up Report Parameter Mapping (ReportParamBuilder).
 
 ### Phase 3 — Print & Report
 - [ ] Design all 5 `.jrxml` templates in JasperReports matching Instruction 08 layouts.
