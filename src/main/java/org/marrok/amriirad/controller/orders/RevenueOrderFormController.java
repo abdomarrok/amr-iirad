@@ -57,6 +57,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
     private final org.marrok.amriirad.service.InstitutionService institutionService;
+    private final org.marrok.amriirad.service.AuthService authService;
 
     public RevenueOrderFormController(FiscalYearRepository fyRepo, 
                                      DebtorRepository debtorRepo, 
@@ -65,6 +66,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
                                      org.marrok.amriirad.service.ReportService reportService,
                                      org.marrok.amriirad.service.TafqeetService tafqeetService,
                                      org.marrok.amriirad.service.InstitutionService institutionService,
+                                     org.marrok.amriirad.service.AuthService authService,
                                      org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         super(concurrencyManager);
         this.fyRepo = fyRepo;
@@ -74,6 +76,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
         this.institutionService = institutionService;
+        this.authService = authService;
     }
 
     private FiscalYear activeYear;
@@ -162,21 +165,29 @@ public class RevenueOrderFormController extends BaseFormController implements In
 
     @FXML
     private void handleNewDebtor() {
+        if (!authService.canDo("debtor.create")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية إضافة مدين جديد.");
+            return;
+        }
         Stage owner = (Stage) saveBtn.getScene().getWindow();
         javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "إضافة مدين جديد");
         if (loader != null) {
-            DebtorFormController controller = loader.getController();
-            controller.initForCreate(() -> loadDropdownData());
+            org.marrok.amriirad.controller.debtors.DebtorFormController controller = loader.getController();
+            controller.initForCreate(this::loadDropdownData);
         }
     }
 
     @FXML
     private void handleNewBudgetChapter() {
+        if (!authService.canDo("budget_chapter.manage")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية إضافة بنود ميزانية.");
+            return;
+        }
         Stage owner = (Stage) saveBtn.getScene().getWindow();
-        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/orders/budget-chapter-form-view.fxml", "إضافة بند/محور جديد");
+        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/orders/budget-chapter-form-view.fxml", "بند ميزانية جديد");
         if (loader != null) {
             BudgetChapterFormController controller = loader.getController();
-            controller.initForCreate(() -> loadDropdownData());
+            controller.initForCreate(this::loadDropdownData);
         }
     }
 

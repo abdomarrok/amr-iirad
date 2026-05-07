@@ -312,7 +312,11 @@ public class DatabaseSchemaManager {
         
         // Settings & Users
         insertPermission(stmt, "settings.view", "view", "settings", "عرض الإعدادات");
+        insertPermission(stmt, "settings.manage", "action", "settings", "تعديل إعدادات المؤسسة");
         insertPermission(stmt, "users.manage", "action", "settings", "إدارة المستخدمين");
+        
+        // Budget Chapters
+        insertPermission(stmt, "budget_chapter.manage", "action", "budget_chapter", "إدارة بنود الميزانية");
         
         // Roles & Permissions assigned to Admin by default
         stmt.execute("INSERT IGNORE INTO role_permission (role_id, permission_id) SELECT 1, id FROM permission");

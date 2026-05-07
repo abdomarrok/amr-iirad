@@ -52,10 +52,14 @@ public class DebtorListController implements Initializable {
     private AsyncTableLoader<Debtor> tableLoader;
 
     private final DebtorRepository debtorRepo;
+    private final org.marrok.amriirad.service.AuthService authService;
     private final ConcurrencyManager concurrencyManager;
 
-    public DebtorListController(DebtorRepository debtorRepo, ConcurrencyManager concurrencyManager) {
+    public DebtorListController(DebtorRepository debtorRepo, 
+                                org.marrok.amriirad.service.AuthService authService,
+                                ConcurrencyManager concurrencyManager) {
         this.debtorRepo = debtorRepo;
+        this.authService = authService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -145,26 +149,34 @@ public class DebtorListController implements Initializable {
         });
     }
 
-    private void handleEditDebtor(Debtor debtor) {
+    @FXML
+    private void handleAddDebtor() {
+        if (!authService.canDo("debtor.create")) {
+            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "ليس لديك صلاحية إضافة مدين جديد.");
+            return;
+        }
         Stage owner = (Stage) tableView.getScene().getWindow();
-        FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "تعديل بيانات مدين");
+        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "إضافة مدين جديد");
         if (loader != null) {
-            DebtorFormController controller = loader.getController();
+            org.marrok.amriirad.controller.debtors.DebtorFormController controller = loader.getController();
+            controller.initForCreate(() -> loadDataAsync());
+        }
+    }
+
+    private void handleEditDebtor(Debtor debtor) {
+        if (!authService.canDo("debtor.edit")) {
+            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "ليس لديك صلاحية تعديل بيانات المدين.");
+            return;
+        }
+        Stage owner = (Stage) tableView.getScene().getWindow();
+        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "تعديل بيانات المدين");
+        if (loader != null) {
+            org.marrok.amriirad.controller.debtors.DebtorFormController controller = loader.getController();
             controller.initForEdit(debtor, () -> loadDataAsync());
         }
     }
 
     private void loadDataAsync() {
         tableLoader.load(() -> debtorRepo.findAll());
-    }
-
-    @FXML
-    private void handleNewDebtor() {
-        Stage owner = (Stage) tableView.getScene().getWindow();
-        FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "إضافة مدين جديد");
-        if (loader != null) {
-            DebtorFormController controller = loader.getController();
-            controller.initForCreate(() -> loadDataAsync());
-        }
     }
 }

@@ -58,15 +58,18 @@ public class RevenueOrderListController implements Initializable {
     private final RevenueOrderService orderService;
     private final RevenueOrderRepository orderRepo;
     private final FiscalYearRepository fyRepo;
+    private final org.marrok.amriirad.service.AuthService authService;
     private final ConcurrencyManager concurrencyManager;
 
     public RevenueOrderListController(RevenueOrderService orderService,
-                                      RevenueOrderRepository orderRepo,
-                                      FiscalYearRepository fyRepo,
-                                      ConcurrencyManager concurrencyManager) {
+                                     RevenueOrderRepository orderRepo,
+                                     FiscalYearRepository fyRepo,
+                                     org.marrok.amriirad.service.AuthService authService,
+                                     ConcurrencyManager concurrencyManager) {
         this.orderService = orderService;
         this.orderRepo = orderRepo;
         this.fyRepo = fyRepo;
+        this.authService = authService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -193,6 +196,7 @@ public class RevenueOrderListController implements Initializable {
         }
     }
 
+
     private void loadDataAsync() {
         tableLoader.load(() -> {
             Optional<FiscalYear> activeFy = fyRepo.findActive();
@@ -210,8 +214,15 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void openFormModal(RevenueOrder order) {
+        String perm = order == null ? "revenue_order.create" : "revenue_order.edit";
+        if (!authService.canDo(perm)) {
+            org.marrok.amriirad.util.DialogHelper.showError("خطأ", 
+                order == null ? "ليس لديك صلاحية إنشاء أمر إيراد جديد." : "ليس لديك صلاحية تعديل أوامر الإيرادات.");
+            return;
+        }
+
         Stage stage = (Stage) tableView.getScene().getWindow();
-        String title = order == null ? "إنشاء أمر إيراد" : "تعديل أمر إيراد";
+        String title = order == null ? "إنشاء أمر إيراد جديد" : "تعديل أمر إيراد";
         
         FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/orders/order-form-view.fxml", title);
         if (loader != null) {
