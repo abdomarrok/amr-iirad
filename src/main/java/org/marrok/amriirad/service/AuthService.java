@@ -7,17 +7,26 @@ import org.marrok.amriirad.core.AppContext;
  */
 public class AuthService {
     
+    private final org.marrok.amriirad.repository.UserRepository userRepository;
+
+    public AuthService(org.marrok.amriirad.repository.UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public String getCurrentUsername() {
         String user = AppContext.getInstance().getCurrentUser();
-        return user != null ? user : "admin"; // Fallback for transition
+        return user != null ? user : "admin";
     }
 
     public boolean login(String username, String password) {
-        // Simple authentication for now
-        // In a real app, this would query the DB
-        if ("admin".equals(username) && "admin".equals(password)) {
-            AppContext.getInstance().setCurrentUser(username);
-            return true;
+        var userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            var user = userOpt.get();
+            // Simple check (password hashing recommended for prod)
+            if (user.getPassword().equals(password)) {
+                AppContext.getInstance().setCurrentUser(username);
+                return true;
+            }
         }
         return false;
     }

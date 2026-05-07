@@ -51,6 +51,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
     private final RevenueOrderService orderService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.service.InstitutionService institutionService;
 
     public RevenueOrderFormController(FiscalYearRepository fyRepo, 
                                      DebtorRepository debtorRepo, 
@@ -58,6 +59,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
                                      RevenueOrderService orderService,
                                      org.marrok.amriirad.service.ReportService reportService,
                                      org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                     org.marrok.amriirad.service.InstitutionService institutionService,
                                      org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         super(concurrencyManager);
         this.fyRepo = fyRepo;
@@ -66,6 +68,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         this.orderService = orderService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.institutionService = institutionService;
     }
 
     private FiscalYear activeYear;
@@ -262,6 +265,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         concurrencyManager.runAsync(
             () -> {
                 java.util.Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withInstitution(institutionService.getInfo())
                     .withOrder(currentOrder)
                     .build();
                 

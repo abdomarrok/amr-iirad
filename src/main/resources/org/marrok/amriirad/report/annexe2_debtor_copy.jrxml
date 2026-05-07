@@ -16,15 +16,19 @@
 	<parameter name="LIQUIDATION_BASIS" class="java.lang.String"/>
 	<parameter name="BUDGET_CHAPTER" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
+	<parameter name="OFFICER_NAME" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
 	<pageHeader height="110" splitType="Stretch">
 		<element kind="staticText" uuid="4f8e43d0-35c1-4bd9-a1f2-bfba1290ac2f" x="0" y="5" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[الجمهورية الجزائرية الديمقراطية الشعبية]]></text>
 		</element>
-		<element kind="staticText" uuid="bd569e2d-2e3e-4e8c-b052-e4c653f96c0f" x="0" y="20" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[وزارة العدل]]></text>
+		<element kind="textField" uuid="bd569e2d-2e3e-4e8c-b052-e4c653f96c0f" x="0" y="20" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{MINISTRY_NAME} != null ? $P{MINISTRY_NAME} : "وزارة العدل"]]></expression>
 		</element>
-		<element kind="staticText" uuid="db64b5f4-09e4-4707-8137-69816e407bf4" x="0" y="35" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[المدرسة العليا للقضاء]]></text>
+		<element kind="textField" uuid="db64b5f4-09e4-4707-8137-69816e407bf4" x="0" y="35" width="555" height="15" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA[$P{INSTITUTION_NAME}]]></expression>
 		</element>
 		<element kind="staticText" uuid="0fc0af06-ab5f-49ba-b20d-bae40c73aeda" x="0" y="70" width="555" height="25" fontName="Traditional Arabic" fontSize="18.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[أمر بالإيراد (نسخة المدين)]]></text>
@@ -90,7 +94,7 @@
 				<expression><![CDATA[$P{ORDER_NUMBER}]]></expression>
 			</element>
 			<element kind="textField" uuid="4de8978d-3af1-43a4-8427-1300b8e5fe12" x="50" y="150" width="505" height="70" fontName="Traditional Arabic" fontSize="11.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
-				<expression><![CDATA["يطلب من " + $P{DEBTOR_NAME} + " أن يدفع لصندوق المحاسب العمومي للمدرسة العليا للقضاء، وهو المؤهل وفقاً لأحكام المرسوم التنفيذي رقم 46-93 المؤرخ في 06 فبراير 1993 أن يقوم بالتحصيل على الحساب الجاري رقم " + $P{TREASURY_REF} + "، البند " + $P{BUDGET_CHAPTER} + ". المبلغ المحدد أدناه، للأسباب المذكورة أدناه."]]></expression>
+				<expression><![CDATA["يطلب من " + $P{DEBTOR_NAME} + " أن يدفع لصندوق المحاسب العمومي المعتمد لدى " + $P{INSTITUTION_NAME} + "، وهو المؤهل وفقاً لأحكام المرسوم التنفيذي رقم 343-24 المؤرخ في 24 أكتوبر 2024 أن يقوم بالتحصيل على الحساب الجاري رقم " + $P{TREASURY_REF} + "، البند " + $P{BUDGET_CHAPTER} + ". المبلغ المحدد أدناه، للأسباب المذكورة أدناه."]]></expression>
 			</element>
 			<element kind="rectangle" uuid="a328a93d-6184-4f1d-8d6d-ed3d8f15f81d" mode="Transparent" x="50" y="230" width="505" height="100">
 				<pen lineWidth="0.75"/>
@@ -138,13 +142,13 @@
 				<pen lineWidth="0.75"/>
 			</element>
 			<element kind="textField" uuid="032517a7-4df1-49a3-8972-f5a59961cc44" x="350" y="585" width="200" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Center">
-				<expression><![CDATA["الآمر بالصرف"]]></expression>
+				<expression><![CDATA[$P{OFFICER_NAME}]]></expression>
 			</element>
 			<element kind="line" uuid="d9ced51e-e8de-4d43-8c83-01bf62bb61f0" x="50" y="580" width="200" height="1">
 				<pen lineWidth="0.75"/>
 			</element>
 			<element kind="textField" uuid="0efb836b-de32-417f-80d5-bbd305f8e186" x="50" y="590" width="200" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Center">
-				<expression><![CDATA["حرر في ............... بتاريخ " + $P{ISSUE_DATE}]]></expression>
+				<expression><![CDATA["حرر بـ " + $P{WILAYA} + " بتاريخ " + $P{ISSUE_DATE}]]></expression>
 			</element>
 		</band>
 	</detail>

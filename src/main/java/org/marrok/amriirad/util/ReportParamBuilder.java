@@ -3,6 +3,7 @@ package org.marrok.amriirad.util;
 import org.marrok.amriirad.model.Debtor;
 import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.model.RevenueOrderCancellation;
+import org.marrok.amriirad.model.InstitutionInfo;
 import org.marrok.amriirad.service.TafqeetService;
 
 import java.util.HashMap;
@@ -38,7 +39,8 @@ public class ReportParamBuilder {
 
         params.put("REASON_AR", order.getObjectAr() != null ? order.getObjectAr() : "");
         params.put("LIQUIDATION_BASIS", order.getObjectAr() != null ? order.getObjectAr() : "");
-        params.put("TREASURY_REF", "1980000034/55"); // TODO: Move to AppSettings
+        // TREASURY_REF will be overwritten by withInstitution if provided
+        params.put("TREASURY_REF", ""); 
 
         if (order.getBudgetChapter() != null) {
             params.put("BUDGET_CHAPTER", order.getBudgetChapter().getCode());
@@ -57,6 +59,15 @@ public class ReportParamBuilder {
         params.put("DEBTOR_ACCOUNT", debtor.getBankAccount() != null ? debtor.getBankAccount() : "");
         params.put("DEBTOR_CNAS", debtor.getCnasNumber() != null ? debtor.getCnasNumber() : "");
         params.put("DEBTOR_NIF", debtor.getNifNumber() != null ? debtor.getNifNumber() : "");
+        return this;
+    }
+
+    public ReportParamBuilder withInstitution(InstitutionInfo info) {
+        if (info == null) return this;
+        params.put("INSTITUTION_NAME", info.getNameAr());
+        params.put("OFFICER_NAME", info.getAuthorizingOfficerAr());
+        params.put("WILAYA", info.getWilayaAr());
+        params.put("TREASURY_REF", info.getTreasuryAccountAr());
         return this;
     }
 

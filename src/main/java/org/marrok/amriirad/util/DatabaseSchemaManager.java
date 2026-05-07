@@ -20,6 +20,25 @@ public class DatabaseSchemaManager {
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
+            // -- app_user --
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS app_user (
+                    id          INT AUTO_INCREMENT PRIMARY KEY,
+                    username    VARCHAR(50) NOT NULL UNIQUE,
+                    password    VARCHAR(255) NOT NULL,
+                    full_name   VARCHAR(100),
+                    role        ENUM('ADMIN', 'OPERATOR') NOT NULL DEFAULT 'OPERATOR',
+                    is_active   BOOLEAN DEFAULT TRUE,
+                    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // Seed default admin (password: admin) - in production, this would be hashed
+            stmt.execute("""
+                INSERT IGNORE INTO app_user (username, password, full_name, role)
+                VALUES ('admin', 'admin', 'System Administrator', 'ADMIN')
+            """);
+
             // -- fiscal_year --
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS fiscal_year (
@@ -127,6 +146,28 @@ public class DatabaseSchemaManager {
                     FOREIGN KEY (slip_id)  REFERENCES dispatch_slip(id)  ON DELETE CASCADE,
                     FOREIGN KEY (order_id) REFERENCES revenue_order(id)  ON DELETE RESTRICT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // -- institution_info --
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS institution_info (
+                    id              INT PRIMARY KEY DEFAULT 1,
+                    name_ar         VARCHAR(255) NOT NULL,
+                    name_fr         VARCHAR(255),
+                    authorizing_officer_ar VARCHAR(255),
+                    treasury_account_ar   VARCHAR(255),
+                    rib_number      VARCHAR(50),
+                    logo_path       VARCHAR(255),
+                    address_ar      TEXT,
+                    wilaya_ar       VARCHAR(100),
+                    last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // Seed default institution if not exists
+            stmt.execute("""
+                INSERT IGNORE INTO institution_info (id, name_ar, authorizing_officer_ar)
+                VALUES (1, 'المدرسة العليا للقضاء', 'الأمين العام')
             """);
 
             // -- audit_log --

@@ -29,6 +29,8 @@ public class AppContext implements Disposable {
     private RevenueOrderRepository revenueOrderRepository;
     private CancellationOrderRepository cancellationOrderRepository;
     private DispatchSlipRepository dispatchSlipRepository;
+    private InstitutionRepository institutionRepository;
+    private UserRepository userRepository;
 
     // Services
     private ConcurrencyManager concurrencyManager;
@@ -39,6 +41,7 @@ public class AppContext implements Disposable {
     private CancellationOrderService cancellationOrderService;
     private DispatchSlipService dispatchSlipService;
     private AuthService authService;
+    private InstitutionService institutionService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
     private String currentUser = "admin"; // Default for now
 
@@ -73,6 +76,8 @@ public class AppContext implements Disposable {
         this.revenueOrderRepository = new RevenueOrderRepository();
         this.cancellationOrderRepository = new CancellationOrderRepository();
         this.dispatchSlipRepository = new DispatchSlipRepository();
+        this.institutionRepository = new InstitutionRepository();
+        this.userRepository = new UserRepository();
     }
 
     private void initializeServices() {
@@ -97,7 +102,8 @@ public class AppContext implements Disposable {
                 revenueOrderService,
                 auditService
         );
-        this.authService = new AuthService();
+        this.authService = new AuthService(userRepository);
+        this.institutionService = new InstitutionService(institutionRepository, auditService);
     }
 
     /**
@@ -114,6 +120,7 @@ public class AppContext implements Disposable {
         if (clazz == CancellationOrderService.class) return cancellationOrderService;
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
         if (clazz == AuthService.class) return authService;
+        if (clazz == InstitutionService.class) return institutionService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -121,6 +128,8 @@ public class AppContext implements Disposable {
         if (clazz == RevenueOrderRepository.class) return revenueOrderRepository;
         if (clazz == CancellationOrderRepository.class) return cancellationOrderRepository;
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
+        if (clazz == InstitutionRepository.class) return institutionRepository;
+        if (clazz == UserRepository.class) return userRepository;
 
         // 2. Try constructor injection
         for (java.lang.reflect.Constructor<?> ctor : clazz.getConstructors()) {
@@ -165,6 +174,7 @@ public class AppContext implements Disposable {
         if (clazz == CancellationOrderService.class) return cancellationOrderService;
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
         if (clazz == AuthService.class) return authService;
+        if (clazz == InstitutionService.class) return institutionService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -172,6 +182,8 @@ public class AppContext implements Disposable {
         if (clazz == RevenueOrderRepository.class) return revenueOrderRepository;
         if (clazz == CancellationOrderRepository.class) return cancellationOrderRepository;
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
+        if (clazz == InstitutionRepository.class) return institutionRepository;
+        if (clazz == UserRepository.class) return userRepository;
         
         return null;
     }

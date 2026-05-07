@@ -56,17 +56,20 @@ public class DispatchSlipController implements Initializable {
     private final org.marrok.amriirad.repository.FiscalYearRepository fyRepo;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.service.InstitutionService institutionService;
     private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public DispatchSlipController(DispatchSlipRepository slipRepo, 
                                   org.marrok.amriirad.repository.FiscalYearRepository fyRepo,
                                   org.marrok.amriirad.service.ReportService reportService,
                                   org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                  org.marrok.amriirad.service.InstitutionService institutionService,
                                   org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.slipRepo = slipRepo;
         this.fyRepo = fyRepo;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
+        this.institutionService = institutionService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -177,11 +180,13 @@ public class DispatchSlipController implements Initializable {
             logger.info("Printing Annexe 5 for slip: {}", selected.getSlipNumber());
             
             try {
-                java.util.Map<String, Object> params = new java.util.HashMap<>();
-                params.put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "");
-                params.put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00");
-                params.put("TOTAL_WORDS", selected.getTotalAmount() != null ? tafqeetService.toArabicWords(selected.getTotalAmount()) : "");
-                params.put("DATE", selected.getDispatchDate() != null ? selected.getDispatchDate().toString() : "");
+                java.util.Map<String, Object> params = org.marrok.amriirad.util.ReportParamBuilder.create(tafqeetService)
+                    .withInstitution(institutionService.getInfo())
+                    .put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "")
+                    .put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00")
+                    .put("TOTAL_WORDS", selected.getTotalAmount() != null ? tafqeetService.toArabicWords(selected.getTotalAmount()) : "")
+                    .put("DATE", selected.getDispatchDate() != null ? selected.getDispatchDate().toString() : "")
+                    .build();
                 
                 // Create a list of beans for the table in Annexe 5
                 java.util.List<SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();

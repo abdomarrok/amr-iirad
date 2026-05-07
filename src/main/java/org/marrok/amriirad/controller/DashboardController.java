@@ -148,4 +148,16 @@ public class DashboardController implements Initializable {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
         SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dispatch-slip-view.fxml");
     }
+
+    @FXML
+    private void handleEnterpriseSettings() {
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        SceneManager.openModal(stage, "/org/marrok/amriirad/view/enterprise-info-view.fxml", "إعدادات المؤسسة");
+    }
+
+    @FXML
+    private void handleViewUsers() {
+        // TODO: Implement user management view
+        statusBar.setText("ℹ️ ميزة إدارة المستخدمين ستتوفر قريباً");
+    }
 }
