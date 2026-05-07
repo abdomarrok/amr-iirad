@@ -114,7 +114,8 @@ public class DebtorFormController extends BaseFormController implements Initiali
         );
     }
 
-    private boolean validateForm() {
+    @Override
+    protected boolean validateForm() {
         clearError();
         if (fullNameField.getText() == null || fullNameField.getText().trim().isEmpty()) {
             showError("الاسم الكامل مطلوب.");

@@ -1,0 +1,268 @@
+package org.marrok.amriirad.controller.orders;
+
+import org.marrok.amriirad.controller.BaseFormController;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.marrok.amriirad.core.ConcurrencyManager;
+import org.marrok.amriirad.model.RevenueOrder;
+import org.marrok.amriirad.model.OrderStatus;
+import org.marrok.amriirad.service.ReportService;
+import org.marrok.amriirad.service.TafqeetService;
+import org.marrok.amriirad.service.InstitutionService;
+
+import org.marrok.amriirad.util.ReportParamBuilder;
+import java.net.URL;
+import java.time.format.DateTimeFormatter;
+import java.util.ResourceBundle;
+import java.util.Map;
+
+public class OrderDetailsController extends BaseFormController implements Initializable {
+
+    private static final Logger logger = LogManager.getLogger(OrderDetailsController.class);
+
+    @FXML private Label titleLabel;
+    @FXML private Label orderNumberLabel;
+    @FXML private Label issueDateLabel;
+    @FXML private Label fiscalYearLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label debtorNameLabel;
+    @FXML private Label debtorTypeLabel;
+    @FXML private Label debtorPhoneLabel;
+    @FXML private Label amountLabel;
+    @FXML private Label amountInWordsLabel;
+    @FXML private Label chapterLabel;
+    @FXML private Label objectLabel;
+    @FXML private VBox timelineContainer;
+    @FXML private Button printAdminBtn;
+    @FXML private Button printDebtorBtn;
+
+    private final ReportService reportService;
+    private final TafqeetService tafqeetService;
+    private final InstitutionService institutionService;
+    private RevenueOrder currentOrder;
+
+    public OrderDetailsController(ReportService reportService, TafqeetService tafqeetService, 
+                                 InstitutionService institutionService, ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
+        this.reportService = reportService;
+        this.tafqeetService = tafqeetService;
+        this.institutionService = institutionService;
+    }
+
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Nothing to do on initialization — wait for initForView()
+    }
+
+    public void initForView(RevenueOrder order) {
+        this.currentOrder = order;
+        loadOrderDetails();
+    }
+
+    private void loadOrderDetails() {
+        if (currentOrder == null) {
+            showError("No order data available");
+            return;
+        }
+
+        // Set basic info
+        titleLabel.setText("تفاصيل أمر الإيراد: " + currentOrder.getOrderNumber());
+        orderNumberLabel.setText(currentOrder.getOrderNumber() != null ? currentOrder.getOrderNumber() : "-");
+        
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        issueDateLabel.setText(currentOrder.getIssueDate() != null ? currentOrder.getIssueDate().format(dateFormatter) : "-");
+        
+        fiscalYearLabel.setText(currentOrder.getFiscalYear() != null ? currentOrder.getFiscalYear().getYearLabel() : "-");
+        
+        // Set status with appropriate styling
+        if (currentOrder.getStatus() != null) {
+            statusLabel.setText(getStatusArabicLabel(currentOrder.getStatus()));
+            statusLabel.setStyle(getStatusColor(currentOrder.getStatus()));
+        } else {
+            statusLabel.setText("-");
+        }
+
+        // Set debtor info
+        if (currentOrder.getDebtor() != null) {
+            debtorNameLabel.setText(currentOrder.getDebtor().getFullName());
+            debtorTypeLabel.setText(currentOrder.getDebtor().getDebtorType() != null ? 
+                currentOrder.getDebtor().getDebtorType().getArabicLabel() : "-");
+            debtorPhoneLabel.setText(currentOrder.getDebtor().getPhone() != null ? 
+                currentOrder.getDebtor().getPhone() : "-");
+        }
+
+        // Set financial info
+        amountLabel.setText(currentOrder.getAmount() != null ? currentOrder.getAmount().toPlainString() : "0.00");
+        amountInWordsLabel.setText(currentOrder.getAmountInWordsAr() != null ? 
+            currentOrder.getAmountInWordsAr() : "-");
+        
+        if (currentOrder.getBudgetChapter() != null) {
+            chapterLabel.setText(currentOrder.getBudgetChapter().getCode() + " - " + 
+                currentOrder.getBudgetChapter().getLabelAr());
+        } else {
+            chapterLabel.setText("-");
+        }
+
+        // Set object
+        objectLabel.setText(currentOrder.getObjectAr() != null ? currentOrder.getObjectAr() : "-");
+
+        // Show print buttons only if order is issued
+        if (currentOrder.getStatus() != OrderStatus.DRAFT) {
+            printAdminBtn.setVisible(true);
+            printAdminBtn.setManaged(true);
+            printDebtorBtn.setVisible(true);
+            printDebtorBtn.setManaged(true);
+        }
+
+        // Build timeline
+        buildStatusTimeline();
+    }
+
+    private void buildStatusTimeline() {
+        timelineContainer.getChildren().clear();
+
+        // Create timeline items based on order status
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // DRAFT status (always present)
+        addTimelineItem("مسودة (DRAFT)", currentOrder.getCreatedAt(), "تم إنشاء الأمر في نظام", true, "fas-file-alt");
+
+        // ISSUED status (if applicable)
+        if (currentOrder.getStatus().ordinal() >= OrderStatus.ISSUED.ordinal()) {
+            addTimelineItem("مُصدّر (ISSUED)", currentOrder.getUpdatedAt(), "تم إصدار الأمر رسمياً", 
+                currentOrder.getStatus() == OrderStatus.ISSUED, "fas-check-circle");
+        }
+
+        // DISPATCHED status (if applicable)
+        if (currentOrder.getStatus().ordinal() >= OrderStatus.DISPATCHED.ordinal()) {
+            addTimelineItem("مُرسل (DISPATCHED)", currentOrder.getUpdatedAt(), "تم إرسال الأمر للخزينة", 
+                currentOrder.getStatus() == OrderStatus.DISPATCHED, "fas-paper-plane");
+        }
+
+        // CANCELLED status (if applicable)
+        if (currentOrder.getStatus() == OrderStatus.CANCELLED) {
+            addTimelineItem("ملغى (CANCELLED)", currentOrder.getUpdatedAt(), "تم إلغاء الأمر", true, "fas-times-circle");
+        }
+
+        // REDUCED status (if applicable)
+        if (currentOrder.getStatus() == OrderStatus.REDUCED) {
+            addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تعديل مبلغ الأمر", true, "fas-compress");
+        }
+    }
+
+    private void addTimelineItem(String statusName, Object timestamp, String description, boolean isActive, String icon) {
+        VBox timelineItem = new VBox(10);
+        timelineItem.setStyle("-fx-padding: 15; -fx-border-radius: 8; -fx-background-color: -fx-control-inner-background;");
+
+        HBox headerBox = new HBox(12);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Status icon
+        FontIcon statusIcon = new FontIcon(icon);
+        statusIcon.setIconSize(20);
+        statusIcon.setStyle(isActive ? "-fx-icon-color: -fx-theme-primary;" : "-fx-icon-color: -fx-theme-text-muted;");
+
+        Label statusLabel = new Label(statusName);
+        statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
+
+        Label timestampLabel = new Label(timestamp != null ? timestamp.toString() : "N/A");
+        timestampLabel.setStyle("-fx-text-fill: -fx-theme-text-muted; -fx-font-size: 11;");
+
+        headerBox.getChildren().addAll(statusIcon, statusLabel);
+
+        Label descLabel = new Label(description);
+        descLabel.setStyle("-fx-text-fill: var(--text-muted-color); -fx-font-size: 12;");
+        descLabel.setWrapText(true);
+
+        timelineItem.getChildren().addAll(headerBox, descLabel, timestampLabel);
+        timelineContainer.getChildren().add(timelineItem);
+    }
+
+    private String getStatusArabicLabel(OrderStatus status) {
+        return switch (status) {
+            case DRAFT -> "مسودة";
+            case ISSUED -> "مُصدّر";
+            case DISPATCHED -> "مُرسل";
+            case CANCELLED -> "ملغى";
+            case REDUCED -> "مُختزل";
+            default -> status.name();
+        };
+    }
+
+    private String getStatusColor(OrderStatus status) {
+        return switch (status) {
+            case DRAFT -> "-fx-text-fill: #FF9800;";  // Orange
+            case ISSUED -> "-fx-text-fill: #4CAF50;";  // Green
+            case DISPATCHED -> "-fx-text-fill: #2196F3;";  // Blue
+            case CANCELLED -> "-fx-text-fill: #F44336;";  // Red
+            case REDUCED -> "-fx-text-fill: #9C27B0;";  // Purple
+        };
+    }
+
+    @FXML
+    private void handlePrintAdmin() {
+        printAnnexe("/org/marrok/amriirad/report/annexe1_order.jrxml");
+    }
+
+    @FXML
+    private void handlePrintDebtor() {
+        printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy.jrxml");
+    }
+
+    private void printAnnexe(String reportPath) {
+        if (currentOrder == null) {
+            showError("No order data available");
+            return;
+        }
+        concurrencyManager.runAsync(
+            () -> {
+                Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withInstitution(institutionService.getInfo())
+                    .withOrder(currentOrder)
+                    .build();
+                
+                reportService.showReportWithParamsOnly(reportPath, params);
+                return true;
+            },
+            res -> logger.info("Print triggered for {}", reportPath),
+            err -> showError("خطأ في الطباعة: " + err.getMessage())
+        );
+    }
+
+    @FXML
+    private void handleClose() {
+        closeWindow();
+    }
+
+    @Override
+    protected boolean validateForm() {
+        return true; // Read-only view
+    }
+
+    @Override
+    protected void showError(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("خطأ");
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+
+    @Override
+    protected void clearError() {
+        // No error label in this view
+    }
+}

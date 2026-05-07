@@ -47,7 +47,13 @@
             </HBox>
 
             <Label styleClass="form-label" text="محور الميزانية:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <ComboBox fx:id="budgetChapterCombo" prefWidth="400" promptText="اختر البند/المحور..." GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <ComboBox fx:id="budgetChapterCombo" prefWidth="400" promptText="اختر البند/المحور..."/>
+                <Button styleClass="btn-outline" onAction="#handleNewBudgetChapter">
+                    <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-primary"/></graphic>
+                    <tooltip><Tooltip text="إضافة بند/محور جديد"/></tooltip>
+                </Button>
+            </HBox>
 
             <Label styleClass="form-label" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
             <TextField fx:id="amountField" promptText="0.00" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="200"/>
@@ -72,7 +78,7 @@
         <Button fx:id="saveBtn" styleClass="btn-primary" text="حفظ مسودة" onAction="#handleSave">
             <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
         </Button>
-        <Button fx:id="issueBtn" styleClass="btn-primary" style="-fx-background-color: var(--primary-color);" text="إصدار نهائي" onAction="#handleIssue" managed="false" visible="false">
+        <Button fx:id="issueBtn" styleClass="btn-primary" text="إصدار نهائي" onAction="#handleIssue" managed="false" visible="false">
             <graphic><FontIcon iconLiteral="fas-check-circle" styleClass="icon-white"/></graphic>
         </Button>
     </HBox>

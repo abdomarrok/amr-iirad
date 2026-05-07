@@ -171,6 +171,16 @@ public class RevenueOrderFormController extends BaseFormController implements In
     }
 
     @FXML
+    private void handleNewBudgetChapter() {
+        Stage owner = (Stage) saveBtn.getScene().getWindow();
+        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/orders/budget-chapter-form-view.fxml", "إضافة بند/محور جديد");
+        if (loader != null) {
+            BudgetChapterFormController controller = loader.getController();
+            controller.initForCreate(() -> loadDropdownData());
+        }
+    }
+
+    @FXML
     private void handleSave() {
         if (!validateForm()) return;
         clearError();
@@ -214,7 +224,8 @@ public class RevenueOrderFormController extends BaseFormController implements In
         );
     }
 
-    private boolean validateForm() {
+    @Override
+    protected boolean validateForm() {
         clearError();
         if (debtorCombo.getValue() == null) {
             showError("يجب اختيار المدين");

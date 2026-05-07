@@ -318,7 +318,8 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         }
     }
 
-    private boolean validateForm() {
+    @Override
+    protected boolean validateForm() {
         clearError();
 
         // Check if at least one order is selected

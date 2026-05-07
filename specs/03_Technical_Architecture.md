@@ -23,6 +23,7 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 
 ### 1.3 Navigation & View Management
 - **`SceneManager`**: The single source of truth for scene transitions and modal dialogs.
+- **`BaseFormController`**: Abstract base for all modal controllers, enforcing standard `validateForm()` and `getLogger()` patterns.
 - **Root Layout**: All main views are wrapped in a `BorderPane` that includes `top-bar.fxml` and `footer.fxml`.
 - **State Awareness**: `SceneManager` tracks the `lastLoadedFxml` to support the `refresh()` method, which is triggered when global state (like Fiscal Year) changes.
 
@@ -52,7 +53,7 @@ The application adheres to high-end design principles to ensure a professional, 
 ---
 
 ## 4. Pending / Next Steps
-1. **Audit Log Viewer**: A dedicated UI to browse the `audit_log` table.
+1. ✅ **Audit Log Viewer**: A dedicated UI to browse the `audit_log` table — **IMPLEMENTED**.
 2. **Permission Enforcement**: While the matrix exists, fine-grained UI component masking based on `authService.canDo()` should be strictly applied to all new features.
 3. **Report Fine-Tuning**: Ensure all 5 Jasper Annexes align with the latest regulatory tweaks mentioned in `instruction_08_2023_analysis.md`.
 

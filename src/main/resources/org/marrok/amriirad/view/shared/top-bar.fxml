@@ -57,6 +57,13 @@
                 <FontIcon iconLiteral="fas-cog" iconSize="18" styleClass="icon-primary" />
             </graphic>
         </Button>
+
+        <Button fx:id="viewAuditLogBtn" onAction="#handleViewAuditLog" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+            <tooltip><Tooltip text="سجل العمليات" /></tooltip>
+            <graphic>
+                <FontIcon iconLiteral="fas-history" iconSize="18" styleClass="icon-primary" />
+            </graphic>
+        </Button>
         
         <Separator orientation="VERTICAL" prefHeight="25" />
         

@@ -128,7 +128,8 @@ public class CancellationFormController extends BaseFormController implements In
         reportService.showReportWithParamsOnly(reportPath, params);
     }
 
-    private boolean validateForm() {
+    @Override
+    protected boolean validateForm() {
         clearError();
         if (targetOrder == null) {
             showError("خطأ داخلي: لا يوجد أمر إيراد مستهدف.");

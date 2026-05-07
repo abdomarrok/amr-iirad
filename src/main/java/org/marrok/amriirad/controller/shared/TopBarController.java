@@ -27,6 +27,7 @@ public class TopBarController implements Initializable {
     @FXML private Button viewUsersBtn;
     @FXML private Button managePermissionsBtn;
     @FXML private Button enterpriseSettingsBtn;
+    @FXML private Button viewAuditLogBtn;
     @FXML private Button logoutBtn;
     @FXML private HBox fiscalYearBox;
 
@@ -71,6 +72,7 @@ public class TopBarController implements Initializable {
         setBtnVisible(viewUsersBtn, authService.canDo("users.manage"));
         setBtnVisible(managePermissionsBtn, authService.canDo("users.manage"));
         setBtnVisible(enterpriseSettingsBtn, authService.canDo("settings.manage"));
+        setBtnVisible(viewAuditLogBtn, authService.canDo("settings.manage"));
     }
 
     private void setBtnVisible(Button btn, boolean visible) {
@@ -135,6 +137,12 @@ public class TopBarController implements Initializable {
     private void handleEnterpriseSettings() {
         Stage stage = (Stage) enterpriseSettingsBtn.getScene().getWindow();
         SceneManager.loadScene(stage, "/org/marrok/amriirad/view/settings/enterprise-info-view.fxml");
+    }
+
+    @FXML
+    private void handleViewAuditLog() {
+        Stage stage = (Stage) viewAuditLogBtn.getScene().getWindow();
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/settings/audit-log-view.fxml");
     }
 
     @FXML

@@ -140,10 +140,18 @@ public class DebtorListController implements Initializable {
         tableView.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
                 Debtor selected = tableView.getSelectionModel().getSelectedItem();
-                // TODO: Open edit modal
-                logger.info("Double clicked debtor: {}", selected.getFullName());
+                handleEditDebtor(selected);
             }
         });
+    }
+
+    private void handleEditDebtor(Debtor debtor) {
+        Stage owner = (Stage) tableView.getScene().getWindow();
+        FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "تعديل بيانات مدين");
+        if (loader != null) {
+            DebtorFormController controller = loader.getController();
+            controller.initForEdit(debtor, () -> loadDataAsync());
+        }
     }
 
     private void loadDataAsync() {

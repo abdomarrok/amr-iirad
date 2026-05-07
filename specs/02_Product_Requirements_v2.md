@@ -43,8 +43,8 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - **Persistence:** HikariCP connection pooling with transaction safety.
 
 ## 5. Future Roadmap
-- [ ] Phase 5.1: **Enhanced Visualization** — Modern order details view and visual audit timeline.
-- [ ] Phase 5.2: **Extended CRUD** — Implement "Edit Debtor" functionality and direct "Budget Chapter" creation from the order form.
-- [ ] Phase 5.3: **Testing & QA** — Comprehensive unit testing coverage for service layers.
+- [x] Phase 5.1: **Enhanced Visualization** — Modern order details view and visual audit timeline.
+- [x] Phase 5.2: **Extended CRUD** — Implement "Edit Debtor" functionality and direct "Budget Chapter" creation from the order form.
+- [x] Phase 5.3: **Testing & QA** — Comprehensive unit testing coverage for service layers.
 - [ ] Phase 5.4: **DevOps** — Automated database backup/restore utility and final installer packaging.
 

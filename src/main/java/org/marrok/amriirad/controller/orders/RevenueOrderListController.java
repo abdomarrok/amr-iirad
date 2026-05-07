@@ -174,9 +174,23 @@ public class RevenueOrderListController implements Initializable {
         tableView.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
                 RevenueOrder selected = tableView.getSelectionModel().getSelectedItem();
-                openFormModal(selected);
+                // If DRAFT, allow editing; otherwise, show details view
+                if (selected.getStatus() == org.marrok.amriirad.model.OrderStatus.DRAFT) {
+                    openFormModal(selected);
+                } else {
+                    openDetailsModal(selected);
+                }
             }
         });
+    }
+
+    private void openDetailsModal(RevenueOrder order) {
+        Stage stage = (Stage) tableView.getScene().getWindow();
+        FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/orders/order-details-view.fxml", "تفاصيل أمر الإيراد");
+        if (loader != null) {
+            OrderDetailsController controller = loader.getController();
+            controller.initForView(order);
+        }
     }
 
     private void loadDataAsync() {

@@ -26,6 +26,7 @@ public abstract class BaseFormController {
     }
 
     protected abstract Logger getLogger();
+    protected abstract boolean validateForm();
 
     @FXML
     protected void handleCancel() {

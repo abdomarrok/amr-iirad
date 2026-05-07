@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox spacing="20" styleClass="main-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.settings.AuditLogController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label styleClass="h2" text="سجل العمليات" />
+            <Label styleClass="text-muted" text="متابعة كافة التحركات والتغييرات التي تمت على النظام" />
+        </VBox>
+        <Button onAction="#handleRefresh" styleClass="button-secondary">
+            <graphic>
+                <FontIcon iconLiteral="fas-sync-alt" iconSize="18" />
+            </graphic>
+            <text>تحديث</text>
+        </Button>
+    </HBox>
+
+    <TableView fx:id="logTable" VBox.vgrow="ALWAYS" styleClass="data-table">
+        <columns>
+            <TableColumn fx:id="colId" prefWidth="60" text="ID" />
+            <TableColumn fx:id="colDate" prefWidth="160" text="التاريخ والوقت" />
+            <TableColumn fx:id="colUser" prefWidth="120" text="المستخدم" />
+            <TableColumn fx:id="colAction" prefWidth="100" text="العملية" />
+            <TableColumn fx:id="colTable" prefWidth="120" text="الجدول" />
+            <TableColumn fx:id="colRecordId" prefWidth="80" text="رقم السجل" />
+            <TableColumn fx:id="colDetails" prefWidth="300" text="التفاصيل" />
+        </columns>
+        <placeholder>
+            <Label text="لا توجد عمليات مسجلة" />
+        </placeholder>
+    </TableView>
+</VBox>

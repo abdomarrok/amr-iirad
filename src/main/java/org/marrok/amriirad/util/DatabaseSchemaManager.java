@@ -226,6 +226,13 @@ public class DatabaseSchemaManager {
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """);
             
+            // -- Performance Indexes --
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_budget_chapter_parent ON budget_chapter(parent_id)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_revenue_order_fiscal_year ON revenue_order(fiscal_year_id)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_revenue_order_status ON revenue_order(status)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_audit_log_performed_at ON audit_log(performed_at)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_audit_log_record ON audit_log(table_name, record_id)");
+            
             // -- Migration for existing debtor table --
             stmt.execute("ALTER TABLE debtor ADD COLUMN IF NOT EXISTS bank_account VARCHAR(100)");
             stmt.execute("ALTER TABLE debtor ADD COLUMN IF NOT EXISTS cnas_number VARCHAR(50)");

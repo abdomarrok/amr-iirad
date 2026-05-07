@@ -34,6 +34,7 @@ public class AppContext implements Disposable {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PermissionRepository permissionRepository;
+    private AuditLogRepository auditLogRepository;
 
     // Services
     private ConcurrencyManager concurrencyManager;
@@ -45,6 +46,7 @@ public class AppContext implements Disposable {
     private DispatchSlipService dispatchSlipService;
     private AuthService authService;
     private InstitutionService institutionService;
+    private AuditLogService auditLogService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
     private AppContext() {
@@ -82,6 +84,7 @@ public class AppContext implements Disposable {
         this.userRepository = new UserRepository();
         this.roleRepository = new RoleRepository();
         this.permissionRepository = new PermissionRepository();
+        this.auditLogRepository = new AuditLogRepository();
     }
 
     private void initializeServices() {
@@ -108,6 +111,7 @@ public class AppContext implements Disposable {
         );
         this.authService = new AuthService(userRepository);
         this.institutionService = new InstitutionService(institutionRepository, auditService);
+        this.auditLogService = new AuditLogService(auditLogRepository);
     }
 
     /**
@@ -125,6 +129,7 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
         if (clazz == AuthService.class) return authService;
         if (clazz == InstitutionService.class) return institutionService;
+        if (clazz == AuditLogService.class) return auditLogService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -151,6 +156,12 @@ public class AppContext implements Disposable {
         if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderFormController.class) 
             return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, concurrencyManager);
         
+        if (clazz == org.marrok.amriirad.controller.orders.OrderDetailsController.class) 
+            return new org.marrok.amriirad.controller.orders.OrderDetailsController(reportService, tafqeetService, institutionService, concurrencyManager);
+        
+        if (clazz == org.marrok.amriirad.controller.orders.BudgetChapterFormController.class) 
+            return new org.marrok.amriirad.controller.orders.BudgetChapterFormController(budgetChapterRepository, concurrencyManager);
+        
         if (clazz == org.marrok.amriirad.controller.orders.CancellationFormController.class) 
             return new org.marrok.amriirad.controller.orders.CancellationFormController(cancellationOrderService, reportService, tafqeetService, concurrencyManager);
         
@@ -169,6 +180,9 @@ public class AppContext implements Disposable {
         if (clazz == org.marrok.amriirad.controller.settings.ServerConfigController.class) 
             return new org.marrok.amriirad.controller.settings.ServerConfigController();
             
+        if (clazz == org.marrok.amriirad.controller.settings.AuditLogController.class)
+            return new org.marrok.amriirad.controller.settings.AuditLogController(auditLogService, concurrencyManager);
+
         if (clazz == org.marrok.amriirad.controller.login.LoginController.class) 
             return new org.marrok.amriirad.controller.login.LoginController(authService, concurrencyManager);
 
@@ -238,6 +252,7 @@ public class AppContext implements Disposable {
         if (clazz == UserRepository.class) return userRepository;
         if (clazz == RoleRepository.class) return roleRepository;
         if (clazz == PermissionRepository.class) return permissionRepository;
+        if (clazz == AuditLogRepository.class) return auditLogRepository;
         
         return null;
     }
@@ -257,6 +272,7 @@ public class AppContext implements Disposable {
     public DispatchSlipService getDispatchSlipService() { return dispatchSlipService; }
     public AuthService getAuthService() { return authService; }
     public InstitutionService getInstitutionService() { return institutionService; }
+    public AuditLogService getAuditLogService() { return auditLogService; }
 
     public BudgetChapterRepository getBudgetChapterRepository() { return budgetChapterRepository; }
     public DebtorRepository getDebtorRepository() { return debtorRepository; }
