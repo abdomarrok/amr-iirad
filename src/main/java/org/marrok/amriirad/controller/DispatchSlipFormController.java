@@ -21,7 +21,8 @@ import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.service.DispatchSlipService;
 import org.marrok.amriirad.service.ReportService;
 import org.marrok.amriirad.service.TafqeetService;
-import org.marrok.amriirad.util.GeneralUtil;
+import org.marrok.amriirad.util.DialogHelper;
+import org.marrok.amriirad.util.ReportParamBuilder;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
-public class DispatchSlipFormController implements javafx.fxml.Initializable {
+public class DispatchSlipFormController extends BaseFormController implements javafx.fxml.Initializable {
 
     private static final Logger logger = LogManager.getLogger(DispatchSlipFormController.class);
 
@@ -59,7 +60,6 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
     private final DispatchSlipService slipService;
     private final ReportService reportService;
     private final TafqeetService tafqeetService;
-    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     // Data
     private ObservableList<OrderWrapper> allOrders;
@@ -72,12 +72,12 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
                                       ReportService reportService,
                                       TafqeetService tafqeetService,
                                       org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
         this.fyRepo = fyRepo;
         this.orderRepo = orderRepo;
         this.slipService = slipService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
-        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -273,14 +273,9 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
             createdSlip -> {
                 printAnnexe5(createdSlip);
                 closeWindow();
-                if (onSuccess != null) {
-                    onSuccess.run();
-                }
+                runOnSuccess();
             },
-            err -> {
-                logger.error("Failed to create dispatch slip", err);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
+            err -> showError(err.getMessage())
         );
     }
 
@@ -318,44 +313,34 @@ public class DispatchSlipFormController implements javafx.fxml.Initializable {
                 dataSource
             );
         } catch (Exception e) {
-            logger.error("Failed to print Annexe 5", e);
-            GeneralUtil.showAlert(Alert.AlertType.ERROR, "خطأ في الطباعة",
-                "تعذر طباعة الملحق 5: " + e.getMessage());
+            showError("خطأ في الطباعة: " + e.getMessage());
         }
     }
 
     private boolean validateForm() {
-        errorLabel.setText("");
+        clearError();
 
         // Check if at least one order is selected
         int selectedCount = (int) allOrders.stream().filter(OrderWrapper::isSelected).count();
         if (selectedCount == 0) {
-            errorLabel.setText("❌ يجب تحديد أمر إيراد واحد على الأقل.");
+            showError("يجب تحديد أمر إيراد واحد على الأقل.");
             return false;
         }
 
         // Check if dispatch date is set
         if (dispatchDatePicker.getValue() == null) {
-            errorLabel.setText("❌ يجب تحديد تاريخ الإرسال.");
+            showError("يجب تحديد تاريخ الإرسال.");
             return false;
         }
 
         return true;
     }
 
-    @FXML
-    private void handleCancel() {
-        closeWindow();
+    @Override
+    protected Logger getLogger() {
+        return logger;
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) saveBtn.getScene().getWindow();
-        stage.close();
-    }
-
-    /**
-     * Initialize the form with a success callback.
-     */
     public void initData(Runnable onSuccess) {
         this.onSuccess = onSuccess;
     }

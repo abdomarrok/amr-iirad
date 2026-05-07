@@ -8,17 +8,20 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.core.ConcurrencyManager;
+import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.model.RevenueOrderCancellation;
 import org.marrok.amriirad.model.CancellationType;
-import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.service.CancellationOrderService;
+import org.marrok.amriirad.util.ReportParamBuilder;
 
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-public class CancellationFormController implements Initializable {
+public class CancellationFormController extends BaseFormController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(CancellationFormController.class);
 
@@ -38,16 +41,15 @@ public class CancellationFormController implements Initializable {
     private final CancellationOrderService cancellationService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
-    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public CancellationFormController(CancellationOrderService cancellationService,
                                      org.marrok.amriirad.service.ReportService reportService,
                                      org.marrok.amriirad.service.TafqeetService tafqeetService,
                                      org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
         this.cancellationService = cancellationService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
-        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -104,78 +106,56 @@ public class CancellationFormController implements Initializable {
             res -> {
                 printAnnexe(cancellation);
                 closeWindow();
-                if (onSuccess != null) onSuccess.run();
+                runOnSuccess();
             },
-            err -> {
-                logger.error("Failed to process cancellation", err);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
+            err -> showError(err.getMessage())
         );
     }
 
     private void printAnnexe(RevenueOrderCancellation cancellation) {
-        try {
-            
-            java.util.Map<String, Object> params = new java.util.HashMap<>();
-            params.put("CANCEL_NUMBER", cancellation.getCancellationNumber() != null ? cancellation.getCancellationNumber() : "");
-            params.put("ORDER_NUMBER", targetOrder.getOrderNumber() != null ? targetOrder.getOrderNumber() : "");
-            params.put("DEBTOR_NAME", targetOrder.getDebtor() != null ? targetOrder.getDebtor().getFullName() : "");
-            params.put("DATE", cancellation.getCancellationDate() != null ? cancellation.getCancellationDate().toString() : "");
-            params.put("REASON", cancellation.getReasonAr() != null ? cancellation.getReasonAr() : "");
-            
-            String reportPath;
-            if (cancellation.getCancellationType() == CancellationType.REDUCTION) {
-                params.put("AMOUNT", cancellation.getReducedAmount() != null ? cancellation.getReducedAmount().toString() : "");
-                params.put("AMOUNT_WORDS", cancellation.getReducedAmount() != null ? tafqeetService.toArabicWords(cancellation.getReducedAmount()) : "");
-                reportPath = "/org/marrok/amriirad/report/annexe4_reduction.jrxml";
-            } else {
-                params.put("AMOUNT", targetOrder.getAmount() != null ? targetOrder.getAmount().toString() : "");
-                params.put("AMOUNT_WORDS", targetOrder.getAmount() != null ? tafqeetService.toArabicWords(targetOrder.getAmount()) : "");
-                reportPath = "/org/marrok/amriirad/report/annexe3_full_cancel.jrxml";
-            }
-            
-            reportService.showReportWithParamsOnly(reportPath, params);
-        } catch (Exception e) {
-            logger.error("Failed to auto-print cancellation report", e);
-        }
+        java.util.Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+            .withCancellation(cancellation)
+            .build();
+        
+        String reportPath = cancellation.getCancellationType() == CancellationType.REDUCTION ? 
+            "/org/marrok/amriirad/report/annexe4_reduction.jrxml" : 
+            "/org/marrok/amriirad/report/annexe3_full_cancel.jrxml";
+        
+        reportService.showReportWithParamsOnly(reportPath, params);
     }
 
     private boolean validateForm() {
-        errorLabel.setText("");
+        clearError();
         if (targetOrder == null) {
-            errorLabel.setText("❌ خطأ داخلي: لا يوجد أمر إيراد مستهدف.");
+            showError("خطأ داخلي: لا يوجد أمر إيراد مستهدف.");
             return false;
         }
         if (reasonField.getText() == null || reasonField.getText().trim().isEmpty()) {
-            errorLabel.setText("❌ يجب إدخال سبب الإلغاء/التخفيض.");
+            showError("يجب إدخال سبب الإلغاء/التخفيض.");
             return false;
         }
         if (typeCombo.getValue() == CancellationType.REDUCTION) {
             try {
                 BigDecimal reduced = new BigDecimal(reducedAmountField.getText().trim());
                 if (reduced.compareTo(BigDecimal.ZERO) <= 0) {
-                    errorLabel.setText("❌ المبلغ المخفض يجب أن يكون أكبر من صفر.");
+                    showError("المبلغ المخفض يجب أن يكون أكبر من صفر.");
                     return false;
                 }
                 if (reduced.compareTo(targetOrder.getAmount()) >= 0) {
-                    errorLabel.setText("❌ المبلغ المخفض يجب أن يكون أقل من المبلغ الأصلي (" + targetOrder.getAmount() + ").");
+                    showError("المبلغ المخفض يجب أن يكون أقل من المبلغ الأصلي (" + targetOrder.getAmount() + ").");
                     return false;
                 }
             } catch (Exception e) {
-                errorLabel.setText("❌ قيمة المبلغ المخفض غير صالحة.");
+                showError("قيمة المبلغ المخفض غير صالحة.");
                 return false;
             }
         }
         return true;
     }
 
-    @FXML
-    private void handleCancel() {
-        closeWindow();
+    @Override
+    protected Logger getLogger() {
+        return logger;
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) saveBtn.getScene().getWindow();
-        stage.close();
-    }
 }

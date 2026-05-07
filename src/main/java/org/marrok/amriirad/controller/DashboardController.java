@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import org.marrok.amriirad.util.GeneralUtil;
+import org.marrok.amriirad.util.SceneManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.model.FiscalYear;
@@ -124,7 +124,7 @@ public class DashboardController implements Initializable {
     @FXML
     private void handleNewOrder() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
-        FXMLLoader loader = GeneralUtil.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", "إنشاء أمر إيراد جديد");
+        FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", "إنشاء أمر إيراد جديد");
         if (loader != null) {
             RevenueOrderFormController controller = loader.getController();
             controller.initForCreate(this::refreshStats);
@@ -132,20 +132,20 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    private void handleOrderList() {
+    private void handleViewOrders() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
-        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/order-list-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/order-list-view.fxml");
     }
 
     @FXML
-    private void handleDebtors() {
+    private void handleViewDebtors() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
-        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/debtor-list-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/debtor-list-view.fxml");
     }
 
     @FXML
-    private void handleDispatch() {
+    private void handleViewSlips() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
-        GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dispatch-slip-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dispatch-slip-view.fxml");
     }
 }

@@ -23,6 +23,8 @@ import org.marrok.amriirad.repository.DebtorRepository;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import org.marrok.amriirad.ui.AsyncTableLoader;
+import org.marrok.amriirad.util.SceneManager;
 
 public class DebtorListController implements Initializable {
 
@@ -40,8 +42,7 @@ public class DebtorListController implements Initializable {
     @FXML private ComboBox<DebtorType> typeFilterCombo;
     @FXML private ProgressIndicator loadingIndicator;
 
-    private ObservableList<Debtor> masterList;
-    private FilteredList<Debtor> filteredList;
+    private AsyncTableLoader<Debtor> tableLoader;
 
     private final DebtorRepository debtorRepo;
     private final ConcurrencyManager concurrencyManager;
@@ -53,6 +54,7 @@ public class DebtorListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
         initColumns();
         setupFilters();
         setupTableInteraction();
@@ -94,6 +96,7 @@ public class DebtorListController implements Initializable {
     }
 
     private void updatePredicate() {
+        FilteredList<Debtor> filteredList = tableLoader.getFilteredList();
         if (filteredList == null) return;
         
         String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
@@ -124,33 +127,13 @@ public class DebtorListController implements Initializable {
     }
 
     private void loadDataAsync() {
-        loadingIndicator.setVisible(true);
-        loadingIndicator.setManaged(true);
-        
-        concurrencyManager.runAsync(
-            () -> debtorRepo.findAll(),
-            debtors -> {
-                masterList = FXCollections.observableArrayList(debtors);
-                filteredList = new FilteredList<>(masterList, p -> true);
-                SortedList<Debtor> sortedList = new SortedList<>(filteredList);
-                sortedList.comparatorProperty().bind(tableView.comparatorProperty());
-                tableView.setItems(sortedList);
-                
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
-            },
-            err -> {
-                logger.error("Failed to load debtors", err);
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
-            }
-        );
+        tableLoader.load(() -> debtorRepo.findAll());
     }
 
     @FXML
     private void handleNewDebtor() {
         Stage owner = (Stage) tableView.getScene().getWindow();
-        javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
+        FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
         if (loader != null) {
             DebtorFormController controller = loader.getController();
             controller.initForCreate(() -> loadDataAsync());
@@ -159,7 +142,7 @@ public class DebtorListController implements Initializable {
 
     @FXML
     private void handleBack() {
-        org.marrok.amriirad.util.GeneralUtil.loadScene(
+        SceneManager.loadScene(
             (Stage) tableView.getScene().getWindow(),
             "/org/marrok/amriirad/view/dashboard-view.fxml"
         );

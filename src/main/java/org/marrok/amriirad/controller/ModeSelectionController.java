@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.marrok.amriirad.util.AppMode;
 import org.marrok.amriirad.util.AppSettings;
+import org.marrok.amriirad.util.SceneManager;
+import org.marrok.amriirad.util.DialogHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -145,11 +147,7 @@ public class ModeSelectionController implements Initializable {
                             localBtn.setDisable(false);
                             serverBtn.setDisable(false);
                             continueBtn.setText("متابعة");
-                            org.marrok.amriirad.util.GeneralUtil.showAlertWithOutTimelimit(
-                                javafx.scene.control.Alert.AlertType.ERROR,
-                                "خطأ",
-                                "فشل تهيئة قاعدة البيانات المحلية: " + ex.getMessage()
-                            );
+                            DialogHelper.showError("خطأ", "فشل بدء قاعدة البيانات المحلية.");
                         });
                     }
                 });
@@ -161,7 +159,7 @@ public class ModeSelectionController implements Initializable {
     }
 
     private void navigateToServerConfig() {
-        org.marrok.amriirad.util.GeneralUtil.loadScene(
+        SceneManager.loadScene(
             (Stage) continueBtn.getScene().getWindow(),
             "/org/marrok/amriirad/view/server-config-view.fxml"
         );
@@ -169,7 +167,7 @@ public class ModeSelectionController implements Initializable {
 
     private void navigateToDashboard() {
         Stage stage = (Stage) continueBtn.getScene().getWindow();
-        org.marrok.amriirad.util.GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
         stage.setMaximized(true);
     }
 }

@@ -15,7 +15,7 @@ import org.marrok.amriirad.repository.DebtorRepository;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DebtorFormController implements Initializable {
+public class DebtorFormController extends BaseFormController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(DebtorFormController.class);
 
@@ -29,16 +29,13 @@ public class DebtorFormController implements Initializable {
     @FXML private TextField cnasNumberField;
     @FXML private TextField nifNumberField;
     @FXML private Label errorLabel;
-    @FXML private Button saveBtn;
-
+    
     private final DebtorRepository debtorRepo;
-    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
     private Debtor currentDebtor;
-    private Runnable onSuccess;
 
-    public DebtorFormController(DebtorRepository debtorRepo, org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
+    public DebtorFormController(DebtorRepository debtorRepo, ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
         this.debtorRepo = debtorRepo;
-        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -86,6 +83,7 @@ public class DebtorFormController implements Initializable {
     @FXML
     private void handleSave() {
         if (!validateForm()) return;
+        clearError();
 
         currentDebtor.setDebtorType(typeCombo.getValue());
         currentDebtor.setFullName(fullNameField.getText().trim());
@@ -107,31 +105,24 @@ public class DebtorFormController implements Initializable {
             },
             res -> {
                 closeWindow();
-                if (onSuccess != null) onSuccess.run();
+                runOnSuccess();
             },
-            err -> {
-                logger.error("Failed to save debtor", err);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
+            err -> showError(err.getMessage())
         );
     }
 
     private boolean validateForm() {
-        errorLabel.setText("");
+        clearError();
         if (fullNameField.getText() == null || fullNameField.getText().trim().isEmpty()) {
-            errorLabel.setText("❌ الاسم الكامل مطلوب.");
+            showError("الاسم الكامل مطلوب.");
             return false;
         }
         return true;
     }
 
-    @FXML
-    private void handleCancel() {
-        closeWindow();
+    @Override
+    protected Logger getLogger() {
+        return logger;
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) saveBtn.getScene().getWindow();
-        stage.close();
-    }
 }

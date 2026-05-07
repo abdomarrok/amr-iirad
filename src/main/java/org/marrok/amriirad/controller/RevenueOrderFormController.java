@@ -18,6 +18,8 @@ import org.marrok.amriirad.repository.BudgetChapterRepository;
 import org.marrok.amriirad.repository.DebtorRepository;
 import org.marrok.amriirad.repository.FiscalYearRepository;
 import org.marrok.amriirad.service.RevenueOrderService;
+import org.marrok.amriirad.util.ReportParamBuilder;
+import org.marrok.amriirad.util.SceneManager;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -25,7 +27,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class RevenueOrderFormController implements Initializable {
+public class RevenueOrderFormController extends BaseFormController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(RevenueOrderFormController.class);
 
@@ -49,7 +51,6 @@ public class RevenueOrderFormController implements Initializable {
     private final RevenueOrderService orderService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;
-    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public RevenueOrderFormController(FiscalYearRepository fyRepo, 
                                      DebtorRepository debtorRepo, 
@@ -58,18 +59,17 @@ public class RevenueOrderFormController implements Initializable {
                                      org.marrok.amriirad.service.ReportService reportService,
                                      org.marrok.amriirad.service.TafqeetService tafqeetService,
                                      org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
         this.fyRepo = fyRepo;
         this.debtorRepo = debtorRepo;
         this.chapterRepo = chapterRepo;
         this.orderService = orderService;
         this.reportService = reportService;
         this.tafqeetService = tafqeetService;
-        this.concurrencyManager = concurrencyManager;
     }
 
     private FiscalYear activeYear;
     private RevenueOrder currentOrder;
-    private Runnable onSuccess;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -127,7 +127,7 @@ public class RevenueOrderFormController implements Initializable {
                     fiscalYearField.setText(activeYear.getYearLabel());
                     currentOrder.setFiscalYear(activeYear);
                 } else {
-                    errorLabel.setText("❌ لا توجد سنة مالية مفعّلة.");
+                    showError("لا توجد سنة مالية مفعّلة.");
                     saveBtn.setDisable(true);
                 }
 
@@ -147,8 +147,7 @@ public class RevenueOrderFormController implements Initializable {
                 }
             },
             err -> {
-                logger.error("Failed to load form data", err);
-                errorLabel.setText("❌ خطأ في تحميل البيانات الأساسية.");
+                showError("خطأ في تحميل البيانات الأساسية: " + err.getMessage());
             }
         );
     }
@@ -156,7 +155,7 @@ public class RevenueOrderFormController implements Initializable {
     @FXML
     private void handleNewDebtor() {
         Stage owner = (Stage) saveBtn.getScene().getWindow();
-        javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
+        javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtor-form-view.fxml", "إضافة مدين جديد");
         if (loader != null) {
             DebtorFormController controller = loader.getController();
             controller.initForCreate(() -> loadDropdownData());
@@ -166,6 +165,7 @@ public class RevenueOrderFormController implements Initializable {
     @FXML
     private void handleSave() {
         if (!validateForm()) return;
+        clearError();
         populateOrder();
 
         concurrencyManager.runAsync(
@@ -180,18 +180,16 @@ public class RevenueOrderFormController implements Initializable {
             },
             res -> {
                 closeWindow();
-                if (onSuccess != null) onSuccess.run();
+                runOnSuccess();
             },
-            err -> {
-                logger.error("Failed to save order", err);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
+            err -> showError(err.getMessage())
         );
     }
 
     @FXML
     private void handleIssue() {
         if (!validateForm()) return;
+        clearError();
         populateOrder();
 
         concurrencyManager.runAsync(
@@ -202,37 +200,34 @@ public class RevenueOrderFormController implements Initializable {
             },
             res -> {
                 closeWindow();
-                if (onSuccess != null) onSuccess.run();
+                runOnSuccess();
             },
-            err -> {
-                logger.error("Failed to issue order", err);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
+            err -> showError(err.getMessage())
         );
     }
 
     private boolean validateForm() {
-        errorLabel.setText("");
+        clearError();
         if (debtorCombo.getValue() == null) {
-            errorLabel.setText("❌ يجب اختيار المدين");
+            showError("يجب اختيار المدين");
             return false;
         }
         if (budgetChapterCombo.getValue() == null) {
-            errorLabel.setText("❌ يجب اختيار محور الميزانية");
+            showError("يجب اختيار محور الميزانية");
             return false;
         }
         try {
             BigDecimal amt = new BigDecimal(amountField.getText().trim());
             if (amt.compareTo(BigDecimal.ZERO) <= 0) {
-                errorLabel.setText("❌ المبلغ يجب أن يكون أكبر من صفر");
+                showError("المبلغ يجب أن يكون أكبر من صفر");
                 return false;
             }
         } catch (Exception e) {
-            errorLabel.setText("❌ المبلغ غير صالح");
+            showError("المبلغ غير صالح");
             return false;
         }
         if (objectField.getText() == null || objectField.getText().trim().isEmpty()) {
-            errorLabel.setText("❌ يجب إدخال موضوع الإيراد (الأسباب)");
+            showError("يجب إدخال موضوع الإيراد (الأسباب)");
             return false;
         }
         return true;
@@ -246,14 +241,9 @@ public class RevenueOrderFormController implements Initializable {
         currentOrder.setObjectAr(objectField.getText().trim());
     }
 
-    @FXML
-    private void handleCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage stage = (Stage) saveBtn.getScene().getWindow();
-        stage.close();
+    @Override
+    protected Logger getLogger() {
+        return logger;
     }
 
     @FXML
@@ -271,48 +261,15 @@ public class RevenueOrderFormController implements Initializable {
         
         concurrencyManager.runAsync(
             () -> {
-                java.util.Map<String, Object> params = new java.util.HashMap<>();
-                
-                // Order & Fiscal Year
-                params.put("ORDER_NUMBER", currentOrder.getOrderNumber() != null ? currentOrder.getOrderNumber() : "");
-                params.put("FISCAL_YEAR", currentOrder.getFiscalYear() != null ? 
-                    String.valueOf(currentOrder.getFiscalYear().getYearLabel()) : "");
-                params.put("ISSUE_DATE", currentOrder.getIssueDate() != null ? 
-                    currentOrder.getIssueDate().toString() : "");
-                
-                // Debtor Information (from Debtor entity)
-                org.marrok.amriirad.model.Debtor debtor = currentOrder.getDebtor();
-                params.put("DEBTOR_NAME", debtor != null ? debtor.getFullName() : "");
-                params.put("DEBTOR_ADDRESS", debtor != null ? debtor.getAddress() : "");
-                params.put("DEBTOR_ACCOUNT", debtor != null ? (debtor.getBankAccount() != null ? debtor.getBankAccount() : "") : "");
-                params.put("DEBTOR_CNAS", debtor != null ? (debtor.getCnasNumber() != null ? debtor.getCnasNumber() : "") : "");
-                params.put("DEBTOR_NIF", debtor != null ? (debtor.getNifNumber() != null ? debtor.getNifNumber() : "") : "");
-                
-                // Budget Information
-                params.put("BUDGET_CHAPTER", currentOrder.getBudgetChapter() != null ? 
-                    currentOrder.getBudgetChapter().getCode() : "");
-                
-                // Financial Information
-                params.put("AMOUNT", currentOrder.getAmount() != null ? 
-                    String.format("%,.2f", currentOrder.getAmount()) : "0.00");
-                params.put("AMOUNT_WORDS", currentOrder.getAmount() != null ? 
-                    tafqeetService.toArabicWords(currentOrder.getAmount()) : "");
-                
-                // Content Fields
-                params.put("REASON_AR", currentOrder.getObjectAr() != null ? 
-                    currentOrder.getObjectAr() : "");
-                params.put("LIQUIDATION_BASIS", currentOrder.getObjectAr() != null ? 
-                    currentOrder.getObjectAr() : "");
-                params.put("TREASURY_REF", "1980000034/55"); // TODO: Make configurable via AppSettings
+                java.util.Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withOrder(currentOrder)
+                    .build();
                 
                 reportService.showReportWithParamsOnly(reportPath, params);
                 return true;
             },
             res -> logger.info("Print triggered for {}", reportPath),
-            err -> {
-                logger.error("Print failed", err);
-                errorLabel.setText("❌ خطأ في الطباعة: " + err.getMessage());
-            }
+            err -> showError("خطأ في الطباعة: " + err.getMessage())
         );
     }
 }

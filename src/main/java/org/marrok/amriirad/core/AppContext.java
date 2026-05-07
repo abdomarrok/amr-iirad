@@ -7,7 +7,9 @@ import org.marrok.amriirad.service.*;
 import org.marrok.amriirad.util.DatabaseConnection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Lightweight Dependency Injection container and application context.
@@ -36,6 +38,8 @@ public class AppContext implements Disposable {
     private RevenueOrderService revenueOrderService;
     private CancellationOrderService cancellationOrderService;
     private DispatchSlipService dispatchSlipService;
+    private final Map<Class<?>, Object> instances = new HashMap<>();
+    private String currentUser = "admin"; // Default for now
 
     private AppContext() {
         logger.info("Initializing AppContext...");
@@ -166,6 +170,14 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
         
         return null;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(String user) {
+        this.currentUser = user;
     }
 
     public void registerDisposable(Disposable disposable) {

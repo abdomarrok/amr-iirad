@@ -10,8 +10,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.marrok.amriirad.util.AppSettings;
+import org.marrok.amriirad.util.*;
+import org.marrok.amriirad.util.DatabaseSchemaManager;
 import org.marrok.amriirad.util.DatabaseConnection;
+import org.marrok.amriirad.util.AppMode;
+import org.marrok.amriirad.util.SceneManager;
+import org.marrok.amriirad.util.DialogHelper;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -31,6 +35,7 @@ public class ServerConfigController implements Initializable {
     @FXML private TextField userField;
     @FXML private PasswordField passwordField;
     @FXML private Label statusLabel;
+    @FXML private javafx.scene.control.Button saveBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -94,23 +99,23 @@ public class ServerConfigController implements Initializable {
 
         // Navigate to dashboard
         try {
-            org.marrok.amriirad.util.DatabaseConnection.initialize(org.marrok.amriirad.util.AppMode.SERVER);
-            org.marrok.amriirad.util.DatabaseSchemaManager.runMigrations();
+            DatabaseConnection.initialize(AppMode.SERVER);
+            DatabaseSchemaManager.runMigrations();
 
-            Stage stage = (Stage) hostField.getScene().getWindow();
-            org.marrok.amriirad.util.GeneralUtil.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+            Stage stage = (Stage) saveBtn.getScene().getWindow();
             stage.setMaximized(true);
-        } catch (Exception ex) {
-            logger.error("Failed to initialize database or load dashboard", ex);
+            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dashboard-view.fxml");
+        } catch (Exception e) {
+            logger.error("Database connection failed", e);
             statusLabel.setStyle("-fx-text-fill: -fx-theme-danger;");
-            statusLabel.setText("❌ خطأ في تهيئة قاعدة البيانات");
+            statusLabel.setText("❌ فشل الاتصال: " + e.getMessage());
         }
     }
 
     @FXML
     private void handleBack() {
-        org.marrok.amriirad.util.GeneralUtil.loadScene(
-            (Stage) hostField.getScene().getWindow(),
+        SceneManager.loadScene(
+            (Stage) saveBtn.getScene().getWindow(),
             "/org/marrok/amriirad/view/mode-selection-view.fxml"
         );
     }

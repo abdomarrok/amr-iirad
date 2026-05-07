@@ -14,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.marrok.amriirad.util.SceneManager;
 import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.DispatchSlip;
 import org.marrok.amriirad.model.RevenueOrder;
@@ -22,6 +23,7 @@ import org.marrok.amriirad.repository.DispatchSlipRepository;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
+import org.marrok.amriirad.ui.AsyncTableLoader;
 
 public class DispatchSlipController implements Initializable {
 
@@ -48,8 +50,7 @@ public class DispatchSlipController implements Initializable {
     @FXML private TableColumn<RevenueOrder, String> colOrderDebtor;
     @FXML private TableColumn<RevenueOrder, String> colOrderAmount;
 
-    private ObservableList<DispatchSlip> masterSlipsList;
-    private FilteredList<DispatchSlip> filteredSlipsList;
+    private AsyncTableLoader<DispatchSlip> tableLoader;
 
     private final DispatchSlipRepository slipRepo;
     private final org.marrok.amriirad.repository.FiscalYearRepository fyRepo;
@@ -71,6 +72,7 @@ public class DispatchSlipController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tableLoader = new AsyncTableLoader<>(concurrencyManager, slipsTable, loadingIndicator);
         initSlipsTable();
         initOrdersTable();
         setupSearchFilter();
@@ -104,6 +106,7 @@ public class DispatchSlipController implements Initializable {
 
     private void setupSearchFilter() {
         searchField.textProperty().addListener((obs, old, newVal) -> {
+            FilteredList<DispatchSlip> filteredSlipsList = tableLoader.getFilteredList();
             if (filteredSlipsList == null) return;
             String search = newVal == null ? "" : newVal.toLowerCase();
             filteredSlipsList.setPredicate(slip -> {
@@ -143,40 +146,19 @@ public class DispatchSlipController implements Initializable {
     }
 
     private void loadSlipsAsync() {
-        loadingIndicator.setVisible(true);
-        loadingIndicator.setManaged(true);
-
-        concurrencyManager.runAsync(
-            () -> {
-                var fy = fyRepo.findActive();
-                if (fy.isPresent()) {
-                    return slipRepo.findAll(fy.get().getId());
-                }
-                return java.util.List.<DispatchSlip>of();
-            },
-            slips -> {
-                masterSlipsList = FXCollections.observableArrayList(slips);
-                filteredSlipsList = new FilteredList<>(masterSlipsList, p -> true);
-                SortedList<DispatchSlip> sortedList = new SortedList<>(filteredSlipsList);
-                sortedList.comparatorProperty().bind(slipsTable.comparatorProperty());
-                slipsTable.setItems(sortedList);
-                
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
-            },
-            err -> {
-                logger.error("Failed to load dispatch slips", err);
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
+        tableLoader.load(() -> {
+            var fy = fyRepo.findActive();
+            if (fy.isPresent()) {
+                return slipRepo.findAll(fy.get().getId());
             }
-        );
+            return java.util.List.<DispatchSlip>of();
+        });
     }
 
     @FXML
     private void handleNewSlip() {
-        logger.info("Opening new dispatch slip creation modal...");
         Stage stage = (Stage) slipsTable.getScene().getWindow();
-        FXMLLoader loader = org.marrok.amriirad.util.GeneralUtil.openModal(
+        FXMLLoader loader = SceneManager.openModal(
             stage, 
             "/org/marrok/amriirad/view/dispatch-slip-form-view.fxml", 
             "إنشاء بوردرو إرسال جديد"
@@ -244,7 +226,7 @@ public class DispatchSlipController implements Initializable {
 
     @FXML
     private void handleBack() {
-        org.marrok.amriirad.util.GeneralUtil.loadScene(
+        SceneManager.loadScene(
             (Stage) slipsTable.getScene().getWindow(),
             "/org/marrok/amriirad/view/dashboard-view.fxml"
         );

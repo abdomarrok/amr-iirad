@@ -22,12 +22,13 @@ import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.repository.FiscalYearRepository;
 import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.service.RevenueOrderService;
-import org.marrok.amriirad.util.GeneralUtil;
+import org.marrok.amriirad.util.SceneManager;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import org.marrok.amriirad.ui.AsyncTableLoader;
 
 public class RevenueOrderListController implements Initializable {
 
@@ -45,8 +46,7 @@ public class RevenueOrderListController implements Initializable {
     @FXML private ComboBox<OrderStatus> statusFilterCombo;
     @FXML private ProgressIndicator loadingIndicator;
 
-    private ObservableList<RevenueOrder> masterList;
-    private FilteredList<RevenueOrder> filteredList;
+    private AsyncTableLoader<RevenueOrder> tableLoader;
 
     private final RevenueOrderService orderService;
     private final RevenueOrderRepository orderRepo;
@@ -67,6 +67,7 @@ public class RevenueOrderListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
         initColumns();
         setupFilters();
         setupTableInteraction();
@@ -127,6 +128,7 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void updatePredicate() {
+        FilteredList<RevenueOrder> filteredList = tableLoader.getFilteredList();
         if (filteredList == null) return;
         
         String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
@@ -158,34 +160,14 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void loadDataAsync() {
-        loadingIndicator.setVisible(true);
-        loadingIndicator.setManaged(true);
-        
-        concurrencyManager.runAsync(
-            () -> {
-                Optional<FiscalYear> activeFy = fyRepo.findActive();
-                if (activeFy.isPresent()) {
-                    activeYear = activeFy.get();
-                    return orderRepo.findAll(activeYear.getId());
-                }
-                return List.<RevenueOrder>of(); 
-            },
-            orders -> {
-                masterList = FXCollections.observableArrayList(orders);
-                filteredList = new FilteredList<>(masterList, p -> true);
-                SortedList<RevenueOrder> sortedList = new SortedList<>(filteredList);
-                sortedList.comparatorProperty().bind(tableView.comparatorProperty());
-                tableView.setItems(sortedList);
-                
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
-            },
-            err -> {
-                logger.error("Failed to load revenue orders", err);
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
+        tableLoader.load(() -> {
+            Optional<FiscalYear> activeFy = fyRepo.findActive();
+            if (activeFy.isPresent()) {
+                activeYear = activeFy.get();
+                return orderRepo.findAll(activeYear.getId());
             }
-        );
+            return List.<RevenueOrder>of(); 
+        });
     }
 
     @FXML
@@ -197,7 +179,7 @@ public class RevenueOrderListController implements Initializable {
         Stage stage = (Stage) tableView.getScene().getWindow();
         String title = order == null ? "إنشاء أمر إيراد" : "تعديل أمر إيراد";
         
-        FXMLLoader loader = GeneralUtil.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", title);
+        FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/order-form-view.fxml", title);
         if (loader != null) {
             RevenueOrderFormController controller = loader.getController();
             if (order == null) {
@@ -210,7 +192,7 @@ public class RevenueOrderListController implements Initializable {
 
     @FXML
     private void handleBack() {
-        org.marrok.amriirad.util.GeneralUtil.loadScene(
+        SceneManager.loadScene(
             (Stage) tableView.getScene().getWindow(),
             "/org/marrok/amriirad/view/dashboard-view.fxml"
         );

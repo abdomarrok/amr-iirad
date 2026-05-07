@@ -87,7 +87,7 @@
                 </Button>
 
                 <!-- Revenue Orders List -->
-                <Button fx:id="orderListBtn" styleClass="btn-outline" onAction="#handleOrderList" prefWidth="220" prefHeight="80"
+                <Button fx:id="orderListBtn" styleClass="btn-outline" onAction="#handleViewOrders" prefWidth="220" prefHeight="80"
                         contentDisplay="TOP">
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
@@ -98,7 +98,7 @@
                 </Button>
 
                 <!-- Debtors -->
-                <Button fx:id="debtorsBtn" styleClass="btn-outline" onAction="#handleDebtors" prefWidth="220" prefHeight="80"
+                <Button fx:id="debtorsBtn" styleClass="btn-outline" onAction="#handleViewDebtors" prefWidth="220" prefHeight="80"
                         contentDisplay="TOP">
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
@@ -109,7 +109,7 @@
                 </Button>
 
                 <!-- Dispatch Slips -->
-                <Button fx:id="dispatchBtn" styleClass="btn-outline" onAction="#handleDispatch" prefWidth="220" prefHeight="80"
+                <Button fx:id="dispatchBtn" styleClass="btn-outline" onAction="#handleViewSlips" prefWidth="220" prefHeight="80"
                         contentDisplay="TOP">
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
