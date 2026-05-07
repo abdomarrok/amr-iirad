@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.marrok.amriirad.controller.PermissionManagementController">
+    
+    <top>
+        <VBox spacing="16" style="-fx-padding: 24;">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Button styleClass="btn-outline" onAction="#handleBack">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-arrow-right" iconSize="14" styleClass="icon-primary"/>
+                    </graphic>
+                </Button>
+                <VBox>
+                    <Label styleClass="text-title" text="إدارة الصلاحيات" />
+                    <Label styleClass="text-small" text="تخصيص صلاحيات الأدوار والمستخدمين" />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+        </VBox>
+    </top>
+    
+    <center>
+        <HBox spacing="20.0" style="-fx-padding: 0 24 24 24;">
+            <!-- Left Panel - Roles List -->
+            <VBox minWidth="260.0" prefWidth="260.0" spacing="15.0" styleClass="card">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+                
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <FontIcon iconLiteral="fas-user-shield" iconSize="20" styleClass="icon-primary" />
+                    <Label styleClass="text-header" text="الأدوار المتاحة" />
+                </HBox>
+                
+                <Separator />
+                
+                <ListView fx:id="rolesListView" VBox.vgrow="ALWAYS" styleClass="list-view" />
+                
+                <HBox alignment="CENTER" spacing="10.0">
+                    <Button fx:id="addRoleBtn" maxWidth="Infinity" onAction="#handleAddNewRole" styleClass="btn-primary" text="إضافة دور" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="deleteRoleBtn" onAction="#handleDeleteRole" styleClass="btn-danger" text="حذف" />
+                </HBox>
+            </VBox>
+            
+            <!-- Right Panel - Role Details & Permissions -->
+            <VBox spacing="20.0" HBox.hgrow="ALWAYS">
+                
+                <!-- Role Info Card -->
+                <VBox spacing="15.0" styleClass="card">
+                    <padding>
+                        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                    </padding>
+                    
+                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                        <FontIcon iconLiteral="fas-id-card" iconSize="18" styleClass="icon-primary" />
+                        <Label styleClass="text-header" text="معلومات الدور" />
+                        <Region HBox.hgrow="ALWAYS" />
+                    </HBox>
+                    
+                    <Separator />
+                    
+                    <HBox alignment="CENTER" spacing="20.0">
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label styleClass="text-small" text="اسم الدور" />
+                            <TextField fx:id="roleNameField" promptText="أدخل اسم الدور" />
+                        </VBox>
+                        
+                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                            <Label styleClass="text-small" text="الوصف" />
+                            <TextField fx:id="roleDescriptionField" promptText="وصف مختصر للدور" />
+                        </VBox>
+                        
+                        <VBox prefWidth="150.0" spacing="8.0">
+                            <Label styleClass="text-small" text="مستوى الصلاحية" />
+                            <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                <Spinner fx:id="privilegeLevelSpinner" editable="true" prefWidth="100" />
+                                <Label styleClass="text-muted" text="/99" />
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+                
+                <!-- Permissions Section -->
+                <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+                    
+                    <!-- View Permissions Card -->
+                    <VBox spacing="12.0" styleClass="card" HBox.hgrow="ALWAYS">
+                        <padding>
+                            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                        </padding>
+                        
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <FontIcon iconLiteral="fas-eye" iconSize="20" styleClass="icon-primary" />
+                            <Label styleClass="text-header" text="صلاحيات العرض" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleSelectAllView" styleClass="btn-outline" text="الكل" />
+                        </HBox>
+                        
+                        <Label styleClass="text-muted" text="الأقسام والصفحات المسموح الوصول إليها" />
+                        
+                        <Separator />
+                        
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+                            <VBox fx:id="viewPermissionsBox" spacing="12.0" />
+                        </ScrollPane>
+                    </VBox>
+                    
+                    <!-- Action Permissions Card -->
+                    <VBox spacing="12.0" styleClass="card" HBox.hgrow="ALWAYS">
+                        <padding>
+                            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                        </padding>
+                        
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                            <FontIcon iconLiteral="fas-tasks" iconSize="20" styleClass="icon-primary" />
+                            <Label styleClass="text-header" text="صلاحيات الإجراءات" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleSelectAllAction" styleClass="btn-outline" text="الكل" />
+                        </HBox>
+                        
+                        <Label styleClass="text-muted" text="العمليات المسموح تنفيذها (إضافة، تعديل، حذف)" />
+                        
+                        <Separator />
+                        
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+                            <VBox fx:id="actionPermissionsBox" spacing="12.0" />
+                        </ScrollPane>
+                    </VBox>
+                </HBox>
+                
+                <!-- Bottom Action Bar -->
+                <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="card" style="-fx-padding: 16;">
+                    <Button fx:id="saveBtn" onAction="#handleSave" prefHeight="40" prefWidth="150" styleClass="btn-primary" text="حفظ التغييرات" />
+                    <Button fx:id="cancelBtn" onAction="#handleCancel" prefHeight="40" prefWidth="120" styleClass="btn-outline" text="إلغاء" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="* التغييرات لن تُحفظ إلا بعد الضغط على زر الحفظ" styleClass="text-small, text-warning" />
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

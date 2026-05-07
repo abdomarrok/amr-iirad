@@ -41,6 +41,7 @@ public class DebtorListController implements Initializable {
     @FXML private TextField searchField;
     @FXML private ComboBox<DebtorType> typeFilterCombo;
     @FXML private ProgressIndicator loadingIndicator;
+    @FXML private Button addDebtorBtn;
 
     private AsyncTableLoader<Debtor> tableLoader;
 
@@ -54,11 +55,21 @@ public class DebtorListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        checkPermissions();
         tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
         initColumns();
         setupFilters();
         setupTableInteraction();
         loadDataAsync();
+    }
+
+    private void checkPermissions() {
+        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
+        if (addDebtorBtn != null) {
+            boolean canAdd = auth.canDo("debtors.create");
+            addDebtorBtn.setVisible(canAdd);
+            addDebtorBtn.setManaged(canAdd);
+        }
     }
 
     private void initColumns() {

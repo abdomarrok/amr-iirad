@@ -29,12 +29,18 @@ public class DashboardController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(DashboardController.class);
 
-    @FXML private ComboBox<FiscalYear> fiscalYearCombo;
+    @FXML private org.marrok.amriirad.controller.shared.TopBarController topBarController;
+    @FXML private org.marrok.amriirad.controller.shared.FooterController footerController;
+
     @FXML private Label totalOrdersLabel;
     @FXML private Label issuedOrdersLabel;
     @FXML private Label dispatchedOrdersLabel;
     @FXML private Label totalAmountLabel;
-    @FXML private Label statusBar;
+
+    @FXML private javafx.scene.control.Button newOrderBtn;
+    @FXML private javafx.scene.control.Button orderListBtn;
+    @FXML private javafx.scene.control.Button debtorsBtn;
+    @FXML private javafx.scene.control.Button dispatchBtn;
 
     private final FiscalYearRepository fyRepo;
     private final RevenueOrderRepository orderRepo;
@@ -46,33 +52,38 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadFiscalYears();
-        fiscalYearCombo.setOnAction(e -> refreshStats());
-    }
-
-    private void loadFiscalYears() {
-        try {
-            List<FiscalYear> years = fyRepo.findAll();
-            fiscalYearCombo.setItems(FXCollections.observableArrayList(years));
-
-            // Select the active year by default
-            fyRepo.findActive().ifPresent(active -> {
-                fiscalYearCombo.getSelectionModel().select(active);
-                refreshStats();
-            });
-
-            if (fiscalYearCombo.getSelectionModel().isEmpty() && !years.isEmpty()) {
-                fiscalYearCombo.getSelectionModel().selectFirst();
+        topBarController.setBackVisible(false); // No back on dashboard
+        
+        // Listen to fiscal year changes from the centralized top bar
+        topBarController.getFiscalYearCombo().getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
                 refreshStats();
             }
-        } catch (Exception e) {
-            logger.error("Failed to load fiscal years", e);
-            statusBar.setText("❌ خطأ في تحميل السنوات المالية");
+        });
+
+        checkPermissions();
+        refreshStats();
+    }
+
+    private void checkPermissions() {
+        org.marrok.amriirad.service.AuthService auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
+        
+        // Local action buttons
+        setBtnVisible(newOrderBtn, auth.canView("orders"));
+        setBtnVisible(orderListBtn, auth.canView("orders"));
+        setBtnVisible(debtorsBtn, auth.canView("debtors"));
+        setBtnVisible(dispatchBtn, auth.canView("orders"));
+    }
+
+    private void setBtnVisible(javafx.scene.control.Button btn, boolean visible) {
+        if (btn != null) {
+            btn.setVisible(visible);
+            btn.setManaged(visible);
         }
     }
 
     private void refreshStats() {
-        FiscalYear selected = fiscalYearCombo.getSelectionModel().getSelectedItem();
+        FiscalYear selected = topBarController.getFiscalYearCombo().getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
         try {
@@ -92,33 +103,13 @@ public class DashboardController implements Initializable {
             issuedOrdersLabel.setText(String.valueOf(issuedCount));
             dispatchedOrdersLabel.setText(String.valueOf(dispatchedCount));
             totalAmountLabel.setText(String.format("%,.2f", totalAmount));
-            statusBar.setText("تم تحديث البيانات — " + selected.getYearLabel());
+            
+            footerController.setStatus("تم تحديث البيانات — " + selected.getYearLabel());
 
         } catch (Exception e) {
             logger.error("Failed to refresh stats for year {}", selected.getYearLabel(), e);
-            statusBar.setText("❌ خطأ في تحميل الإحصائيات");
+            footerController.setStatus("❌ خطأ في تحميل الإحصائيات");
         }
-    }
-
-    // ===================== ACTION HANDLERS =====================
-
-    @FXML
-    private void handleAddFiscalYear() {
-        javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog(String.valueOf(java.time.LocalDate.now().getYear()));
-        dialog.setTitle("إضافة سنة مالية");
-        dialog.setHeaderText("إضافة سنة مالية جديدة");
-        dialog.setContentText("أدخل السنة (مثال: 2024):");
-
-        dialog.showAndWait().ifPresent(yearStr -> {
-            try {
-                fyRepo.save(yearStr.trim());
-                loadFiscalYears();
-                statusBar.setText("✅ تم إضافة السنة المالية " + yearStr);
-            } catch (Exception e) {
-                logger.error("Failed to save fiscal year", e);
-                statusBar.setText("❌ فشل الحفظ: " + e.getMessage());
-            }
-        });
     }
 
     @FXML
@@ -147,17 +138,5 @@ public class DashboardController implements Initializable {
     private void handleViewSlips() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
         SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dispatch-slip-view.fxml");
-    }
-
-    @FXML
-    private void handleEnterpriseSettings() {
-        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
-        SceneManager.openModal(stage, "/org/marrok/amriirad/view/enterprise-info-view.fxml", "إعدادات المؤسسة");
-    }
-
-    @FXML
-    private void handleViewUsers() {
-        // TODO: Implement user management view
-        statusBar.setText("ℹ️ ميزة إدارة المستخدمين ستتوفر قريباً");
     }
 }

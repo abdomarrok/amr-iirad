@@ -27,6 +27,10 @@ public class DialogHelper {
         showAlert(Alert.AlertType.ERROR, title, content, false);
     }
 
+    public static void showWarning(String title, String content) {
+        showAlert(Alert.AlertType.WARNING, title, content, false);
+    }
+
     public static boolean showConfirmation(String title, String content) {
         Alert alert = createAlert(Alert.AlertType.CONFIRMATION, title, content);
         Optional<ButtonType> result = alert.showAndWait();

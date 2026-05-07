@@ -45,6 +45,7 @@ public class RevenueOrderListController implements Initializable {
     @FXML private TextField searchField;
     @FXML private ComboBox<OrderStatus> statusFilterCombo;
     @FXML private ProgressIndicator loadingIndicator;
+    @FXML private Button addOrderBtn;
 
     private AsyncTableLoader<RevenueOrder> tableLoader;
 
@@ -67,11 +68,21 @@ public class RevenueOrderListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        checkPermissions();
         tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
         initColumns();
         setupFilters();
         setupTableInteraction();
         loadDataAsync();
+    }
+
+    private void checkPermissions() {
+        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
+        if (addOrderBtn != null) {
+            boolean canAdd = auth.canDo("orders.create");
+            addOrderBtn.setVisible(canAdd);
+            addOrderBtn.setManaged(canAdd);
+        }
     }
 
     private void initColumns() {

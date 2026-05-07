@@ -20,24 +20,67 @@ public class DatabaseSchemaManager {
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // -- app_user --
+            // -- 1. role --
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS role (
+                    id              INT AUTO_INCREMENT PRIMARY KEY,
+                    name            VARCHAR(50) NOT NULL UNIQUE,
+                    description     VARCHAR(255),
+                    privilege_level INT DEFAULT 25,
+                    is_protected    BOOLEAN DEFAULT FALSE,
+                    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // -- 2. permission --
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS permission (
+                    id          INT AUTO_INCREMENT PRIMARY KEY,
+                    code        VARCHAR(100) NOT NULL UNIQUE,
+                    type        ENUM('view', 'action') NOT NULL,
+                    category    VARCHAR(50),
+                    description VARCHAR(255)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // -- 3. role_permission --
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS role_permission (
+                    role_id         INT NOT NULL,
+                    permission_id   INT NOT NULL,
+                    PRIMARY KEY (role_id, permission_id),
+                    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE,
+                    FOREIGN KEY (permission_id) REFERENCES permission(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """);
+
+            // -- 4. app_user (Updated) --
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS app_user (
                     id          INT AUTO_INCREMENT PRIMARY KEY,
                     username    VARCHAR(50) NOT NULL UNIQUE,
                     password    VARCHAR(255) NOT NULL,
                     full_name   VARCHAR(100),
-                    role        ENUM('ADMIN', 'OPERATOR') NOT NULL DEFAULT 'OPERATOR',
+                    role_id     INT NOT NULL,
                     is_active   BOOLEAN DEFAULT TRUE,
-                    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+                    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE RESTRICT
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             """);
 
-            // Seed default admin (password: admin) - in production, this would be hashed
-            stmt.execute("""
-                INSERT IGNORE INTO app_user (username, password, full_name, role)
-                VALUES ('admin', 'admin', 'System Administrator', 'ADMIN')
-            """);
+            // Seed default roles
+            stmt.execute("INSERT IGNORE INTO role (id, name, description, privilege_level, is_protected) VALUES (1, 'ADMIN', 'مدير النظام', 100, TRUE)");
+            stmt.execute("INSERT IGNORE INTO role (id, name, description, privilege_level, is_protected) VALUES (2, 'OPERATOR', 'مستخدم عادي', 50, FALSE)");
+
+            // Seed default permissions
+            seedPermissions(stmt);
+
+            // Seed default admin (password: admin -> hashed)
+            String hashedAdminPass = org.marrok.amriirad.util.PasswordUtil.hashPassword("admin");
+            stmt.execute(String.format("""
+                INSERT IGNORE INTO app_user (username, password, full_name, role_id)
+                VALUES ('admin', '%s', 'مدير النظام', 1)
+            """, hashedAdminPass));
 
             // -- fiscal_year --
             stmt.execute("""
@@ -242,5 +285,36 @@ public class DatabaseSchemaManager {
             logger.error("Schema migration failed: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to initialize database schema", e);
         }
+    }
+
+    private static void seedPermissions(Statement stmt) throws SQLException {
+        // Dashboards
+        insertPermission(stmt, "dashboard.view", "view", "dashboard", "عرض لوحة التحكم");
+        
+        // Revenue Orders
+        insertPermission(stmt, "revenue_order.view", "view", "revenue_order", "عرض أوامر الإيرادات");
+        insertPermission(stmt, "revenue_order.create", "action", "revenue_order", "إنشاء أمر إيراد");
+        insertPermission(stmt, "revenue_order.edit", "action", "revenue_order", "تعديل أمر إيراد");
+        insertPermission(stmt, "revenue_order.delete", "action", "revenue_order", "حذف أمر إيراد");
+        insertPermission(stmt, "revenue_order.print", "action", "revenue_order", "طباعة أمر إيراد");
+        
+        // Debtors
+        insertPermission(stmt, "debtor.view", "view", "debtor", "عرض الملتزمين بالدفع");
+        insertPermission(stmt, "debtor.create", "action", "debtor", "إضافة ملتزم");
+        insertPermission(stmt, "debtor.edit", "action", "debtor", "تعديل ملتزم");
+        
+        // Settings & Users
+        insertPermission(stmt, "settings.view", "view", "settings", "عرض الإعدادات");
+        insertPermission(stmt, "users.manage", "action", "settings", "إدارة المستخدمين");
+        
+        // Roles & Permissions assigned to Admin by default
+        stmt.execute("INSERT IGNORE INTO role_permission (role_id, permission_id) SELECT 1, id FROM permission");
+    }
+
+    private static void insertPermission(Statement stmt, String code, String type, String category, String desc) throws SQLException {
+        stmt.execute(String.format(
+            "INSERT IGNORE INTO permission (code, type, category, description) VALUES ('%s', '%s', '%s', '%s')",
+            code, type, category, desc
+        ));
     }
 }

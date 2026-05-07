@@ -1,7 +1,7 @@
 # أمر بالإيراد — Mini-org.marrok.amriirad.App Project Plan
 ### Revenue Order Management System — Independent Module
 
-> **Document Status:** Implementation Phase — Architectural Refactor Complete (Phase 2 & 4 Alignment).
+> **Document Status:** Implementation Phase — Core Features Complete (Reporting, Dynamic Branding, RBAC & User Management).
 > **Parent Project:** WGEBUDG (Algerian Public Budget Management)
 > **Institution Context:** Ministry of Justice / Superior School of Magistracy (المدرسة العليا للقضاء)
 > **Reference Documents:**
@@ -108,7 +108,9 @@ This text is **mostly static** (institution-specific) with only the following fi
 - ✅ Amount-to-words (Tafqeet / التفقيط) in Arabic.
 
 ### 3.2 Out-of-Scope (for mini-app phase)
-- ❌ Full RBAC system (simplified: single admin user for now, full RBAC on WGEBUDG merge).
+- ✅ Database-backed User Management (Admin & Role-based foundation).
+- ✅ Dynamic Institution Branding (Headers, Ministry, Authorizing Officer).
+- ❌ Full RBAC enforcement in UI (Backend structure exists).
 - ❌ Treasury perception recording (link to WGEBUDG's treasury_perception table on merge).
 - ❌ Budget credit consumption tracking (belongs to the full WGEBUDG budget module).
 - ❌ Multi-dossier support (single institution, configured once).
@@ -138,8 +140,8 @@ The application will support two modes managed via `AppSettings` (using `java.ut
 
 ### 4.3 Authentication Flow (Inspired by GstockDz)
 1.  **Initial Run:** Checks `AppSettings`. Prompts for Mode Selection (Local/Network).
-2.  **Enterprise Info Check:** Before showing the login screen, checks if `InstitutionInfo` exists. If not, forces the user to the Setup Screen.
-3.  **Login:** `LoginController` uses an `AuthenticationService` running inside the `ConcurrencyManager` to keep the UI responsive. UI elements are disabled with a `ProgressIndicator` during authentication.
+2.  **Enterprise Info Check:** Before showing the login screen, checks if `institution_info` exists. If not, forces the user to the Setup Screen.
+3.  **Login:** `LoginController` uses an `AuthService` backed by the `app_user` table. UI elements are disabled with a `ProgressIndicator` during authentication.
 
 ### 4.4 Reporting Engine (JasperReports - Inspired by GstockDz)
 The application will use a centralized `ReportService` with the following characteristics:
@@ -574,11 +576,12 @@ amr-iirad/
 - [x] Standardized Navigation (SceneManager) and Alerts (DialogHelper).
 - [x] Cleaned up Report Parameter Mapping (ReportParamBuilder).
 
-### Phase 3 — Print & Report
-- [ ] Design all 5 `.jrxml` templates in JasperReports matching Instruction 08 layouts.
-- [ ] Implement `PrintService` to compile and fill the reports.
-- [ ] Implement `PrintPreviewController` for on-screen preview of all annexes before printing.
-- [ ] Test print output for RTL Arabic layout accuracy and Tafqeet correctly populating.
+### Phase 3 — Print & Report (Instruction 08 Compliance)
+- [x] Design all 5 `.jrxml` templates in JasperReports matching Instruction 08 layouts.
+- [x] Standardize Header Section (Republic, Ministry, Institution) across all 5 Annexes.
+- [x] Update Legal Narratives (Annexe 1 & 2) to match Decree 24-343.
+- [x] Implement `ReportService` and `ReportParamBuilder` for dynamic injection.
+- [x] Test print output for RTL Arabic layout accuracy and Tafqeet correctly populating.
 
 ### Phase 4 — Polish & Merge Readiness
 - [x] Architectural Migration: Implemented strict Constructor Injection for DI.

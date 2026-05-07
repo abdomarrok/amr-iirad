@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.repository.*;
 import org.marrok.amriirad.service.*;
+import org.marrok.amriirad.controller.*;
+import org.marrok.amriirad.controller.shared.*;
 import org.marrok.amriirad.util.DatabaseConnection;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class AppContext implements Disposable {
     private DispatchSlipRepository dispatchSlipRepository;
     private InstitutionRepository institutionRepository;
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private PermissionRepository permissionRepository;
 
     // Services
     private ConcurrencyManager concurrencyManager;
@@ -43,7 +47,6 @@ public class AppContext implements Disposable {
     private AuthService authService;
     private InstitutionService institutionService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
-    private String currentUser = "admin"; // Default for now
 
     private AppContext() {
         logger.info("Initializing AppContext...");
@@ -78,6 +81,8 @@ public class AppContext implements Disposable {
         this.dispatchSlipRepository = new DispatchSlipRepository();
         this.institutionRepository = new InstitutionRepository();
         this.userRepository = new UserRepository();
+        this.roleRepository = new RoleRepository();
+        this.permissionRepository = new PermissionRepository();
     }
 
     private void initializeServices() {
@@ -128,8 +133,13 @@ public class AppContext implements Disposable {
         if (clazz == RevenueOrderRepository.class) return revenueOrderRepository;
         if (clazz == CancellationOrderRepository.class) return cancellationOrderRepository;
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
-        if (clazz == InstitutionRepository.class) return institutionRepository;
-        if (clazz == UserRepository.class) return userRepository;
+        if (clazz == UserManagementController.class) return new UserManagementController(userRepository);
+        if (clazz == PermissionManagementController.class) return new PermissionManagementController(roleRepository, permissionRepository);
+        if (clazz == UserFormController.class) return new UserFormController(userRepository, roleRepository);
+        if (clazz == TopBarController.class) return new TopBarController(fiscalYearRepository, authService);
+        if (clazz == FooterController.class) return new FooterController(authService);
+        
+        if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
 
         // 2. Try constructor injection
         for (java.lang.reflect.Constructor<?> ctor : clazz.getConstructors()) {
@@ -184,16 +194,41 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
         if (clazz == InstitutionRepository.class) return institutionRepository;
         if (clazz == UserRepository.class) return userRepository;
+        if (clazz == RoleRepository.class) return roleRepository;
+        if (clazz == PermissionRepository.class) return permissionRepository;
         
         return null;
     }
 
     public String getCurrentUser() {
-        return currentUser;
+        return authService != null && authService.getCurrentUser() != null 
+            ? authService.getCurrentUser().getUsername() 
+            : "guest";
     }
 
+    public ConcurrencyManager getConcurrencyManager() { return concurrencyManager; }
+    public AuditService getAuditService() { return auditService; }
+    public TafqeetService getTafqeetService() { return tafqeetService; }
+    public ReportService getReportService() { return reportService; }
+    public RevenueOrderService getRevenueOrderService() { return revenueOrderService; }
+    public CancellationOrderService getCancellationOrderService() { return cancellationOrderService; }
+    public DispatchSlipService getDispatchSlipService() { return dispatchSlipService; }
+    public AuthService getAuthService() { return authService; }
+    public InstitutionService getInstitutionService() { return institutionService; }
+
+    public BudgetChapterRepository getBudgetChapterRepository() { return budgetChapterRepository; }
+    public DebtorRepository getDebtorRepository() { return debtorRepository; }
+    public FiscalYearRepository getFiscalYearRepository() { return fiscalYearRepository; }
+    public RevenueOrderRepository getRevenueOrderRepository() { return revenueOrderRepository; }
+    public CancellationOrderRepository getCancellationOrderRepository() { return cancellationOrderRepository; }
+    public DispatchSlipRepository getDispatchSlipRepository() { return dispatchSlipRepository; }
+    public InstitutionRepository getInstitutionRepository() { return institutionRepository; }
+    public UserRepository getUserRepository() { return userRepository; }
+    public RoleRepository getRoleRepository() { return roleRepository; }
+    public PermissionRepository getPermissionRepository() { return permissionRepository; }
+
     public void setCurrentUser(String user) {
-        this.currentUser = user;
+        // Redundant with AuthService now handling sessions
     }
 
     public void registerDisposable(Disposable disposable) {

@@ -25,7 +25,7 @@
                 </Button>
                 <Label styleClass="text-title" text="قائمة أوامر الإيراد"/>
                 <HBox HBox.hgrow="ALWAYS" />
-                <Button styleClass="btn-primary" text="أمر إيراد جديد" onAction="#handleNewOrder">
+                <Button fx:id="addOrderBtn" styleClass="btn-primary" text="أمر إيراد جديد" onAction="#handleNewOrder">
                     <graphic>
                         <FontIcon iconLiteral="fas-plus" iconSize="14" styleClass="icon-light"/>
                     </graphic>

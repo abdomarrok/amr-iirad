@@ -24,7 +24,7 @@
                 </Button>
                 <Label styleClass="text-title" text="إدارة المدينين"/>
                 <HBox HBox.hgrow="ALWAYS" />
-                <Button styleClass="btn-primary" text="مدين جديد" onAction="#handleNewDebtor">
+                <Button fx:id="addDebtorBtn" styleClass="btn-primary" text="مدين جديد" onAction="#handleNewDebtor">
                     <graphic>
                         <FontIcon iconLiteral="fas-user-plus" iconSize="14" styleClass="icon-light"/>
                     </graphic>

@@ -17,38 +17,7 @@
 
     <!-- TOP BAR -->
     <top>
-        <HBox alignment="CENTER" spacing="20" style="-fx-background-color: -fx-theme-bg-secondary; -fx-padding: 12 24;">
-            <Label styleClass="text-heading" text="نظام أوامر الإيراد" HBox.hgrow="ALWAYS"/>
-            <HBox alignment="CENTER_LEFT" spacing="8">
-                <Label styleClass="text-small" text="السنة المالية:"/>
-                <ComboBox fx:id="fiscalYearCombo" promptText="اختر السنة"/>
-                <Button styleClass="btn-outline" onAction="#handleAddFiscalYear" prefWidth="32" prefHeight="32">
-                    <tooltip>
-                        <Tooltip text="إضافة سنة مالية"/>
-                    </tooltip>
-                    <graphic>
-                        <FontIcon iconLiteral="fas-plus" iconSize="12" styleClass="icon-primary"/>
-                    </graphic>
-                </Button>
-                <Button styleClass="btn-outline" onAction="#handleViewUsers" prefWidth="32" prefHeight="32">
-                    <tooltip>
-                        <Tooltip text="إدارة المستخدمين"/>
-                    </tooltip>
-                    <graphic>
-                        <FontIcon iconLiteral="fas-user-shield" iconSize="16" styleClass="icon-primary"/>
-                    </graphic>
-                </Button>
-                <Separator orientation="VERTICAL" prefHeight="20"/>
-                <Button styleClass="btn-outline" onAction="#handleEnterpriseSettings" prefWidth="32" prefHeight="32">
-                    <tooltip>
-                        <Tooltip text="إعدادات المؤسسة"/>
-                    </tooltip>
-                    <graphic>
-                        <FontIcon iconLiteral="fas-cog" iconSize="16" styleClass="icon-primary"/>
-                    </graphic>
-                </Button>
-            </HBox>
-        </HBox>
+        <fx:include fx:id="topBar" source="shared/top-bar.fxml" />
     </top>
 
     <!-- MAIN CONTENT -->
@@ -147,10 +116,7 @@
 
     <!-- BOTTOM BAR -->
     <bottom>
-        <HBox alignment="CENTER" spacing="12" style="-fx-background-color: -fx-theme-bg-tertiary; -fx-padding: 8 16;">
-            <Label fx:id="statusBar" styleClass="text-small, text-muted" text="جاهز" HBox.hgrow="ALWAYS"/>
-            <Label styleClass="text-small, text-muted" text="Amr-Iirad v1.0"/>
-        </HBox>
+        <fx:include fx:id="footer" source="shared/footer.fxml" />
     </bottom>
 
 </BorderPane>
