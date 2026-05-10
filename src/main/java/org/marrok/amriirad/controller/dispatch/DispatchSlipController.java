@@ -193,25 +193,8 @@ public class DispatchSlipController implements Initializable {
         }
         DispatchSlip selected = slipsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            showLanguageDialog(lang -> printSlip(selected, lang));
+            DialogHelper.showLanguageDialog(lang -> printSlip(selected, lang));
         }
-    }
-
-    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("لغة الطباعة / Langue d'impression");
-        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
-        
-        ButtonType btnAr = new ButtonType("العربية (AR)");
-        ButtonType btnFr = new ButtonType("Français (FR)");
-        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-        
-        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
-        
-        alert.showAndWait().ifPresent(type -> {
-            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
-            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
-        });
     }
 
     private void printSlip(DispatchSlip selected, org.marrok.amriirad.model.PrintLanguage lang) {
@@ -231,18 +214,19 @@ public class DispatchSlipController implements Initializable {
                     .withLanguage(lang)
                     .withInstitution(institutionService.getInfo())
                     .put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "")
-                    .put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00")
+                    .put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? String.format("%,.2f", selected.getTotalAmount()) : "0.00")
                     .put("TOTAL_WORDS", totalWords)
                     .put("DATE", selected.getDispatchDate() != null ? selected.getDispatchDate().toString() : "")
                     .build();
                 
-                java.util.List<SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();
+                java.util.List<org.marrok.amriirad.dto.SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();
                 if (selected.getOrders() != null) {
                     for (RevenueOrder order : selected.getOrders()) {
-                        dataSourceList.add(new SlipOrderDTO(
+                        dataSourceList.add(new org.marrok.amriirad.dto.SlipOrderDTO(
                             order.getOrderNumber(),
                             order.getDebtor() != null ? order.getDebtor().getFullName() : "",
-                            order.getAmount()
+                            order.getAmount(),
+                            order.getIssueDate() != null ? order.getIssueDate().toString() : ""
                         ));
                     }
                 }
@@ -256,21 +240,5 @@ public class DispatchSlipController implements Initializable {
             res -> logger.info("Print triggered for slip: {}", selected.getSlipNumber()),
             err -> DialogHelper.showError("خطأ", "فشل الطباعة: " + err.getMessage())
         );
-    }
-
-    public static class SlipOrderDTO {
-        private String orderNumber;
-        private String debtorName;
-        private BigDecimal amount;
-
-        public SlipOrderDTO(String orderNumber, String debtorName, BigDecimal amount) {
-            this.orderNumber = orderNumber;
-            this.debtorName = debtorName;
-            this.amount = amount;
-        }
-
-        public String getOrderNumber() { return orderNumber; }
-        public String getDebtorName() { return debtorName; }
-        public BigDecimal getAmount() { return amount; }
     }
 }

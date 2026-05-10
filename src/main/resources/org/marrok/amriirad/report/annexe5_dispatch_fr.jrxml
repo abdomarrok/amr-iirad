@@ -62,11 +62,11 @@
 			</element>
 			<element kind="textField" x="150" y="0" width="250" height="20" hTextAlign="Left" vTextAlign="Middle">
 				<expression><![CDATA[$F{debtorName}]]></expression>
-				<box><pen lineWidth="0.5" leftPadding="5"/></box>
+				<box leftPadding="5"><pen lineWidth="0.5"/></box>
 			</element>
 			<element kind="textField" x="400" y="0" width="155" height="20" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{amount}]]></expression>
-				<box><pen lineWidth="0.5" rightPadding="5"/></box>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
 			</element>
 		</band>
 	</detail>

@@ -114,29 +114,12 @@ public class CancellationFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
-                showLanguageDialog(lang -> printAnnexe(cancellation, lang));
+                org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe(cancellation, lang));
                 closeWindow();
                 runOnSuccess();
             },
             err -> showError(err.getMessage())
         );
-    }
-
-    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("لغة الطباعة / Langue d'impression");
-        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
-        
-        ButtonType btnAr = new ButtonType("العربية (AR)");
-        ButtonType btnFr = new ButtonType("Français (FR)");
-        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-        
-        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
-        
-        alert.showAndWait().ifPresent(type -> {
-            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
-            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
-        });
     }
 
     private void printAnnexe(RevenueOrderCancellation cancellation, org.marrok.amriirad.model.PrintLanguage lang) {

@@ -212,31 +212,27 @@ public class OrderDetailsController extends BaseFormController implements Initia
     }
 
     private void addTimelineItem(String statusName, Object timestamp, String description, boolean isActive, String icon) {
-        VBox timelineItem = new VBox(10);
-        timelineItem.setStyle("-fx-padding: 15; -fx-border-radius: 8; -fx-background-color: -fx-control-inner-background;");
-
-        HBox headerBox = new HBox(12);
-        headerBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Status icon
-        FontIcon statusIcon = new FontIcon(icon);
-        statusIcon.setIconSize(20);
-        statusIcon.getStyleClass().add(isActive ? "icon-primary" : "icon-secondary");
-
-        Label statusLabel = new Label(statusName);
-        statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
-
-        Label timestampLabel = new Label(timestamp != null ? timestamp.toString() : "N/A");
-        timestampLabel.setStyle("-fx-text-fill: -fx-theme-text-muted; -fx-font-size: 11;");
-
-        headerBox.getChildren().addAll(statusIcon, statusLabel);
-
-        Label descLabel = new Label(description);
-        descLabel.setStyle("-fx-text-fill: -fx-theme-text-muted; -fx-font-size: 12;");
-        descLabel.setWrapText(true);
-
-        timelineItem.getChildren().addAll(headerBox, descLabel, timestampLabel);
-        timelineContainer.getChildren().add(timelineItem);
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/orders/timeline-item.fxml"));
+            VBox item = loader.load();
+            
+            FontIcon statusIcon = (FontIcon) item.lookup("#statusIcon");
+            Label statusLabel = (Label) item.lookup("#statusLabel");
+            Label descLabel = (Label) item.lookup("#descriptionLabel");
+            Label timestampLabel = (Label) item.lookup("#timestampLabel");
+            
+            if (statusIcon != null) {
+                statusIcon.setIconLiteral(icon);
+                statusIcon.getStyleClass().add(isActive ? "icon-primary" : "icon-secondary");
+            }
+            if (statusLabel != null) statusLabel.setText(statusName);
+            if (descLabel != null) descLabel.setText(description);
+            if (timestampLabel != null) timestampLabel.setText(timestamp != null ? timestamp.toString() : "N/A");
+            
+            timelineContainer.getChildren().add(item);
+        } catch (java.io.IOException e) {
+            logger.error("Failed to load timeline item FXML", e);
+        }
     }
 
     private String getStatusArabicLabel(OrderStatus status) {
@@ -262,39 +258,22 @@ public class OrderDetailsController extends BaseFormController implements Initia
 
     @FXML
     private void handlePrintAdmin() {
-        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
     }
 
     @FXML
     private void handlePrintDebtor() {
-        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
     }
 
     @FXML
     private void handlePrintCancel() {
-        showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe3_full_cancel", lang));
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe3_full_cancel", lang));
     }
 
     @FXML
     private void handlePrintReduce() {
-        showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction", lang));
-    }
-
-    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("لغة الطباعة / Langue d'impression");
-        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
-        
-        ButtonType btnAr = new ButtonType("العربية (AR)");
-        ButtonType btnFr = new ButtonType("Français (FR)");
-        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-        
-        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
-        
-        alert.showAndWait().ifPresent(type -> {
-            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
-            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
-        });
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction", lang));
     }
 
     private void fetchCancellationAndPrint(String baseReportPath, org.marrok.amriirad.model.PrintLanguage lang) {

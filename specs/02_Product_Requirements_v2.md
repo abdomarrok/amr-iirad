@@ -15,7 +15,7 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 
 ### 2.2 Revenue Order Lifecycle
 - **Dynamic Creation:** Auto-generated order numbers (YYYY-NNN) and automated "Tafqeet" (Amount to Arabic Words).
-- **State Management:** Tracking orders through `DRAFT` → `ISSUED` → `DISPATCHED` → `CANCELLED`/`REDUCED`.
+- **State Management:** Tracking orders through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`.
 - **Relational Integrity:** Seamless linking between Fiscal Years, Debtors, and Budget Chapters.
 
 ### 2.3 Debtor & Dispatch Management
@@ -38,8 +38,9 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 ## 4. Technical Architecture
 - **Language:** Java 21 / JavaFX 21.
 - **Database:** MariaDB (Embedded MariaDB4j for Local mode, full MariaDB for Server mode).
-- **Pattern:** Feature-based modular structure with Constructor-based Dependency Injection via `AppContext`.
-- **Persistence:** HikariCP connection pooling with transaction safety.
+- **Pattern**: Feature-based modular structure with Constructor-based Dependency Injection via `AppContext`.
+- **UI Architecture**: FXML-First design. All UI views are strictly separated from logic, utilizing declarative FXML templates and CSS styling, eliminating programmatic UI construction.
+- **Persistence**: HikariCP connection pooling with transaction safety.
 
 ## 5. Future Roadmap
 - [x] Phase 5.1: **Enhanced Visualization** — Modern order details view and visual audit timeline.
@@ -47,4 +48,3 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - [x] Phase 5.3: **Security & QA** — Full RBAC integration, Dispatch Slips activation, and unit test coverage.
 - [x] Phase 6.1: **Bilingual Reporting** — Implement French documentation support and 2-JRXML printing strategy.
 - [ ] Phase 6.2: **Data Export** — CSV/Excel export for financial auditing.
-

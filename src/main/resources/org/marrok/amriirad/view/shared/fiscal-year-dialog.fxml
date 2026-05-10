@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox alignment="CENTER" spacing="20.0" prefWidth="350.0" style="-fx-padding: 25; -fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox alignment="CENTER" spacing="8.0">
+            <children>
+                <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: -fx-theme-primary;" text="سنة مالية جديدة" />
+                <Label style="-fx-text-fill: -fx-theme-text-muted;" text="إضافة سنة مالية جديدة للنظام" />
+            </children>
+        </VBox>
+        
+        <VBox spacing="10.0">
+            <children>
+                <Label text="أدخل السنة (مثال: 2024):" />
+                <TextField fx:id="yearField" promptText="20XX" />
+            </children>
+        </VBox>
+        
+        <HBox alignment="CENTER_RIGHT" spacing="12.0">
+            <children>
+                <Button fx:id="cancelBtn" mnemonicParsing="false" styleClass="btn-secondary" text="إلغاء" prefWidth="80" />
+                <Button fx:id="saveBtn" mnemonicParsing="false" styleClass="btn-primary" text="إضافة" prefWidth="100">
+                    <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-white"/></graphic>
+                </Button>
+            </children>
+        </HBox>
+    </children>
+
+</VBox>

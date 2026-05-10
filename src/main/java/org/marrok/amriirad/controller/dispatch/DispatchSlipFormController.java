@@ -371,38 +371,51 @@ public class DispatchSlipFormController extends BaseFormController implements ja
      * Print Annexe 5 (dispatch slip report).
      */
     private void printAnnexe5(DispatchSlip slip) {
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("SLIP_NUMBER", slip.getSlipNumber() != null ? slip.getSlipNumber() : "");
-            params.put("DISPATCH_DATE", slip.getDispatchDate() != null ? slip.getDispatchDate().toString() : "");
-            params.put("TREASURY_REF", slip.getTreasuryRef() != null ? slip.getTreasuryRef() : "");
-            params.put("TOTAL_AMOUNT", slip.getTotalAmount() != null ? slip.getTotalAmount().toString() : "0");
-            params.put("TOTAL_AMOUNT_WORDS", slip.getTotalAmount() != null
-                    ? tafqeetService.toArabicWords(slip.getTotalAmount())
-                    : "صفر");
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> {
+            logger.info("Printing Annexe 5 for new slip: {} in {}", slip.getSlipNumber(), lang);
+            String reportPath = "/org/marrok/amriirad/report/annexe5_dispatch_" + lang.getCode() + ".jrxml";
+            
+            concurrencyManager.runAsync(
+                () -> {
+                    String totalWords = "";
+                    if (slip.getTotalAmount() != null) {
+                        totalWords = (lang == org.marrok.amriirad.model.PrintLanguage.FRENCH) ?
+                            tafqeetService.toFrenchWords(slip.getTotalAmount()) :
+                            tafqeetService.toArabicWords(slip.getTotalAmount());
+                    }
 
-            // Create a data source from the orders
-            List<Map<String, Object>> ordersList = new ArrayList<>();
-            for (RevenueOrder order : slip.getOrders()) {
-                Map<String, Object> orderData = new HashMap<>();
-                orderData.put("ORDER_NUMBER", order.getOrderNumber());
-                orderData.put("DEBTOR_NAME", order.getDebtor() != null ? order.getDebtor().getFullName() : "");
-                orderData.put("AMOUNT", order.getAmount() != null ? String.format("%,.2f", order.getAmount()) : "0.00");
-                ordersList.add(orderData);
-            }
-
-            // Use bean collection data source
-            net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource =
-                    new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(ordersList);
-
-            reportService.showReport(
-                    "/org/marrok/amriirad/report/annexe5_dispatch.jrxml",
-                    params,
-                    dataSource
+                    java.util.Map<String, Object> params = org.marrok.amriirad.util.ReportParamBuilder.create(tafqeetService)
+                        .withLanguage(lang)
+                        .build(); // Institution info is auto-injected in build()
+                    
+                    params.put("SLIP_NUMBER", slip.getSlipNumber() != null ? slip.getSlipNumber() : "");
+                    params.put("TOTAL_AMOUNT", slip.getTotalAmount() != null ? String.format("%,.2f", slip.getTotalAmount()) : "0.00");
+                    params.put("TOTAL_WORDS", totalWords);
+                    params.put("DATE", slip.getDispatchDate() != null ? slip.getDispatchDate().toString() : "");
+                    params.put("TREASURY_REF", slip.getTreasuryRef() != null ? slip.getTreasuryRef() : "");
+                    
+                    java.util.List<org.marrok.amriirad.dto.SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();
+                    if (slip.getOrders() != null) {
+                        for (RevenueOrder order : slip.getOrders()) {
+                            dataSourceList.add(new org.marrok.amriirad.dto.SlipOrderDTO(
+                                order.getOrderNumber(),
+                                order.getDebtor() != null ? order.getDebtor().getFullName() : "",
+                                order.getAmount(),
+                                order.getIssueDate() != null ? order.getIssueDate().toString() : ""
+                            ));
+                        }
+                    }
+                    
+                    net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource = 
+                        new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(dataSourceList);
+                    
+                    reportService.showReport(reportPath, params, dataSource);
+                    return true;
+                },
+                res -> logger.info("Print triggered for slip: {}", slip.getSlipNumber()),
+                err -> showError("خطأ في الطباعة: " + err.getMessage())
             );
-        } catch (Exception e) {
-            showError("خطأ في الطباعة: " + e.getMessage());
-        }
+        });
     }
 
     @Override

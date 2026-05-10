@@ -65,30 +65,72 @@ public class DialogHelper {
     }
 
     public static Stage showLoading(String message) {
-        Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setResizable(false);
-        dialog.setTitle("الرجاء الانتظار");
+        try {
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setResizable(false);
+            dialog.setTitle("الرجاء الانتظار / Veuillez patienter");
+            dialog.initStyle(javafx.stage.StageStyle.UNDECORATED); // Modern look
 
-        VBox box = new VBox(15);
-        box.setAlignment(Pos.CENTER);
-        box.setStyle("-fx-padding: 20; -fx-background-color: white; -fx-border-color: #ccc; -fx-border-width: 1px;");
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(DialogHelper.class.getResource("/org/marrok/amriirad/view/shared/loading-view.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            // Set message if label exists
+            javafx.scene.control.Label label = (javafx.scene.control.Label) root.lookup("#messageLabel");
+            if (label != null) label.setText(message);
 
-        javafx.scene.control.ProgressBar bar = new javafx.scene.control.ProgressBar();
-        bar.setPrefWidth(200);
-        bar.setProgress(-1);
+            Scene scene = new Scene(root);
+            dialog.setScene(scene);
+            dialog.centerOnScreen();
+            dialog.show();
+            return dialog;
+        } catch (java.io.IOException e) {
+            // Fallback to simple construction if FXML fails
+            Stage dialog = new Stage();
+            dialog.setTitle("Loading...");
+            dialog.setScene(new Scene(new javafx.scene.control.Label(message)));
+            dialog.show();
+            return dialog;
+        }
+    }
 
-        javafx.scene.control.Label label = new javafx.scene.control.Label(message);
-        label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-        label.setWrapText(true);
-        label.setMaxWidth(220);
-        label.setAlignment(Pos.CENTER);
+    public static void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
+        try {
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initStyle(javafx.stage.StageStyle.UTILITY);
+            dialog.setTitle("لغة الطباعة / Langue d'impression");
 
-        box.getChildren().addAll(bar, label);
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(DialogHelper.class.getResource("/org/marrok/amriirad/view/shared/language-selection-view.fxml"));
+            javafx.scene.Parent root = loader.load();
 
-        Scene scene = new Scene(box);
-        dialog.setScene(scene);
-        dialog.show();
-        return dialog;
+            javafx.scene.control.Button arabicBtn = (javafx.scene.control.Button) root.lookup("#arabicBtn");
+            javafx.scene.control.Button frenchBtn = (javafx.scene.control.Button) root.lookup("#frenchBtn");
+            javafx.scene.control.Button cancelBtn = (javafx.scene.control.Button) root.lookup("#cancelBtn");
+
+            if (arabicBtn != null) arabicBtn.setOnAction(e -> {
+                onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+                dialog.close();
+            });
+            if (frenchBtn != null) frenchBtn.setOnAction(e -> {
+                onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+                dialog.close();
+            });
+            if (cancelBtn != null) cancelBtn.setOnAction(e -> dialog.close());
+
+            Scene scene = new Scene(root);
+            SceneManager.applyStylesAndTheme(scene);
+            dialog.setScene(scene);
+            dialog.showAndWait();
+        } catch (java.io.IOException e) {
+            org.apache.logging.log4j.LogManager.getLogger(DialogHelper.class).error("Failed to load language selection FXML", e);
+            // Fallback to simple alert if FXML fails
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.getButtonTypes().setAll(new ButtonType("AR"), new ButtonType("FR"));
+            alert.showAndWait().ifPresent(type -> {
+                if (type.getText().contains("AR")) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+                else onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+            });
+        }
     }
 }

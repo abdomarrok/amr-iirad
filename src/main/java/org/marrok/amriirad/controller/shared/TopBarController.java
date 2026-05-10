@@ -2,8 +2,10 @@ package org.marrok.amriirad.controller.shared;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.marrok.amriirad.core.AppContext;
 import org.marrok.amriirad.model.FiscalYear;
@@ -103,22 +105,46 @@ public class TopBarController implements Initializable {
 
     @FXML
     private void handleAddFiscalYear() {
-        TextInputDialog dialog = new TextInputDialog(String.valueOf(java.time.Year.now().getValue()));
-        dialog.setTitle("سنة مالية جديدة");
-        dialog.setHeaderText("إضافة سنة مالية جديدة للنظام");
-        dialog.setContentText("أدخل السنة (مثال: 2024):");
-        
-        dialog.showAndWait().ifPresent(year -> {
-            if (year.trim().isEmpty()) return;
-            try {
-                fyRepo.save(year.trim());
-                loadFiscalYears();
-                DialogHelper.showInfo("نجاح", "تمت إضافة السنة المالية " + year + " بنجاح.");
-            } catch (java.sql.SQLException e) {
-                logger.error("Failed to add fiscal year", e);
-                DialogHelper.showError("خطأ", "فشل إضافة السنة المالية: " + e.getMessage());
-            }
-        });
+        try {
+            Stage stage = (Stage) fiscalYearCombo.getScene().getWindow();
+            Stage dialog = new Stage();
+            dialog.initOwner(stage);
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle("سنة مالية جديدة");
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/shared/fiscal-year-dialog.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            TextField yearField = (TextField) root.lookup("#yearField");
+            Button saveBtn = (Button) root.lookup("#saveBtn");
+            Button cancelBtn = (Button) root.lookup("#cancelBtn");
+
+            yearField.setText(String.valueOf(java.time.Year.now().getValue()));
+
+            saveBtn.setOnAction(e -> {
+                String year = yearField.getText().trim();
+                if (!year.isEmpty()) {
+                    try {
+                        fyRepo.save(year);
+                        loadFiscalYears();
+                        DialogHelper.showInfo("نجاح", "تمت إضافة السنة المالية " + year + " بنجاح.");
+                        dialog.close();
+                    } catch (java.sql.SQLException ex) {
+                        logger.error("Failed to add fiscal year", ex);
+                        DialogHelper.showError("خطأ", "فشل إضافة السنة المالية: " + ex.getMessage());
+                    }
+                }
+            });
+
+            cancelBtn.setOnAction(e -> dialog.close());
+
+            Scene scene = new Scene(root);
+            SceneManager.applyStylesAndTheme(scene);
+            dialog.setScene(scene);
+            dialog.showAndWait();
+        } catch (java.io.IOException e) {
+            logger.error("Failed to load fiscal year dialog FXML", e);
+        }
     }
 
     @FXML

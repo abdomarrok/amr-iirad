@@ -47,6 +47,7 @@ public class AppContext implements Disposable {
     private AuthService authService;
     private InstitutionService institutionService;
     private AuditLogService auditLogService;
+    private ExportService exportService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
     private AppContext() {
@@ -112,6 +113,7 @@ public class AppContext implements Disposable {
         this.authService = new AuthService(userRepository);
         this.institutionService = new InstitutionService(institutionRepository, auditService);
         this.auditLogService = new AuditLogService(auditLogRepository);
+        this.exportService = new ExportService();
     }
 
     /**
@@ -130,6 +132,7 @@ public class AppContext implements Disposable {
         if (clazz == AuthService.class) return authService;
         if (clazz == InstitutionService.class) return institutionService;
         if (clazz == AuditLogService.class) return auditLogService;
+        if (clazz == ExportService.class) return exportService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -151,7 +154,7 @@ public class AppContext implements Disposable {
             return new org.marrok.amriirad.controller.users.UserFormController(userRepository, roleRepository);
         
         if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderListController.class) 
-            return new org.marrok.amriirad.controller.orders.RevenueOrderListController(revenueOrderService, revenueOrderRepository, fiscalYearRepository, authService, concurrencyManager);
+            return new org.marrok.amriirad.controller.orders.RevenueOrderListController(revenueOrderService, revenueOrderRepository, fiscalYearRepository, authService, exportService, concurrencyManager);
         
         if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderFormController.class) 
             return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, authService, concurrencyManager);
@@ -244,6 +247,7 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
         if (clazz == AuthService.class) return authService;
         if (clazz == InstitutionService.class) return institutionService;
+        if (clazz == ExportService.class) return exportService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;

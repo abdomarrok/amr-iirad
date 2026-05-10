@@ -20,6 +20,13 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-10 (Late Afternoon): FXML Modernization & Reporting Data Integrity
+- ✅ **Architectural Decoupling (FXML-First)**: Successfully extracted all programmatic UI layouts from Java code into declarative FXML templates. This includes loading dialogs, language selection modals, timeline items, and permission grids.
+- ✅ **Report Data Consistency**: Hardened `ReportParamBuilder` to eliminate "null" displays in official documents. Standardized parameter naming (`REASON_AR`, `LIQUIDATION_BASIS`, etc.) across all 10 Jasper templates.
+- ✅ **Jasper Syntax Fix**: Resolved a critical `JacksonRuntimeException` in Annexe 5 templates by correcting invalid padding attributes for compatibility with JasperReports 7.
+- ✅ **Institutional Metadata Hardening**: Fixed incorrect Ordonnateur code mapping in Dispatch Slip reports and ensured Treasury names are correctly localized in both Arabic and French.
+- ✅ **UI Component Standardization**: Created specialized FXML components for recurring UI elements (e.g., `fiscal-year-dialog.fxml`, `permission-category-group.fxml`), improving codebase maintainability.
+
 ### 📅 2026-05-10: Reporting Infrastructure Hardening & Official Legal Alignment
 - ✅ **Standardized Institutional Data**: Added `treasury_name_ar` to the data model, repository, and UI, ensuring full bilingual mapping of institutional metadata (Treasury, Ministry, Institution).
 - ✅ **Unified Report Parameters**: Implemented a standardized parameter dictionary in `ReportParamBuilder` (`MINISTRY_NAME`, `INSTITUTION_NAME`, `TREASURY_NAME`, `BUDGET_CODE`, etc.), eliminating template-specific mapping inconsistencies.

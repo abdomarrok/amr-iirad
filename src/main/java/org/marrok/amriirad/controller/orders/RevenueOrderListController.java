@@ -25,6 +25,7 @@ import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.repository.FiscalYearRepository;
 import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.service.RevenueOrderService;
+import org.marrok.amriirad.service.ExportService;
 import org.marrok.amriirad.util.SceneManager;
 
 import java.net.URL;
@@ -59,17 +60,20 @@ public class RevenueOrderListController implements Initializable {
     private final RevenueOrderRepository orderRepo;
     private final FiscalYearRepository fyRepo;
     private final org.marrok.amriirad.service.AuthService authService;
+    private final org.marrok.amriirad.service.ExportService exportService;
     private final ConcurrencyManager concurrencyManager;
 
     public RevenueOrderListController(RevenueOrderService orderService,
                                      RevenueOrderRepository orderRepo,
                                      FiscalYearRepository fyRepo,
                                      org.marrok.amriirad.service.AuthService authService,
+                                     org.marrok.amriirad.service.ExportService exportService,
                                      ConcurrencyManager concurrencyManager) {
         this.orderService = orderService;
         this.orderRepo = orderRepo;
         this.fyRepo = fyRepo;
         this.authService = authService;
+        this.exportService = exportService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -211,6 +215,34 @@ public class RevenueOrderListController implements Initializable {
     @FXML
     private void handleNewOrder() {
         openFormModal(null);
+    }
+
+    @FXML
+    private void handleExport() {
+        if (tableView.getItems().isEmpty()) {
+            org.marrok.amriirad.util.DialogHelper.showError("تنبيه", "لا توجد بيانات لتصديرها.");
+            return;
+        }
+
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("revenue_orders_" + java.time.LocalDate.now() + ".csv");
+
+        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file != null) {
+            concurrencyManager.runAsync(
+                () -> {
+                    exportService.exportOrdersToCSV(tableView.getItems(), file);
+                    return true;
+                },
+                res -> org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم تصدير البيانات بنجاح إلى:\n" + file.getName()),
+                err -> {
+                    logger.error("Export failed", err);
+                    org.marrok.amriirad.util.DialogHelper.showError("خطأ", "فشل تصدير البيانات: " + err.getMessage());
+                }
+            );
+        }
     }
 
     private void openFormModal(RevenueOrder order) {

@@ -25,6 +25,7 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 - **`SceneManager`**: The single source of truth for scene transitions and modal dialogs.
 - **`BaseFormController`**: Abstract base for all modal controllers, enforcing standard `validateForm()` and `getLogger()` patterns.
 - **Root Layout**: All main views are wrapped in a `BorderPane` that includes `top-bar.fxml` and `footer.fxml`.
+- **FXML-First Architecture**: Strictly enforce declarative UI. Programmatic UI construction (e.g., `new VBox()`, `new Label()`) is deprecated. Dynamic components (like timelines or grids) must use `FXMLLoader` to load component-level FXML templates.
 - **State Awareness**: `SceneManager` tracks the `lastLoadedFxml` to support the `refresh()` method, which is triggered when global state (like Fiscal Year) changes.
 - **2-JRXML Strategy**: For every report (Annex 1-5), the system maintains two separate `.jrxml` templates (`[report]_ar.jrxml` and `[report]_fr.jrxml`). This ensures pixel-perfect alignment and correct font rendering for both RTL (Arabic) and LTR (French) layouts.
 
@@ -62,7 +63,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 1. ✅ **Audit Log Viewer**: A dedicated UI to browse the `audit_log` table — **IMPLEMENTED**.
 2. ✅ **Permission Enforcement**: Integrated a comprehensive Permission Matrix using `authService.canDo()` across all core controllers and UI actions — **IMPLEMENTED**.
 3. ✅ **Bilingual Reporting**: Implemented full French documentation support and 2-JRXML printing strategy — **IMPLEMENTED**.
-4. **Data Export**: Implement CSV/Excel export for financial reporting.
+4. ✅ **UI Extraction**: Migrated all programmatic Java UI code to declarative FXML views — **IMPLEMENTED**.
+5. **Data Export**: Implement CSV/Excel export for financial reporting.
 
 ---
 *If you are the next AI agent: Maintain the pattern. If you need to add a feature, create a sub-package in `controller/` and `view/`, register the controller in `AppContext`, and use `SceneManager` for navigation.*

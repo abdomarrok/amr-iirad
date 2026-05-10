@@ -36,7 +36,7 @@
 			<expression><![CDATA["الآمر بالصرف : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="355" y="83" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
-			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{SLIP_NUMBER} != null ? $P{SLIP_NUMBER} : "")]]></expression>
+			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
 		</element>
 	</pageHeader>
 
@@ -87,7 +87,7 @@
 			</element>
 			<element kind="textField" x="200" y="0" width="205" height="20" fontName="Traditional Arabic" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{debtorName}]]></expression>
-				<box><pen lineWidth="0.5" rightPadding="5"/></box>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
 			</element>
 			<element kind="textField" x="100" y="0" width="100" height="20" fontName="Traditional Arabic" hTextAlign="Center" vTextAlign="Middle">
 				<expression><![CDATA[$F{amount}]]></expression>

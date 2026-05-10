@@ -283,29 +283,12 @@ public class RevenueOrderFormController extends BaseFormController implements In
 
     @FXML
     private void handlePrintAdmin() {
-        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
     }
 
     @FXML
     private void handlePrintDebtor() {
-        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
-    }
-
-    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("لغة الطباعة / Langue d'impression");
-        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
-        
-        ButtonType btnAr = new ButtonType("العربية (AR)");
-        ButtonType btnFr = new ButtonType("Français (FR)");
-        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-        
-        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
-        
-        alert.showAndWait().ifPresent(type -> {
-            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
-            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
-        });
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
     }
 
     private void printAnnexe(String reportBasePath, org.marrok.amriirad.model.PrintLanguage lang) {

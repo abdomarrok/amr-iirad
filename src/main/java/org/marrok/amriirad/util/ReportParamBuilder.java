@@ -61,13 +61,14 @@ public class ReportParamBuilder {
             }
         }
 
-        if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
-            params.put("OBJECT", order.getObjectFr() != null ? order.getObjectFr() : "");
-            params.put("LIQUIDATION_BASIS", order.getObjectFr() != null ? order.getObjectFr() : "");
-        } else {
-            params.put("OBJECT", order.getObjectAr() != null ? order.getObjectAr() : "");
-            params.put("LIQUIDATION_BASIS", order.getObjectAr() != null ? order.getObjectAr() : "");
-        }
+        String obj = (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) ? 
+            (order.getObjectFr() != null ? order.getObjectFr() : "") : 
+            (order.getObjectAr() != null ? order.getObjectAr() : "");
+        
+        params.put("OBJECT", obj);
+        params.put("REASON", obj);
+        params.put("REASON_AR", obj); // Support both naming conventions
+        params.put("LIQUIDATION_BASIS", obj);
         
         // Populate Budget/LOLF Fields
         populateBudgetFields(order.getBudgetChapter());
@@ -111,6 +112,7 @@ public class ReportParamBuilder {
         params.put("DEBTOR_ACCOUNT", debtor.getBankAccount() != null ? debtor.getBankAccount() : "");
         params.put("DEBTOR_CNAS", debtor.getCnasNumber() != null ? debtor.getCnasNumber() : "");
         params.put("DEBTOR_NIF", debtor.getNifNumber() != null ? debtor.getNifNumber() : "");
+        params.put("DEBTOR_NIS", debtor.getNisNumber() != null ? debtor.getNisNumber() : "");
         return this;
     }
 
@@ -123,7 +125,8 @@ public class ReportParamBuilder {
         params.put("INSTITUTION_NAME", isFr ? info.getNameFr() : info.getNameAr());
         params.put("WILAYA", isFr ? info.getWilayaFr() : info.getWilayaAr());
         params.put("OFFICER_NAME", isFr ? info.getAuthorizingOfficerFr() : info.getAuthorizingOfficerAr());
-        params.put("TREASURY_NAME", isFr ? info.getTreasuryNameFr() : info.getTreasuryAccountAr());
+        params.put("TREASURY_NAME", isFr ? info.getTreasuryNameFr() : info.getTreasuryNameAr());
+        params.put("TREASURY_REF", info.getTreasuryAccountAr());
         params.put("INSTITUTION_ADDRESS", isFr ? info.getAddressFr() : info.getAddressAr());
 
         // Legacy/Direct parameters
@@ -134,7 +137,6 @@ public class ReportParamBuilder {
         params.put("ORDONNATEUR_CODE", info.getOrdonnateurCode());
         params.put("OFFICER_NAME_AR", info.getAuthorizingOfficerAr());
         params.put("WILAYA_AR", info.getWilayaAr());
-        params.put("TREASURY_REF", info.getTreasuryAccountAr());
         params.put("TREASURY_NAME_FR", info.getTreasuryNameFr());
         return this;
     }
@@ -145,24 +147,26 @@ public class ReportParamBuilder {
         params.put("CANCEL_NUMBER", cancel.getCancellationNumber() != null ? cancel.getCancellationNumber() : "");
         params.put("DATE", cancel.getCancellationDate() != null ? cancel.getCancellationDate().toString() : "");
         
-        if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
-            params.put("REASON", cancel.getReasonFr() != null ? cancel.getReasonFr() : "");
-        } else {
-            params.put("REASON", cancel.getReasonAr() != null ? cancel.getReasonAr() : "");
-        }
+        String reason = (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) ? 
+            (cancel.getReasonFr() != null ? cancel.getReasonFr() : "") : 
+            (cancel.getReasonAr() != null ? cancel.getReasonAr() : "");
+            
+        params.put("REASON", reason);
+        params.put("REASON_AR", reason);
+        params.put("LIQUIDATION_BASIS", reason);
         
         if (cancel.getOriginalOrder() != null) {
             var order = cancel.getOriginalOrder();
             params.put("ORDER_NUMBER", order.getOrderNumber() != null ? order.getOrderNumber() : "");
             params.put("FISCAL_YEAR", order.getFiscalYear() != null ? order.getFiscalYear().getYearLabel() : "");
             populateBudgetFields(order.getBudgetChapter());
-            withDebtor(order.getDebtor());
+            if (order.getDebtor() != null) withDebtor(order.getDebtor());
         }
         
-        var amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : 
+        java.math.BigDecimal amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : 
                     (cancel.getOriginalOrder() != null ? cancel.getOriginalOrder().getAmount() : java.math.BigDecimal.ZERO);
         
-        params.put("AMOUNT", amount.toString());
+        params.put("AMOUNT", String.format("%,.2f", amount));
         if (tafqeet != null) {
             if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
                 params.put("AMOUNT_WORDS", tafqeet.toFrenchWords(amount));

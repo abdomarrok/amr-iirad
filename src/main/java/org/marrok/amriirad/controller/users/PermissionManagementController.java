@@ -138,20 +138,29 @@ public class PermissionManagementController implements Initializable {
     }
 
     private void addCategoryGroup(VBox container, String category, List<Permission> perms, Map<Integer, CheckBox> map) {
-        Label categoryLabel = new Label(getCategoryDisplayName(category));
-        categoryLabel.getStyleClass().add("text-small");
-        categoryLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: -fx-theme-primary;");
-        container.getChildren().add(categoryLabel);
-
-        VBox permBox = new VBox(8);
-        permBox.setPadding(new javafx.geometry.Insets(5, 0, 15, 15));
-        for (Permission perm : perms) {
-            CheckBox cb = new CheckBox(perm.getDescription());
-            cb.setUserData(perm);
-            map.put(perm.getId(), cb);
-            permBox.getChildren().add(cb);
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/org/marrok/amriirad/view/users/permission-category-group.fxml"));
+            VBox groupNode = loader.load();
+            
+            Label categoryLabel = (Label) groupNode.lookup("#categoryLabel");
+            VBox checkboxContainer = (VBox) groupNode.lookup("#checkboxContainer");
+            
+            if (categoryLabel != null) {
+                categoryLabel.setText(getCategoryDisplayName(category));
+            }
+            
+            if (checkboxContainer != null) {
+                for (Permission perm : perms) {
+                    CheckBox cb = new CheckBox(perm.getDescription());
+                    cb.setUserData(perm);
+                    map.put(perm.getId(), cb);
+                    checkboxContainer.getChildren().add(cb);
+                }
+            }
+            container.getChildren().add(groupNode);
+        } catch (java.io.IOException e) {
+            logger.error("Failed to load permission category group FXML", e);
         }
-        container.getChildren().add(permBox);
     }
 
     private void selectRole(Role role) {
