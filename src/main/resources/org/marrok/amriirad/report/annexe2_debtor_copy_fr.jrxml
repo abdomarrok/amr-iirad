@@ -19,10 +19,14 @@
 	<parameter name="LIQUIDATION_BASIS" class="java.lang.String"/>
 	<parameter name="BUDGET_CHAPTER" class="java.lang.String"/>
 	
-	<parameter name="INSTITUTION_NAME_FR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
-	<parameter name="WILAYA_AR" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
+	<parameter name="TREASURY_NAME" class="java.lang.String"/>
+	<parameter name="BUDGET_CODE" class="java.lang.String"/>
+	<parameter name="BUDGET_LABEL" class="java.lang.String"/>
 
 	<!-- LOLF Fields -->
 	<parameter name="COMPTE_IMPUTATION" class="java.lang.String"/>
@@ -46,7 +50,7 @@
 			<pen lineWidth="0.5"/>
 		</element>
 		<element kind="textField" x="5" y="60" width="210" height="15" fontSize="8.0" bold="true">
-			<expression><![CDATA["ORDONNATEUR : " + ($P{INSTITUTION_NAME_FR} != null ? $P{INSTITUTION_NAME_FR} : "")]]></expression>
+			<expression><![CDATA["ORDONNATEUR : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="5" y="75" width="210" height="15" fontSize="8.0" bold="true">
 			<expression><![CDATA["CODE ORDONNATEUR : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
@@ -96,7 +100,7 @@
 
 			<!-- Body Text -->
 			<element kind="textField" x="0" y="240" width="555" height="60" fontSize="10.0" hTextAlign="Left">
-				<expression><![CDATA["Mme/ M " + $P{DEBTOR_NAME} + " est tenu de verser à la caisse de Monsieur le Trésorier de la Wilaya de " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + ", qui est habilité, conformément aux dispositions du décret exécutif n°: 46.93 du 06.02.1993 d'en faire recette au compte n°: " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + ", Ligne ( ) intitulée : " + ($P{BUDGET_CHAPTER} != null ? $P{BUDGET_CHAPTER} : "")]]></expression>
+				<expression><![CDATA["M/Mme " + $P{DEBTOR_NAME} + " est tenu(e) de verser à la caisse de " + ($P{TREASURY_NAME} != null ? $P{TREASURY_NAME} : "Monsieur le Trésorier") + ", qui est habilité, conformément aux dispositions du décret exécutif n° : 46-93 du 06.02.1993 d'en faire recette au compte n° : " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + ", Ligne (" + ($P{BUDGET_CODE} != null ? $P{BUDGET_CODE} : "") + ") intitulée : " + ($P{BUDGET_LABEL} != null ? $P{BUDGET_LABEL} : "")]]></expression>
 			</element>
 			
 			<element kind="staticText" x="0" y="300" width="555" height="20" fontSize="10.0" hTextAlign="Center">
@@ -134,7 +138,7 @@
 			</element>
 
 			<element kind="textField" x="300" y="550" width="255" height="15" fontSize="10.0" hTextAlign="Right">
-				<expression><![CDATA["Fait à " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " le " + $P{ISSUE_DATE}]]></expression>
+				<expression><![CDATA["Fait à " + ($P{WILAYA} != null ? $P{WILAYA} : "") + " le " + $P{ISSUE_DATE}]]></expression>
 			</element>
 			<element kind="staticText" x="300" y="570" width="255" height="15" fontSize="10.0" bold="true" hTextAlign="Right">
 				<text><![CDATA[ORDONNATEUR (cachet, griffe, signature)]]></text>

@@ -13,9 +13,10 @@
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
 	<parameter name="REASON" class="java.lang.String"/>
 	
-	<parameter name="INSTITUTION_NAME_FR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
-	<parameter name="WILAYA_AR" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
 
 	<!-- LOLF Fields -->
 	<parameter name="COMPTE_IMPUTATION" class="java.lang.String"/>
@@ -39,7 +40,7 @@
 			<pen lineWidth="0.5"/>
 		</element>
 		<element kind="textField" x="5" y="60" width="210" height="15" fontSize="8.0" bold="true">
-			<expression><![CDATA["ORDONNATEUR : " + ($P{INSTITUTION_NAME_FR} != null ? $P{INSTITUTION_NAME_FR} : "")]]></expression>
+			<expression><![CDATA["ORDONNATEUR : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="5" y="75" width="210" height="15" fontSize="8.0" bold="true">
 			<expression><![CDATA["CODE ORDONNATEUR : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
@@ -102,7 +103,7 @@
 
 			<!-- Signature -->
 			<element kind="textField" x="300" y="520" width="255" height="15" fontSize="10.0" hTextAlign="Right">
-				<expression><![CDATA["A " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " le " + $P{DATE}]]></expression>
+				<expression><![CDATA["Fait à " + ($P{WILAYA} != null ? $P{WILAYA} : "") + " le " + $P{DATE}]]></expression>
 			</element>
 			<element kind="staticText" x="300" y="540" width="255" height="15" fontSize="10.0" bold="true" hTextAlign="Right">
 				<text><![CDATA[ORDONNATEUR (cachet, griffe, signature)]]></text>

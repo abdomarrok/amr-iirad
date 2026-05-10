@@ -20,13 +20,13 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
-### 📅 2026-05-10: Full Bilingual Reporting & 2-JRXML Strategy
-- ✅ **End-to-End Bilingual Support**: Implemented French fields across the entire order lifecycle, including Revenue Orders, Cancellations, Reductions, and Dispatch Slips.
-- ✅ **2-JRXML Printing Strategy**: Adopted a robust reporting architecture using separate templates for Arabic (`_ar.jrxml`) and French (`_fr.jrxml`), ensuring high-fidelity layouts for both RTL and LTR orientations.
-- ✅ **Bilingual Schema Migration**: Updated `revenue_order`, `revenue_order_cancellation`, and `institution_info` tables with parallel French columns (`object_fr`, `reason_fr`, `address_fr`, etc.).
-- ✅ **On-the-Fly Language Selection**: Standardized a bilingual `Alert` dialog across all print actions, allowing users to choose the output language at the moment of generation.
-- ✅ **Multi-Language Tafqeet**: Expanded `TafqeetService` and `ReportParamBuilder` to support automated amount-to-words conversion in both Arabic and French.
-- ✅ **Enterprise Settings Expansion**: Added French support for Institution Address and Authorizing Officer in the settings view, ensuring compliance with bilingual administrative requirements.
+### 📅 2026-05-10: Reporting Infrastructure Hardening & Official Legal Alignment
+- ✅ **Standardized Institutional Data**: Added `treasury_name_ar` to the data model, repository, and UI, ensuring full bilingual mapping of institutional metadata (Treasury, Ministry, Institution).
+- ✅ **Unified Report Parameters**: Implemented a standardized parameter dictionary in `ReportParamBuilder` (`MINISTRY_NAME`, `INSTITUTION_NAME`, `TREASURY_NAME`, `BUDGET_CODE`, etc.), eliminating template-specific mapping inconsistencies.
+- ✅ **Legal Narrative Alignment**: Refactored narrative text in Annexes 1, 2, and 3 (AR/FR) to strictly match the official legal phrasing of Algerian Instruction 08.
+- ✅ **Automated Parameter Injection**: Hardened `ReportParamBuilder` to automatically fetch and inject institutional info from `AppContext`, preventing "missing field" errors in generated reports.
+- ✅ **Bilingual Jasper Templates**: Standardized and verified 10 core Jasper templates (Annexes 1-5, AR/FR) for consistent parameter usage and layout fidelity.
+- ✅ **UI Precision**: Updated Enterprise settings to allow separate Arabic and French titles for treasury metadata, ensuring administrative accuracy in official documents.
 
 ### 📅 2026-05-10: Fiscal Year Scoping & Premium UI Refinement
 - ✅ **Fiscal-Year-Scoped Budgeting**: Refactored the entire budget hierarchy to be specific to the active fiscal year. Budget chapters are now isolated by year, preventing data pollution across financial cycles.

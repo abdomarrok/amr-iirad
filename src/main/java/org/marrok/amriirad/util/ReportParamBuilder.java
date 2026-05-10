@@ -24,7 +24,17 @@ public class ReportParamBuilder {
     }
 
     public static ReportParamBuilder create(TafqeetService tafqeet) {
-        return new ReportParamBuilder(tafqeet);
+        ReportParamBuilder builder = new ReportParamBuilder(tafqeet);
+        String[] defaults = {
+            "ORDER_NUMBER", "CANCEL_NUMBER", "FISCAL_YEAR", "DATE", "ISSUE_DATE",
+            "DEBTOR_NAME", "DEBTOR_ADDRESS", "DEBTOR_ACCOUNT", "AMOUNT", "AMOUNT_WORDS",
+            "REASON", "OBJECT", "LIQUIDATION_BASIS", "MINISTRY_NAME", "INSTITUTION_NAME",
+            "WILAYA", "OFFICER_NAME", "TREASURY_NAME", "TREASURY_REF", "ORDONNATEUR_CODE",
+            "PORTEFEUILLE", "PROGRAMME", "SOUS_PROGRAMME", "ACTION", "SOUS_ACTION",
+            "TITRE", "CATEGORIE", "COMPTE_IMPUTATION"
+        };
+        for (String key : defaults) builder.params.put(key, "");
+        return builder;
     }
 
     public ReportParamBuilder withLanguage(org.marrok.amriirad.model.PrintLanguage lang) {
@@ -35,6 +45,8 @@ public class ReportParamBuilder {
     }
 
     public ReportParamBuilder withOrder(RevenueOrder order) {
+        if (order == null) return this;
+        
         params.put("ORDER_NUMBER", order.getOrderNumber() != null ? order.getOrderNumber() : "");
         params.put("FISCAL_YEAR", order.getFiscalYear() != null ? order.getFiscalYear().getYearLabel() : "");
         params.put("ISSUE_DATE", order.getIssueDate() != null ? order.getIssueDate().toString() : "");
@@ -56,31 +68,41 @@ public class ReportParamBuilder {
             params.put("OBJECT", order.getObjectAr() != null ? order.getObjectAr() : "");
             params.put("LIQUIDATION_BASIS", order.getObjectAr() != null ? order.getObjectAr() : "");
         }
-        // Legacy support if JRXMLs still use REASON_AR
-        params.put("REASON_AR", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? 
-            (order.getObjectFr() != null ? order.getObjectFr() : "") : 
-            (order.getObjectAr() != null ? order.getObjectAr() : ""));
-
-        params.put("TREASURY_REF", ""); 
-
-        if (order.getBudgetChapter() != null) {
-            params.put("BUDGET_CHAPTER", order.getBudgetChapter().getCode());
-            params.put("BUDGET_CODE", order.getBudgetChapter().getCode());
-            params.put("BUDGET_LABEL", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? 
-                order.getBudgetChapter().getLabelFr() : order.getBudgetChapter().getLabelAr());
-
-            // Try to extract LOLF components from code (assuming dots separator)
-            String[] parts = order.getBudgetChapter().getCode().split("\\.");
-            if (parts.length >= 1) params.put("PORTEFEUILLE", parts[0]);
-            if (parts.length >= 2) params.put("PROGRAMME", parts[1]);
-            if (parts.length >= 3) params.put("ACTION", parts[2]);
-        }
+        
+        // Populate Budget/LOLF Fields
+        populateBudgetFields(order.getBudgetChapter());
 
         if (order.getDebtor() != null) {
             withDebtor(order.getDebtor());
         }
 
         return this;
+    }
+
+    private void populateBudgetFields(org.marrok.amriirad.model.BudgetChapter chapter) {
+        // Initialize all fields with empty string to avoid "null" in Jasper
+        String[] lolfKeys = {
+            "PORTEFEUILLE", "PROGRAMME", "SOUS_PROGRAMME", 
+            "ACTION", "SOUS_ACTION", "TITRE", "CATEGORIE", "COMPTE_IMPUTATION"
+        };
+        for (String key : lolfKeys) params.put(key, "");
+
+        if (chapter != null) {
+            params.put("BUDGET_CHAPTER", chapter.getCode());
+            params.put("BUDGET_CODE", chapter.getCode());
+            params.put("BUDGET_LABEL", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? 
+                chapter.getLabelFr() : chapter.getLabelAr());
+
+            String[] parts = chapter.getCode().split("\\.");
+            if (parts.length >= 1) params.put("PORTEFEUILLE", parts[0]);
+            if (parts.length >= 2) params.put("PROGRAMME", parts[1]);
+            if (parts.length >= 3) params.put("SOUS_PROGRAMME", parts[2]);
+            if (parts.length >= 4) params.put("ACTION", parts[3]);
+            if (parts.length >= 5) params.put("SOUS_ACTION", parts[4]);
+            if (parts.length >= 6) params.put("TITRE", parts[5]);
+            if (parts.length >= 7) params.put("CATEGORIE", parts[6]);
+            if (parts.length >= 8) params.put("COMPTE_IMPUTATION", parts[7]);
+        }
     }
 
     public ReportParamBuilder withDebtor(Debtor debtor) {
@@ -118,8 +140,11 @@ public class ReportParamBuilder {
     }
 
     public ReportParamBuilder withCancellation(RevenueOrderCancellation cancel) {
+        if (cancel == null) return this;
+
         params.put("CANCEL_NUMBER", cancel.getCancellationNumber() != null ? cancel.getCancellationNumber() : "");
         params.put("DATE", cancel.getCancellationDate() != null ? cancel.getCancellationDate().toString() : "");
+        
         if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
             params.put("REASON", cancel.getReasonFr() != null ? cancel.getReasonFr() : "");
         } else {
@@ -127,8 +152,11 @@ public class ReportParamBuilder {
         }
         
         if (cancel.getOriginalOrder() != null) {
-            params.put("ORDER_NUMBER", cancel.getOriginalOrder().getOrderNumber());
-            withDebtor(cancel.getOriginalOrder().getDebtor());
+            var order = cancel.getOriginalOrder();
+            params.put("ORDER_NUMBER", order.getOrderNumber() != null ? order.getOrderNumber() : "");
+            params.put("FISCAL_YEAR", order.getFiscalYear() != null ? order.getFiscalYear().getYearLabel() : "");
+            populateBudgetFields(order.getBudgetChapter());
+            withDebtor(order.getDebtor());
         }
         
         var amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : 
@@ -152,6 +180,18 @@ public class ReportParamBuilder {
     }
 
     public Map<String, Object> build() {
+        // Auto-include institution info if missing
+        if (!params.containsKey("INSTITUTION_NAME")) {
+            try {
+                org.marrok.amriirad.service.InstitutionService instService = 
+                    org.marrok.amriirad.core.AppContext.getInstance().getInstitutionService();
+                if (instService != null) {
+                    withInstitution(instService.getInfo());
+                }
+            } catch (Exception e) {
+                // Fallback: don't crash, just log or leave empty
+            }
+        }
         return params;
     }
 }

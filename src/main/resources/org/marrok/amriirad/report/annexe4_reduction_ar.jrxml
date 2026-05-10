@@ -14,9 +14,10 @@
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
 	<parameter name="REASON" class="java.lang.String"/>
 	
-	<parameter name="INSTITUTION_NAME_AR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
-	<parameter name="WILAYA_AR" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
 
 	<!-- LOLF Fields -->
 	<parameter name="COMPTE_IMPUTATION" class="java.lang.String"/>
@@ -39,7 +40,7 @@
 			<pen lineWidth="0.5"/>
 		</element>
 		<element kind="textField" x="355" y="68" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
-			<expression><![CDATA["الالمر بالصرف : " + ($P{INSTITUTION_NAME_AR} != null ? $P{INSTITUTION_NAME_AR} : "")]]></expression>
+			<expression><![CDATA["الآمر بالصرف : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="355" y="83" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
 			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
@@ -92,7 +93,7 @@
 
 			<!-- Signature Area -->
 			<element kind="textField" x="0" y="520" width="555" height="15" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
-				<expression><![CDATA["حُرر في " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " بتاريخ " + $P{DATE}]]></expression>
+				<expression><![CDATA["حُرر في " + ($P{WILAYA} != null ? $P{WILAYA} : "") + " بتاريخ " + $P{DATE}]]></expression>
 			</element>
 			<element kind="staticText" x="0" y="540" width="200" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center">
 				<text><![CDATA[الآمر بالصرف]]></text>

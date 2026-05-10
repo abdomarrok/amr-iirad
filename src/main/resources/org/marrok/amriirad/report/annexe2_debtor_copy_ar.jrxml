@@ -19,10 +19,14 @@
 	<parameter name="LIQUIDATION_BASIS" class="java.lang.String"/>
 	<parameter name="BUDGET_CHAPTER" class="java.lang.String"/>
 	
-	<parameter name="INSTITUTION_NAME_AR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
-	<parameter name="WILAYA_AR" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
+	<parameter name="TREASURY_NAME" class="java.lang.String"/>
+	<parameter name="BUDGET_CODE" class="java.lang.String"/>
+	<parameter name="BUDGET_LABEL" class="java.lang.String"/>
 
 	<!-- LOLF Fields -->
 	<parameter name="COMPTE_IMPUTATION" class="java.lang.String"/>
@@ -45,7 +49,7 @@
 			<pen lineWidth="0.5"/>
 		</element>
 		<element kind="textField" x="355" y="68" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
-			<expression><![CDATA["الآمر بالصرف : " + ($P{INSTITUTION_NAME_AR} != null ? $P{INSTITUTION_NAME_AR} : "")]]></expression>
+			<expression><![CDATA["الآمر بالصرف : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="355" y="83" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
 			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
@@ -94,7 +98,7 @@
 			</element>
 
 			<element kind="textField" x="0" y="240" width="555" height="60" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
-				<expression><![CDATA["يُطلب من السيد/السيدة " + $P{DEBTOR_NAME} + " أن تدفع لصندوق أمين خزينة ولاية " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " وهو المؤهل وفقا لأحكام المرسوم التنفيذي رقم 46.93 المؤرخ في 06.02.1993 لتحصيل إيراد في الحساب رقم " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + " السطر ( )، المُعنون " + ($P{BUDGET_CHAPTER} != null ? $P{BUDGET_CHAPTER} : "")]]></expression>
+				<expression><![CDATA["يُطلب من السيد/السيدة " + $P{DEBTOR_NAME} + " أن يدفع لصندوق " + ($P{TREASURY_NAME} != null ? $P{TREASURY_NAME} : "أمين خزينة ولاية") + " وهو المؤهل وفقا لأحكام المرسوم التنفيذي رقم 46.93 المؤرخ في 06.02.1993 لتحصيل إيراد في الحساب رقم " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + " السطر (" + ($P{BUDGET_CODE} != null ? $P{BUDGET_CODE} : "") + ")، المُعنون " + ($P{BUDGET_LABEL} != null ? $P{BUDGET_LABEL} : "")]]></expression>
 			</element>
 			
 			<element kind="staticText" x="0" y="300" width="555" height="20" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
@@ -128,7 +132,7 @@
 			</element>
 
 			<element kind="textField" x="0" y="560" width="555" height="15" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
-				<expression><![CDATA["حُرر في " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " بتاريخ " + $P{ISSUE_DATE}]]></expression>
+				<expression><![CDATA["حُرر في " + ($P{WILAYA} != null ? $P{WILAYA} : "") + " بتاريخ " + $P{ISSUE_DATE}]]></expression>
 			</element>
 			<element kind="staticText" x="0" y="580" width="200" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center">
 				<text><![CDATA[الآمر بالصرف]]></text>

@@ -8,8 +8,10 @@
 	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
 	<parameter name="TOTAL_WORDS" class="java.lang.String"/>
 	<parameter name="DATE" class="java.lang.String"/>
-	<parameter name="INSTITUTION_NAME_AR" class="java.lang.String"/>
-	<parameter name="MINISTRY_NAME_AR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
+	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
+	<parameter name="WILAYA" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
 	
 	<field name="orderNumber" class="java.lang.String"/>
@@ -31,7 +33,7 @@
 			<pen lineWidth="0.5"/>
 		</element>
 		<element kind="textField" x="355" y="68" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
-			<expression><![CDATA["الالمر بالصرف : " + ($P{INSTITUTION_NAME_AR} != null ? $P{INSTITUTION_NAME_AR} : "")]]></expression>
+			<expression><![CDATA["الآمر بالصرف : " + ($P{INSTITUTION_NAME} != null ? $P{INSTITUTION_NAME} : "")]]></expression>
 		</element>
 		<element kind="textField" x="355" y="83" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
 			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{SLIP_NUMBER} != null ? $P{SLIP_NUMBER} : "")]]></expression>

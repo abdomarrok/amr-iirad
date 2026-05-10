@@ -7,8 +7,9 @@
 	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
 	<parameter name="TOTAL_WORDS" class="java.lang.String"/>
 	<parameter name="DATE" class="java.lang.String"/>
-	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
+	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
 	<parameter name="WILAYA" class="java.lang.String"/>
 	
 	<field name="orderNumber" class="java.lang.String"/>
