@@ -65,3 +65,26 @@ Use the `BaseFormController` pattern to standardize:
 - Window closing (`closeWindow`).
 - Validation (`validateForm`).
 - Error reporting (`showError`).
+
+## 🏗️ FXML-First Architectural Pattern
+
+### 1. Declarative UI Enforcement
+Strictly avoid programmatic UI construction (e.g., `new VBox()`, `new Label()`, `new Button()`). All UI structure must reside in `.fxml` files.
+- **Why**: Ensures clean separation of concerns, enables non-developers to review layouts, and simplifies CSS mapping.
+- **Exception**: Very simple containers used purely for spacing or wrapper purposes where no styling is required.
+
+### 2. Component Modularization
+For dynamic UI elements (like timeline items, grid rows, or repeated cards), create specialized component-level FXML templates.
+- **Pattern**: Load the template via `FXMLLoader` and inject it into the main container.
+- **Example**: `timeline-item.fxml` loaded repeatedly for an order's status history.
+
+### 3. Controller Dependency Injection
+Never instantiate controllers manually. Always retrieve them from `AppContext` or let `SceneManager` handle the loading.
+- **Strict Rule**: Use constructor-based injection for services and repositories within controllers.
+- **Pattern**: Register every new controller in `AppContext.createInstance()` to maintain a single source of truth for dependencies.
+
+## 📋 Report Parameter Standard
+To prevent "null" placeholders and broken layouts in JasperReports:
+- **Fallback to Empty**: Always use `val != null ? val : ""` for all report parameters.
+- **Unified Naming**: Use the standardized parameter dictionary (e.g., `REASON_AR`, `LIQUIDATION_BASIS`, `ORDONNATEUR_CODE`) defined in `ReportParamBuilder`.
+- **Localization**: Pass the `PrintLanguage` to the builder to ensure automatic mapping of institutional metadata (Ministry, Treasury, etc.).
