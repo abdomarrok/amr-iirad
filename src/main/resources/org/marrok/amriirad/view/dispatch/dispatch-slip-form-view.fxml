@@ -1,33 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
-<?import javafx.scene.layout.VBox?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane prefHeight="700" prefWidth="900" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.dispatch.DispatchSlipFormController">
+<BorderPane prefHeight="700" prefWidth="900" styleClass="main-background" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.dispatch.DispatchSlipFormController">
 
     <!-- Top: Header -->
     <top>
         <VBox spacing="16" style="-fx-padding: 24 24 16 24;">
             <HBox alignment="CENTER_LEFT" spacing="12">
-                <FontIcon iconLiteral="fas-truck" iconSize="24" styleClass="icon-primary"/>
-                <Label styleClass="text-title" text="إنشاء بوردرو إرسال (الملحق 5)"/>
+                <FontIcon iconLiteral="fas-truck" iconSize="24" styleClass="icon-primary" />
+                <Label styleClass="text-title" text="إنشاء بوردرو إرسال (الملحق 5)" />
             </HBox>
-            <Label styleClass="text-small, text-muted" text="حدد أوامر الإيراد المصدرة (ISSUED) المراد تجميعها في بوردرو إرسال جديد."/>
+            <Label styleClass="text-small, text-muted" text="حدد أوامر الإيراد المصدرة (ISSUED) المراد تجميعها في بوردرو إرسال جديد." />
         </VBox>
     </top>
 
@@ -37,38 +25,38 @@
 
             <!-- Available Orders Section -->
             <VBox spacing="12" VBox.vgrow="ALWAYS">
-                <Label styleClass="text-subtitle" text="1. أوامر الإيراد المتاحة (ISSUED)"/>
+                <Label styleClass="text-subtitle" text="1. أوامر الإيراد المتاحة (ISSUED)" />
                 
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <Label styleClass="form-label" text="البحث:"/>
-                    <TextField fx:id="searchField" promptText="ابحث برقم الأمر أو اسم المدين..."/>
-                    <ProgressIndicator fx:id="loadingIndicator" prefWidth="24" prefHeight="24" managed="false" visible="false"/>
-                    <HBox HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label styleClass="form-label" text="البحث:" />
+                    <TextField fx:id="searchField" promptText="ابحث برقم الأمر أو اسم المدين..." />
+                    <ProgressIndicator fx:id="loadingIndicator" managed="false" prefHeight="24" prefWidth="24" visible="false" />
+                    <HBox HBox.hgrow="ALWAYS" />
                 </HBox>
 
                 <!-- Orders Table -->
-                <VBox styleClass="card" VBox.vgrow="ALWAYS">
+                <VBox prefWidth="852.0" styleClass="card" VBox.vgrow="ALWAYS">
                     <padding>
-                        <Insets bottom="16" left="16" right="16" top="16"/>
+                        <Insets bottom="16" left="16" right="16" top="16" />
                     </padding>
-                    <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="ordersTable" minHeight="150.0" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="colSelect" prefWidth="50" sortable="false">
                                 <graphic>
-                                    <CheckBox fx:id="selectAllCheckBox"/>
+                                    <CheckBox fx:id="selectAllCheckBox" />
                                 </graphic>
                             </TableColumn>
-                            <TableColumn fx:id="colOrderNumber" prefWidth="100" text="رقم الأمر"/>
-                            <TableColumn fx:id="colDebtor" prefWidth="150" text="المدين"/>
-                            <TableColumn fx:id="colAmount" prefWidth="100" text="المبلغ (د.ج)"/>
-                            <TableColumn fx:id="colIssueDate" prefWidth="100" text="تاريخ الإصدار"/>
+                            <TableColumn fx:id="colOrderNumber" prefWidth="100" text="رقم الأمر" />
+                            <TableColumn fx:id="colDebtor" prefWidth="150" text="المدين" />
+                            <TableColumn fx:id="colAmount" prefWidth="100" text="المبلغ (د.ج)" />
+                            <TableColumn fx:id="colIssueDate" prefWidth="100" text="تاريخ الإصدار" />
                         </columns>
                     </TableView>
                 </VBox>
 
                 <HBox alignment="CENTER_LEFT" spacing="12">
-                    <Label fx:id="selectedCountLabel" styleClass="text-small" text="لم يتم اختيار أوامر بعد."/>
-                    <HBox HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="selectedCountLabel" styleClass="text-small" text="لم يتم اختيار أوامر بعد." />
+                    <HBox HBox.hgrow="ALWAYS" />
                 </HBox>
             </VBox>
 
@@ -77,31 +65,36 @@
 
             <!-- Dispatch Slip Details Section -->
             <VBox spacing="12">
-                <Label styleClass="text-subtitle" text="2. بيانات البوردرو"/>
+                <Label styleClass="text-subtitle" text="2. بيانات البوردرو" />
                 
-                <VBox styleClass="card" spacing="16">
+                <VBox spacing="16" styleClass="card">
                     <padding>
-                        <Insets bottom="16" left="16" right="16" top="16"/>
+                        <Insets bottom="16" left="16" right="16" top="16" />
                     </padding>
 
                     <GridPane hgap="16" vgap="16">
                         <columnConstraints>
-                            <ColumnConstraints prefWidth="140" halignment="RIGHT"/>
+                            <ColumnConstraints halignment="RIGHT" prefWidth="140" />
                             <ColumnConstraints hgrow="ALWAYS" />
                         </columnConstraints>
 
-                        <Label styleClass="form-label" text="تاريخ الإرسال:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <DatePicker fx:id="dispatchDatePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label styleClass="form-label" text="تاريخ الإرسال:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <DatePicker fx:id="dispatchDatePicker" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                        <Label styleClass="form-label" text="مرجع أمين الخزينة:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <TextField fx:id="treasuryRefField" promptText="أدخل مرجع أمين الخزينة (اختياري)" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label styleClass="form-label" text="مرجع أمين الخزينة:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="treasuryRefField" promptText="أدخل مرجع أمين الخزينة (اختياري)" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                        <Label styleClass="form-label" text="المجموع الكلي:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label fx:id="totalAmountLabel" styleClass="text-muted" text="0.00 د.ج" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label styleClass="form-label" text="المجموع الكلي:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label fx:id="totalAmountLabel" styleClass="text-muted" text="0.00 د.ج" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
                     </GridPane>
                 </VBox>
 
-                <Label fx:id="errorLabel" styleClass="text-small" style="-fx-text-fill: -fx-theme-danger;" wrapText="true"/>
+                <Label fx:id="errorLabel" style="-fx-text-fill: -fx-theme-danger;" styleClass="text-small" wrapText="true" />
             </VBox>
 
         </VBox>
@@ -109,15 +102,17 @@
 
     <!-- Bottom: Action Buttons -->
     <bottom>
-        <HBox spacing="12" alignment="CENTER_RIGHT" style="-fx-padding: 16 24 24 24;">
+        <HBox alignment="CENTER_RIGHT" spacing="12" style="-fx-padding: 16 24 24 24;">
             <HBox HBox.hgrow="ALWAYS" />
-            <Button styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
-            <Button fx:id="saveBtn" styleClass="btn-primary" text="إنشاء البوردرو" onAction="#handleSave">
+            <Button onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" />
+            <Button fx:id="saveBtn" onAction="#handleSave" styleClass="btn-primary" text="إنشاء البوردرو">
                 <graphic>
-                    <FontIcon iconLiteral="fas-save" iconSize="14" styleClass="icon-light"/>
+                    <FontIcon iconLiteral="fas-save" iconSize="14" styleClass="icon-light" />
                 </graphic>
             </Button>
         </HBox>
     </bottom>
-
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </BorderPane>

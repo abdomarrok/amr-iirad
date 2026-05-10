@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="680" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<?import java.net.URL?>
+<BorderPane prefHeight="680" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.marrok.amriirad.controller.users.UserManagementController">
 
     <top>
@@ -74,4 +75,7 @@
     <bottom>
         <fx:include fx:id="footer" source="../shared/footer.fxml" />
     </bottom>
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </BorderPane>

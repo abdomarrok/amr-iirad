@@ -1,128 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Line?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<VBox prefWidth="900" prefHeight="700" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="org.marrok.amriirad.controller.orders.OrderDetailsController">
+<VBox prefHeight="700" prefWidth="900" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.orders.OrderDetailsController">
     <padding>
-        <Insets bottom="25" left="25" right="25" top="25"/>
+        <Insets bottom="25" left="25" right="25" top="25" />
     </padding>
 
     <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="modal-header">
-        <FontIcon iconLiteral="fas-info-circle" iconSize="24" styleClass="icon-primary"/>
-        <Label fx:id="titleLabel" styleClass="text-subheading" text="تفاصيل أمر الإيراد"/>
+        <FontIcon iconLiteral="fas-info-circle" iconSize="24" styleClass="icon-primary" />
+        <Label fx:id="titleLabel" styleClass="text-subheading" text="تفاصيل أمر الإيراد" />
     </HBox>
 
     <!-- Scrollable Content -->
-    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" vvalue="1.0" VBox.vgrow="ALWAYS">
         <content>
             <VBox spacing="25" styleClass="modal-content">
                 <!-- Order Info Card -->
-                <VBox styleClass="card" spacing="15">
+                <VBox spacing="15" styleClass="card">
                     <padding>
-                        <Insets bottom="20" left="20" right="20" top="20"/>
+                        <Insets bottom="20" left="20" right="20" top="20" />
                     </padding>
                     
-                    <Label styleClass="text-heading" text="معلومات الأمر"/>
+                    <Label styleClass="text-heading" text="معلومات الأمر" />
                     
                     <GridPane hgap="30" vgap="15">
                         <columnConstraints>
-                            <ColumnConstraints prefWidth="200" halignment="LEFT"/>
+                            <ColumnConstraints halignment="LEFT" prefWidth="200" />
                             <ColumnConstraints hgrow="ALWAYS" />
-                            <ColumnConstraints prefWidth="200" halignment="LEFT"/>
+                            <ColumnConstraints halignment="LEFT" prefWidth="200" />
                             <ColumnConstraints hgrow="ALWAYS" />
                         </columnConstraints>
 
-                        <Label styleClass="form-label, text-muted" text="رقم الأمر:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                        <Label fx:id="orderNumberLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label styleClass="form-label, text-muted" text="رقم الأمر:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="orderNumberLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         
-                        <Label styleClass="form-label, text-muted" text="تاريخ الإصدار:" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                        <Label fx:id="issueDateLabel" styleClass="text-value" text="-" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                        <Label styleClass="form-label, text-muted" text="تاريخ الإصدار:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label fx:id="issueDateLabel" styleClass="text-value" text="-" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                        <Label styleClass="form-label, text-muted" text="السنة المالية:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <Label fx:id="fiscalYearLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label styleClass="form-label, text-muted" text="السنة المالية:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="fiscalYearLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <Label styleClass="form-label, text-muted" text="الحالة:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                        <Label fx:id="statusLabel" styleClass="text-value, text-primary" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                        <Label styleClass="form-label, text-muted" text="الحالة:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label fx:id="statusLabel" styleClass="text-value, text-primary" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
                     </GridPane>
                 </VBox>
 
                 <!-- Debtor & Financial Info -->
                 <HBox spacing="25">
-                    <VBox styleClass="card" spacing="15" HBox.hgrow="ALWAYS">
+                    <VBox spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
                         <padding>
-                            <Insets bottom="20" left="20" right="20" top="20"/>
+                            <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
                         
-                        <Label styleClass="text-heading" text="المدين"/>
+                        <Label styleClass="text-heading" text="المدين" />
                         
                         <GridPane hgap="15" vgap="10">
                             <columnConstraints>
-                                <ColumnConstraints prefWidth="120" halignment="LEFT"/>
+                                <ColumnConstraints halignment="LEFT" prefWidth="120" />
                                 <ColumnConstraints hgrow="ALWAYS" />
                             </columnConstraints>
                             
-                            <Label styleClass="form-label, text-muted" text="الاسم:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                            <Label fx:id="debtorNameLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label styleClass="form-label, text-muted" text="الاسم:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="debtorNameLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                             
-                            <Label styleClass="form-label, text-muted" text="النوع:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <Label fx:id="debtorTypeLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label styleClass="form-label, text-muted" text="النوع:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label fx:id="debtorTypeLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             
-                            <Label styleClass="form-label, text-muted" text="الهاتف:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                            <Label fx:id="debtorPhoneLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            <Label styleClass="form-label, text-muted" text="الهاتف:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label fx:id="debtorPhoneLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
                         </GridPane>
                     </VBox>
 
-                    <VBox styleClass="card" spacing="15" HBox.hgrow="ALWAYS">
+                    <VBox spacing="15" styleClass="card" HBox.hgrow="ALWAYS">
                         <padding>
-                            <Insets bottom="20" left="20" right="20" top="20"/>
+                            <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
                         
-                        <Label styleClass="text-heading" text="المبلغ"/>
+                        <Label styleClass="text-heading" text="المبلغ" />
                         
                         <GridPane hgap="15" vgap="10">
                             <columnConstraints>
-                                <ColumnConstraints prefWidth="120" halignment="LEFT"/>
+                                <ColumnConstraints halignment="LEFT" prefWidth="120" />
                                 <ColumnConstraints hgrow="ALWAYS" />
                             </columnConstraints>
                             
-                            <Label styleClass="form-label, text-muted" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                            <Label fx:id="amountLabel" styleClass="text-value, stat-value" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label styleClass="form-label, text-muted" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label fx:id="amountLabel" styleClass="text-value, stat-value" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                             
-                            <Label styleClass="form-label, text-muted" text="بالحروف:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <Label fx:id="amountInWordsLabel" styleClass="text-value" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                            <Label styleClass="form-label, text-muted" text="بالحروف:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label fx:id="amountInWordsLabel" styleClass="text-value" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             
-                            <Label styleClass="form-label, text-muted" text="البند:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                            <Label fx:id="chapterLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            <Label styleClass="form-label, text-muted" text="البند:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label fx:id="chapterLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
                         </GridPane>
                     </VBox>
                 </HBox>
 
                 <!-- Object/Reason -->
-                <VBox styleClass="card" spacing="15">
+                <VBox spacing="15" styleClass="card">
                     <padding>
-                        <Insets bottom="20" left="20" right="20" top="20"/>
+                        <Insets bottom="20" left="20" right="20" top="20" />
                     </padding>
                     
-                    <Label styleClass="text-heading" text="موضوع الإيراد (الأسباب)"/>
-                    <Label fx:id="objectLabel" styleClass="text-value" text="-" wrapText="true"/>
+                    <Label styleClass="text-heading" text="موضوع الإيراد (الأسباب)" />
+                    <Label fx:id="objectLabel" styleClass="text-value" text="-" wrapText="true" />
                 </VBox>
 
                 <!-- Status Timeline -->
-                <VBox styleClass="card" spacing="20">
+                <VBox spacing="20" styleClass="card">
                     <padding>
-                        <Insets bottom="20" left="20" right="20" top="20"/>
+                        <Insets bottom="20" left="20" right="20" top="20" />
                     </padding>
                     
-                    <Label styleClass="text-heading" text="سجل الحالة"/>
+                    <Label styleClass="text-heading" text="سجل الحالة" />
                     
-                    <VBox fx:id="timelineContainer" spacing="20"/>
+                    <VBox fx:id="timelineContainer" spacing="20" />
                 </VBox>
 
             </VBox>
@@ -130,30 +142,32 @@
     </ScrollPane>
 
     <!-- Buttons -->
-    <HBox spacing="12" alignment="CENTER_RIGHT">
-        <Button fx:id="printAdminBtn" styleClass="btn-outline" text="طباعة الملحق 1" onAction="#handlePrintAdmin" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
+    <HBox alignment="CENTER_RIGHT" spacing="12">
+        <Button fx:id="printAdminBtn" managed="false" onAction="#handlePrintAdmin" styleClass="btn-outline" text="طباعة الملحق 1" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary" /></graphic>
         </Button>
-        <Button fx:id="printDebtorBtn" styleClass="btn-outline" text="طباعة الملحق 2" onAction="#handlePrintDebtor" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
+        <Button fx:id="printDebtorBtn" managed="false" onAction="#handlePrintDebtor" styleClass="btn-outline" text="طباعة الملحق 2" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary" /></graphic>
         </Button>
-        <Button fx:id="printCancelBtn" styleClass="btn-outline" text="طباعة الملحق 3" onAction="#handlePrintCancel" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #f44336;"/></graphic>
+        <Button fx:id="printCancelBtn" managed="false" onAction="#handlePrintCancel" styleClass="btn-outline" text="طباعة الملحق 3" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #f44336;" /></graphic>
         </Button>
-        <Button fx:id="printReduceBtn" styleClass="btn-outline" text="طباعة الملحق 4" onAction="#handlePrintReduce" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #9c27b0;"/></graphic>
+        <Button fx:id="printReduceBtn" managed="false" onAction="#handlePrintReduce" styleClass="btn-outline" text="طباعة الملحق 4" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #9c27b0;" /></graphic>
         </Button>
         
         <HBox HBox.hgrow="ALWAYS" />
         
-        <Button fx:id="reduceActionBtn" styleClass="btn-secondary" text="تخفيض الأمر" onAction="#handleReduceAction" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-compress" styleClass="icon-white"/></graphic>
+        <Button fx:id="reduceActionBtn" managed="false" onAction="#handleReduceAction" styleClass="btn-secondary" text="تخفيض الأمر" visible="false">
+            <graphic><FontIcon iconLiteral="fas-compress" styleClass="icon-white" /></graphic>
         </Button>
-        <Button fx:id="cancelActionBtn" styleClass="btn-danger" text="إلغاء الأمر" onAction="#handleCancelAction" managed="false" visible="false">
-            <graphic><FontIcon iconLiteral="fas-times-circle" styleClass="icon-white"/></graphic>
+        <Button fx:id="cancelActionBtn" managed="false" onAction="#handleCancelAction" styleClass="btn-danger" text="إلغاء الأمر" visible="false">
+            <graphic><FontIcon iconLiteral="fas-times-circle" styleClass="icon-white" /></graphic>
         </Button>
         
-        <Button styleClass="btn-outline" text="إغلاق" onAction="#handleClose"/>
+        <Button onAction="#handleClose" styleClass="btn-outline" text="إغلاق" />
     </HBox>
-
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </VBox>

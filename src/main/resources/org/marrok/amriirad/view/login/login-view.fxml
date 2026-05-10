@@ -11,8 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="500" prefWidth="400" styleClass="main-background" 
-           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<?import java.net.URL?>
+<StackPane prefHeight="500" prefWidth="400" styleClass="main-background"
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.marrok.amriirad.controller.login.LoginController">
 
     <VBox alignment="CENTER" spacing="30.0" maxWidth="400">
@@ -83,5 +84,7 @@
             <Label styleClass="text-subheading" text="جاري التحقق من الهوية..." />
         </VBox>
     </StackPane>
-
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </StackPane>

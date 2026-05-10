@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
+<?import java.net.URL?>
 <VBox spacing="15.0" styleClass="content-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.users.UserFormController">
     <padding>
@@ -50,4 +51,7 @@
             <graphic><FontIcon iconLiteral="fas-save"/></graphic>
         </Button>
     </HBox>
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </VBox>

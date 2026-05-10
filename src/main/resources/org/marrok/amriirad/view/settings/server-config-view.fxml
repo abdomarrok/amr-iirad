@@ -5,7 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefWidth="500" spacing="25" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<?import java.net.URL?>
+<VBox prefWidth="500" spacing="25" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.settings.ServerConfigController">
     <padding>
         <Insets bottom="30" left="30" right="30" top="30"/>
@@ -50,5 +51,7 @@
             <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
         </Button>
     </HBox>
-
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
 </VBox>
