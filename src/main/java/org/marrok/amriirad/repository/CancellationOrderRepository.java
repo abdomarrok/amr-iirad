@@ -25,7 +25,7 @@ public class CancellationOrderRepository {
 
     public RevenueOrderCancellation save(RevenueOrderCancellation roc) throws SQLException {
         String sql = "INSERT INTO revenue_order_cancellation (original_order_id, cancellation_type, cancellation_number, " +
-                     "cancellation_date, reason_ar, reduced_amount, created_by) VALUES (?,?,?,?,?,?,?)";
+                     "cancellation_date, reason_ar, reason_fr, reduced_amount, created_by) VALUES (?,?,?,?,?,?,?,?)";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, roc.getOriginalOrder().getId());
@@ -33,8 +33,9 @@ public class CancellationOrderRepository {
             ps.setString(3, roc.getCancellationNumber());
             ps.setDate(4, Date.valueOf(roc.getCancellationDate()));
             ps.setString(5, roc.getReasonAr());
-            ps.setBigDecimal(6, roc.getReducedAmount());
-            ps.setString(7, roc.getCreatedBy());
+            ps.setString(6, roc.getReasonFr());
+            ps.setBigDecimal(7, roc.getReducedAmount());
+            ps.setString(8, roc.getCreatedBy());
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) roc.setId(keys.getInt(1));
@@ -71,6 +72,7 @@ public class CancellationOrderRepository {
         roc.setCancellationNumber(rs.getString("cancellation_number"));
         roc.setCancellationDate(rs.getDate("cancellation_date").toLocalDate());
         roc.setReasonAr(rs.getString("reason_ar"));
+        roc.setReasonFr(rs.getString("reason_fr"));
         roc.setReducedAmount(rs.getBigDecimal("reduced_amount"));
         roc.setCreatedBy(rs.getString("created_by"));
         Timestamp ts = rs.getTimestamp("created_at");

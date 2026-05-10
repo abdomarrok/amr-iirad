@@ -14,7 +14,7 @@
     <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="modal-header">
         <FontIcon iconLiteral="fas-info-circle" iconSize="24" styleClass="icon-primary" />
-        <Label fx:id="titleLabel" styleClass="text-subheading" text="تفاصيل أمر الإيراد" />
+        <Label fx:id="titleLabel" styleClass="text-subheading" text="تفاصيل أمر الإيراد / Détails de l'Ordre de Recette" />
     </HBox>
 
     <!-- Scrollable Content -->
@@ -27,7 +27,7 @@
                         <Insets bottom="20" left="20" right="20" top="20" />
                     </padding>
                     
-                    <Label styleClass="text-heading" text="معلومات الأمر" />
+                    <Label styleClass="text-heading" text="معلومات الأمر / Infos de l'Ordre" />
                     
                     <GridPane hgap="30" vgap="15">
                         <columnConstraints>
@@ -37,16 +37,16 @@
                             <ColumnConstraints hgrow="ALWAYS" />
                         </columnConstraints>
 
-                        <Label styleClass="form-label, text-muted" text="رقم الأمر:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label styleClass="form-label, text-muted" text="رقم الأمر / N° d'Ordre :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <Label fx:id="orderNumberLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                         
-                        <Label styleClass="form-label, text-muted" text="تاريخ الإصدار:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label styleClass="form-label, text-muted" text="تاريخ الإصدار / Date d'Émission :" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                         <Label fx:id="issueDateLabel" styleClass="text-value" text="-" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-                        <Label styleClass="form-label, text-muted" text="السنة المالية:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label styleClass="form-label, text-muted" text="السنة المالية / Exercice :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <Label fx:id="fiscalYearLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <Label styleClass="form-label, text-muted" text="الحالة:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label styleClass="form-label, text-muted" text="الحالة / État :" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label fx:id="statusLabel" styleClass="text-value, text-primary" text="-" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <rowConstraints>
                      <RowConstraints />
@@ -62,7 +62,7 @@
                             <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
                         
-                        <Label styleClass="text-heading" text="المدين" />
+                        <Label styleClass="text-heading" text="المدين / Débiteur" />
                         
                         <GridPane hgap="15" vgap="10">
                             <columnConstraints>
@@ -70,10 +70,10 @@
                                 <ColumnConstraints hgrow="ALWAYS" />
                             </columnConstraints>
                             
-                            <Label styleClass="form-label, text-muted" text="الاسم:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label styleClass="form-label, text-muted" text="الاسم / Nom :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                             <Label fx:id="debtorNameLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                             
-                            <Label styleClass="form-label, text-muted" text="النوع:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label styleClass="form-label, text-muted" text="النوع / Type :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                             <Label fx:id="debtorTypeLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             
                             <Label styleClass="form-label, text-muted" text="الهاتف:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
@@ -91,7 +91,7 @@
                             <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
                         
-                        <Label styleClass="text-heading" text="المبلغ" />
+                        <Label styleClass="text-heading" text="المبلغ / Montant" />
                         
                         <GridPane hgap="15" vgap="10">
                             <columnConstraints>
@@ -99,13 +99,13 @@
                                 <ColumnConstraints hgrow="ALWAYS" />
                             </columnConstraints>
                             
-                            <Label styleClass="form-label, text-muted" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label styleClass="form-label, text-muted" text="المبلغ (د.ج) / Montant (DA) :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                             <Label fx:id="amountLabel" styleClass="text-value, stat-value" text="0.00" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                             
-                            <Label styleClass="form-label, text-muted" text="بالحروف:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label styleClass="form-label, text-muted" text="بالحروف / En Toutes Lettres :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                             <Label fx:id="amountInWordsLabel" styleClass="text-value" text="-" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             
-                            <Label styleClass="form-label, text-muted" text="البند:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <Label styleClass="form-label, text-muted" text="البند / Chapitre :" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                             <Label fx:id="chapterLabel" styleClass="text-value" text="-" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      <rowConstraints>
                         <RowConstraints />
@@ -122,7 +122,7 @@
                         <Insets bottom="20" left="20" right="20" top="20" />
                     </padding>
                     
-                    <Label styleClass="text-heading" text="موضوع الإيراد (الأسباب)" />
+                    <Label styleClass="text-heading" text="موضوع الإيراد (الأسباب) / Objet (Motifs)" />
                     <Label fx:id="objectLabel" styleClass="text-value" text="-" wrapText="true" />
                 </VBox>
 

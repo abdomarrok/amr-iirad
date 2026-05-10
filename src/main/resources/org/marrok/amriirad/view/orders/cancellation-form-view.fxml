@@ -16,8 +16,8 @@
     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="modal-header">
         <FontIcon iconLiteral="fas-file-excel" iconSize="24" styleClass="icon-danger"/>
         <VBox>
-            <Label fx:id="titleLabel" styleClass="text-subheading" text="إلغاء / تخفيض أمر إيراد"/>
-            <Label fx:id="subtitleLabel" styleClass="text-small, text-muted" text="أمر الإيراد: -"/>
+            <Label fx:id="titleLabel" styleClass="text-subheading" text="إلغاء / تخفيض أمر إيراد | Annulation / Réduction"/>
+            <Label fx:id="subtitleLabel" styleClass="text-small, text-muted" text="Ordre de Recette : -"/>
         </VBox>
     </HBox>
 
@@ -33,20 +33,23 @@
                 <ColumnConstraints hgrow="ALWAYS" />
             </columnConstraints>
 
-            <Label styleClass="form-label" text="نوع العملية:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label styleClass="form-label" text="نوع العملية / Type :" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <ComboBox fx:id="typeCombo" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-            <Label styleClass="form-label" text="رقم العملية:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label styleClass="form-label" text="رقم العملية / N° d'Acte :" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <TextField fx:id="cancellationNumField" promptText="يترك فارغاً للتوليد التلقائي" GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="250"/>
 
-            <Label styleClass="form-label" text="تاريخ العملية:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label styleClass="form-label" text="تاريخ العملية / Date :" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             <DatePicker fx:id="cancellationDatePicker" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-            <Label fx:id="reducedAmountLabel" styleClass="form-label" text="المبلغ المخفض (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="3" visible="false" managed="false"/>
+            <Label fx:id="reducedAmountLabel" styleClass="form-label" text="المبلغ المخفض / Réduit (DA) :" GridPane.columnIndex="0" GridPane.rowIndex="3" visible="false" managed="false"/>
             <TextField fx:id="reducedAmountField" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="3" maxWidth="200" visible="false" managed="false"/>
 
-            <Label styleClass="form-label" text="السبب (الأسباب):" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="TOP"/>
-            <TextArea fx:id="reasonField" prefRowCount="3" promptText="أدخل سبب الإلغاء أو التخفيض..." GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            <Label styleClass="form-label" text="السبب / Motif (Ar) :" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="TOP"/>
+            <TextArea fx:id="reasonField" prefRowCount="2" promptText="أدخل سبب الإلغاء أو التخفيض..." GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+            <Label styleClass="form-label" text="Motif (Fr) :" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
+            <TextArea fx:id="reasonFrField" prefRowCount="2" promptText="Motif de l'annulation ou réduction..." GridPane.columnIndex="1" GridPane.rowIndex="5"/>
         </GridPane>
     </VBox>
 

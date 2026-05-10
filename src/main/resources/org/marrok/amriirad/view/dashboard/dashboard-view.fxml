@@ -32,35 +32,35 @@
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
                     <FontIcon iconLiteral="fas-file-invoice" iconSize="28" styleClass="icon-primary"/>
                     <Label fx:id="totalOrdersLabel" styleClass="stat-value" text="0"/>
-                    <Label styleClass="stat-label" text="إجمالي الأوامر"/>
+                    <Label styleClass="stat-label" text="إجمالي الأوامر / Total Ordres"/>
                 </VBox>
 
                 <!-- Issued -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
                     <FontIcon iconLiteral="fas-check-circle" iconSize="28" styleClass="icon-info"/>
                     <Label fx:id="issuedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #3498db;"/>
-                    <Label styleClass="stat-label" text="أوامر مُصدرة"/>
+                    <Label styleClass="stat-label" text="أوامر مُصدرة / Émis"/>
                 </VBox>
 
                 <!-- Dispatched -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
                     <FontIcon iconLiteral="fas-truck" iconSize="28" styleClass="icon-success"/>
                     <Label fx:id="dispatchedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #27ae60;"/>
-                    <Label styleClass="stat-label" text="أوامر مُرسلة"/>
+                    <Label styleClass="stat-label" text="أوامر مُرسلة / Envoyés"/>
                 </VBox>
 
                 <!-- Total Amount -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
                     <FontIcon iconLiteral="fas-coins" iconSize="28" styleClass="icon-warning"/>
                     <Label fx:id="totalAmountLabel" styleClass="stat-value" text="0.00" style="-fx-text-fill: #f39c12;"/>
-                    <Label styleClass="stat-label" text="المبلغ الإجمالي (د.ج)"/>
+                    <Label styleClass="stat-label" text="المبلغ الإجمالي (د.ج) / Montant (DA)"/>
                 </VBox>
             </HBox>
 
             <Separator/>
 
             <!-- Action Buttons -->
-            <Label styleClass="text-subheading" text="إجراءات سريعة"/>
+            <Label styleClass="text-subheading" text="إجراءات سريعة / Actions Rapides"/>
 
             <FlowPane hgap="16" vgap="16" alignment="CENTER">
 
@@ -70,7 +70,7 @@
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
                             <FontIcon iconLiteral="fas-plus-circle" iconSize="24" styleClass="icon-light"/>
-                            <Label text="أمر إيراد جديد" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
+                            <Label text="أمر إيراد جديد / Nouveau" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
                         </VBox>
                     </graphic>
                 </Button>
@@ -81,7 +81,7 @@
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
                             <FontIcon iconLiteral="fas-list-alt" iconSize="24" styleClass="icon-primary"/>
-                            <Label text="قائمة الأوامر" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                            <Label text="قائمة الأوامر / Liste" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
                         </VBox>
                     </graphic>
                 </Button>
@@ -92,7 +92,7 @@
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
                             <FontIcon iconLiteral="fas-users" iconSize="24" styleClass="icon-primary"/>
-                            <Label text="إدارة المدينين" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                            <Label text="المدينين / Débiteurs" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
                         </VBox>
                     </graphic>
                 </Button>
@@ -103,7 +103,7 @@
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
                             <FontIcon iconLiteral="fas-paper-plane" iconSize="24" styleClass="icon-primary"/>
-                            <Label text="بوردرو الإرسال" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                            <Label text="جدول الإرسال / Bordereau" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
                         </VBox>
                     </graphic>
                 </Button>
@@ -114,7 +114,7 @@
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
                             <FontIcon iconLiteral="fas-sitemap" iconSize="24" styleClass="icon-primary"/>
-                            <Label text="محاور الميزانية" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                            <Label text="الميزانية / Budget" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
                         </VBox>
                     </graphic>
                 </Button>

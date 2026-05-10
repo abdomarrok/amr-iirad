@@ -26,6 +26,7 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 - **`BaseFormController`**: Abstract base for all modal controllers, enforcing standard `validateForm()` and `getLogger()` patterns.
 - **Root Layout**: All main views are wrapped in a `BorderPane` that includes `top-bar.fxml` and `footer.fxml`.
 - **State Awareness**: `SceneManager` tracks the `lastLoadedFxml` to support the `refresh()` method, which is triggered when global state (like Fiscal Year) changes.
+- **2-JRXML Strategy**: For every report (Annex 1-5), the system maintains two separate `.jrxml` templates (`[report]_ar.jrxml` and `[report]_fr.jrxml`). This ensures pixel-perfect alignment and correct font rendering for both RTL (Arabic) and LTR (French) layouts.
 
 ---
 
@@ -51,7 +52,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 ## 3. Data & Workflow Truths
 - **Fiscal Year Gate**: Almost all data operations are scoped to the `active` fiscal year.
 - **Audit Trail**: Every significant business action (Save, Issue, Print) MUST be logged via `AuditService`.
-- **Tafqeet**: Numeric amounts are automatically converted to Arabic words via `TafqeetService`. NEVER accept manual text input for amounts in words.
+- **Bilingual Schema**: Database tables (`revenue_order`, `revenue_order_cancellation`, `institution_info`) use parallel columns for bilingual storage (e.g., `object_ar` and `object_fr`).
+- **Tafqeet (Multi-lang)**: Numeric amounts are automatically converted to words in both Arabic and French via `TafqeetService`, depending on the selected print language.
 - **Soft Deletion**: Records are never permanently deleted from the DB; they are marked `is_deleted = 1`.
 
 ---
@@ -59,7 +61,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 ## 4. Pending / Next Steps
 1. ✅ **Audit Log Viewer**: A dedicated UI to browse the `audit_log` table — **IMPLEMENTED**.
 2. ✅ **Permission Enforcement**: Integrated a comprehensive Permission Matrix using `authService.canDo()` across all core controllers and UI actions — **IMPLEMENTED**.
-3. **Report Fine-Tuning**: Ensure all 5 Jasper Annexes align with the latest regulatory tweaks mentioned in `instruction_08_2023_analysis.md`.
+3. ✅ **Bilingual Reporting**: Implemented full French documentation support and 2-JRXML printing strategy — **IMPLEMENTED**.
+4. **Data Export**: Implement CSV/Excel export for financial reporting.
 
 ---
 *If you are the next AI agent: Maintain the pattern. If you need to add a feature, create a sub-package in `controller/` and `view/`, register the controller in `AppContext`, and use `SceneManager` for navigation.*

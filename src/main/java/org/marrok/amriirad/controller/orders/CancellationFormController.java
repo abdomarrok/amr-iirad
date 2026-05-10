@@ -37,6 +37,7 @@ public class CancellationFormController extends BaseFormController implements In
     @FXML private Label reducedAmountLabel;
     @FXML private TextField reducedAmountField;
     @FXML private TextArea reasonField;
+    @FXML private TextArea reasonFrField;
     @FXML private Label errorLabel;
     @FXML private Button saveBtn;
 
@@ -72,10 +73,14 @@ public class CancellationFormController extends BaseFormController implements In
         });
     }
 
-    public void initData(RevenueOrder order, Runnable onSuccess) {
+    public void initData(RevenueOrder order, CancellationType defaultType, Runnable onSuccess) {
         this.targetOrder = order;
         this.onSuccess = onSuccess;
         subtitleLabel.setText("أمر الإيراد المستهدف: " + order.getOrderNumber() + " (المبلغ الأصلي: " + order.getAmount() + " د.ج)");
+        
+        if (defaultType != null) {
+            typeCombo.setValue(defaultType);
+        }
     }
 
     @FXML
@@ -87,6 +92,7 @@ public class CancellationFormController extends BaseFormController implements In
         cancellation.setCancellationType(typeCombo.getValue());
         cancellation.setCancellationDate(cancellationDatePicker.getValue());
         cancellation.setReasonAr(reasonField.getText().trim());
+        cancellation.setReasonFr(reasonFrField.getText().trim());
         cancellation.setCreatedBy("admin"); // TODO: Use real user
         
         String providedNum = cancellationNumField.getText().trim();
@@ -108,7 +114,7 @@ public class CancellationFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
-                printAnnexe(cancellation);
+                showLanguageDialog(lang -> printAnnexe(cancellation, lang));
                 closeWindow();
                 runOnSuccess();
             },
@@ -116,14 +122,34 @@ public class CancellationFormController extends BaseFormController implements In
         );
     }
 
-    private void printAnnexe(RevenueOrderCancellation cancellation) {
+    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("لغة الطباعة / Langue d'impression");
+        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
+        
+        ButtonType btnAr = new ButtonType("العربية (AR)");
+        ButtonType btnFr = new ButtonType("Français (FR)");
+        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        
+        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
+        
+        alert.showAndWait().ifPresent(type -> {
+            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+        });
+    }
+
+    private void printAnnexe(RevenueOrderCancellation cancellation, org.marrok.amriirad.model.PrintLanguage lang) {
         java.util.Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+            .withLanguage(lang)
             .withCancellation(cancellation)
             .build();
         
-        String reportPath = cancellation.getCancellationType() == CancellationType.REDUCTION ? 
-            "/org/marrok/amriirad/report/annexe4_reduction.jrxml" : 
-            "/org/marrok/amriirad/report/annexe3_full_cancel.jrxml";
+        String reportBasePath = cancellation.getCancellationType() == CancellationType.REDUCTION ? 
+            "/org/marrok/amriirad/report/annexe4_reduction" : 
+            "/org/marrok/amriirad/report/annexe3_full_cancel";
+        
+        String reportPath = reportBasePath + "_" + lang.getCode() + ".jrxml";
         
         reportService.showReportWithParamsOnly(reportPath, params);
     }

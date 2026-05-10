@@ -17,6 +17,7 @@ public class RevenueOrderCancellation {
     private String cancellationNumber;          // رقم أمر الإلغاء/التخفيض
     private LocalDate cancellationDate;         // تاريخ الإلغاء
     private String reasonAr;                    // سبب الإلغاء أو التخفيض (بالعربية)
+    private String reasonFr;                    // Motif (Français)
     private BigDecimal reducedAmount;           // المبلغ المخفَّض (فقط لنوع REDUCTION)
     private String createdBy;
     private LocalDateTime createdAt;
@@ -44,6 +45,9 @@ public class RevenueOrderCancellation {
 
     public String getReasonAr()                         { return reasonAr; }
     public void setReasonAr(String r)                   { this.reasonAr = r; }
+
+    public String getReasonFr()                         { return reasonFr; }
+    public void setReasonFr(String r)                   { this.reasonFr = r; }
 
     public BigDecimal getReducedAmount()                { return reducedAmount; }
     public void setReducedAmount(BigDecimal a)          { this.reducedAmount = a; }

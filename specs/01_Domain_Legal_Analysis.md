@@ -278,6 +278,18 @@ La somme dont l'indication suit, pour les motifs ci-après énoncés.
 
 ---
 
+---
+
+## 9. Bilingual Administrative Context (Arabic & French)
+While the primary administrative language is Arabic, the Algerian financial administration (Treasury) maintains high compatibility with the French language for technical and historical reasons. Many official forms provided as reference in the project (Instruction 08) are bilingual.
+
+**Implementation Strategy:**
+- **Linguistic Parity**: Every descriptive field (Object, Reason) MUST be stored in both Arabic and French to ensure document integrity regardless of the selected print language.
+- **Tafqeet Compliance**: Amounts in words must strictly follow the grammar of the selected language (e.g., using French "centimes" or Arabic "سنتيم").
+- **Institutional Identity**: The names of ministries, institutions, and authorizing officers must be officially registered in both languages to maintain formal consistency on headers and footers.
+
+---
+
 *Ce document est une extraction et analyse fidèle de l'Instruction n° 08 du 09 avril 2023.*
 *Il sert de référence légale permanente pour le projet amr-iirad.*
 *Toute règle métier doit être tracée vers une règle INS-xx de ce document.*

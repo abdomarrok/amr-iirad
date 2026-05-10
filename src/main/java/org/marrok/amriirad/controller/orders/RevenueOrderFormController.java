@@ -44,6 +44,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
     @FXML private ComboBox<BudgetChapter> budgetChapterCombo;
     @FXML private TextField amountField;
     @FXML private TextArea objectField;
+    @FXML private TextArea objectFrField;
     @FXML private Label errorLabel;
     @FXML private Button saveBtn;
     @FXML private Button issueBtn;
@@ -103,6 +104,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         issueDatePicker.setValue(order.getIssueDate());
         amountField.setText(order.getAmount() != null ? order.getAmount().toString() : "");
         objectField.setText(order.getObjectAr());
+        objectFrField.setText(order.getObjectFr());
         
         if (order.getStatus() == OrderStatus.DRAFT) {
             issueBtn.setVisible(true);
@@ -113,6 +115,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
             issueBtn.setDisable(true);
             amountField.setDisable(true);
             objectField.setDisable(true);
+            objectFrField.setDisable(true);
             debtorCombo.setDisable(true);
             budgetChapterCombo.setDisable(true);
             issueDatePicker.setDisable(true);
@@ -270,6 +273,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         currentOrder.setBudgetChapter(budgetChapterCombo.getValue());
         currentOrder.setAmount(new BigDecimal(amountField.getText().trim()));
         currentOrder.setObjectAr(objectField.getText().trim());
+        currentOrder.setObjectFr(objectFrField.getText().trim());
     }
 
     @Override
@@ -279,20 +283,40 @@ public class RevenueOrderFormController extends BaseFormController implements In
 
     @FXML
     private void handlePrintAdmin() {
-        printAnnexe("/org/marrok/amriirad/report/annexe1_order.jrxml");
+        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
     }
 
     @FXML
     private void handlePrintDebtor() {
-        printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy.jrxml");
+        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
     }
 
-    private void printAnnexe(String reportPath) {
+    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("لغة الطباعة / Langue d'impression");
+        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
+        
+        ButtonType btnAr = new ButtonType("العربية (AR)");
+        ButtonType btnFr = new ButtonType("Français (FR)");
+        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        
+        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
+        
+        alert.showAndWait().ifPresent(type -> {
+            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+        });
+    }
+
+    private void printAnnexe(String reportBasePath, org.marrok.amriirad.model.PrintLanguage lang) {
         if (currentOrder == null || currentOrder.getId() == 0) return;
+        
+        String reportPath = reportBasePath + "_" + lang.getCode() + ".jrxml";
         
         concurrencyManager.runAsync(
             () -> {
                 java.util.Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withLanguage(lang)
                     .withInstitution(institutionService.getInfo())
                     .withOrder(currentOrder)
                     .build();

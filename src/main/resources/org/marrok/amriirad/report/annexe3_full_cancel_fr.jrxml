@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.0.final -->
+<jasperReport name="annexe3_full_cancel_fr" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8f148516-3a27-47db-9743-ed56139b5bfe">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
+	
+	<!-- Parameters -->
+	<parameter name="ORDER_NUMBER" class="java.lang.String"/>
+	<parameter name="CANCEL_NUMBER" class="java.lang.String"/>
+	<parameter name="FISCAL_YEAR" class="java.lang.String"/>
+	<parameter name="DATE" class="java.lang.String"/>
+	<parameter name="DEBTOR_NAME" class="java.lang.String"/>
+	<parameter name="AMOUNT" class="java.lang.String"/>
+	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
+	<parameter name="REASON" class="java.lang.String"/>
+	
+	<parameter name="INSTITUTION_NAME_FR" class="java.lang.String"/>
+	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
+	<parameter name="WILAYA_AR" class="java.lang.String"/>
+
+	<!-- LOLF Fields -->
+	<parameter name="COMPTE_IMPUTATION" class="java.lang.String"/>
+	<parameter name="PORTEFEUILLE" class="java.lang.String"/>
+	<parameter name="PROGRAMME" class="java.lang.String"/>
+	<parameter name="SOUS_PROGRAMME" class="java.lang.String"/>
+	<parameter name="ACTION" class="java.lang.String"/>
+	<parameter name="SOUS_ACTION" class="java.lang.String"/>
+	<parameter name="TITRE" class="java.lang.String"/>
+	<parameter name="CATEGORIE" class="java.lang.String"/>
+
+	<pageHeader height="100">
+		<element kind="staticText" x="0" y="0" width="100" height="15" fontSize="9.0" bold="true">
+			<text><![CDATA[Annexe n°03]]></text>
+		</element>
+		<element kind="staticText" x="0" y="25" width="555" height="15" fontName="SansSerif" fontSize="10.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE]]></text>
+		</element>
+		
+		<element kind="rectangle" x="0" y="55" width="220" height="40">
+			<pen lineWidth="0.5"/>
+		</element>
+		<element kind="textField" x="5" y="60" width="210" height="15" fontSize="8.0" bold="true">
+			<expression><![CDATA["ORDONNATEUR : " + ($P{INSTITUTION_NAME_FR} != null ? $P{INSTITUTION_NAME_FR} : "")]]></expression>
+		</element>
+		<element kind="textField" x="5" y="75" width="210" height="15" fontSize="8.0" bold="true">
+			<expression><![CDATA["CODE ORDONNATEUR : " + ($P{ORDONNATEUR_CODE} != null ? $P{ORDONNATEUR_CODE} : "")]]></expression>
+		</element>
+	</pageHeader>
+
+	<detail>
+		<band height="650">
+			<element kind="staticText" x="0" y="10" width="555" height="30" fontSize="18.0" bold="true" underline="true" hTextAlign="Center">
+				<text><![CDATA[ORDRE D'ANNULATION DE RECETTE]]></text>
+			</element>
+
+			<!-- Metadata Box -->
+			<element kind="rectangle" x="250" y="50" width="305" height="180">
+				<pen lineWidth="0.5"/>
+			</element>
+			<element kind="textField" x="255" y="55" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["EXERCICE : " + $P{FISCAL_YEAR}]]></expression>
+			</element>
+			<element kind="textField" x="255" y="70" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["COMPTE D'IMPUTATION : " + ($P{COMPTE_IMPUTATION} != null ? $P{COMPTE_IMPUTATION} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="85" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["PORTEFEUILLE DE PROGRAMMES : " + ($P{PORTEFEUILLE} != null ? $P{PORTEFEUILLE} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="100" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["PROGRAMME : " + ($P{PROGRAMME} != null ? $P{PROGRAMME} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="115" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["SOUS-PROGRAMME : " + ($P{SOUS_PROGRAMME} != null ? $P{SOUS_PROGRAMME} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="130" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["ACTION : " + ($P{ACTION} != null ? $P{ACTION} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="145" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["SOUS -ACTION : " + ($P{SOUS_ACTION} != null ? $P{SOUS_ACTION} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="160" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["TITRE : " + ($P{TITRE} != null ? $P{TITRE} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="175" width="295" height="15" fontSize="8.0">
+				<expression><![CDATA["CATEGORIE / SOUS- CATEGORIE : " + ($P{CATEGORIE} != null ? $P{CATEGORIE} : "")]]></expression>
+			</element>
+			<element kind="textField" x="255" y="190" width="295" height="15" fontSize="8.0" bold="true">
+				<expression><![CDATA["N° D'ORDRE : " + $P{CANCEL_NUMBER}]]></expression>
+			</element>
+
+			<!-- Body Text -->
+			<element kind="textField" x="0" y="240" width="555" height="100" fontSize="11.0" hTextAlign="Left">
+				<expression><![CDATA["L'ordre de recette n° " + $P{ORDER_NUMBER} + " émis le " + $P{DATE} + " à l'encontre de Mr/Mme " + $P{DEBTOR_NAME} + " pour un montant de " + $P{AMOUNT} + " DA est annulé pour le motif ci-après :"]]></expression>
+			</element>
+			
+			<element kind="textField" x="20" y="350" width="515" height="100" fontSize="11.0" hTextAlign="Center">
+				<expression><![CDATA[$P{REASON}]]></expression>
+			</element>
+
+			<element kind="textField" x="0" y="460" width="555" height="30" fontSize="10.0" bold="true">
+				<expression><![CDATA["Le présent ordre d'annulation est arrêté à la somme de : " + $P{AMOUNT_WORDS}]]></expression>
+			</element>
+
+			<!-- Signature -->
+			<element kind="textField" x="300" y="520" width="255" height="15" fontSize="10.0" hTextAlign="Right">
+				<expression><![CDATA["A " + ($P{WILAYA_AR} != null ? $P{WILAYA_AR} : "") + " le " + $P{DATE}]]></expression>
+			</element>
+			<element kind="staticText" x="300" y="540" width="255" height="15" fontSize="10.0" bold="true" hTextAlign="Right">
+				<text><![CDATA[ORDONNATEUR (cachet, griffe, signature)]]></text>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

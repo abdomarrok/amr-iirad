@@ -193,39 +193,69 @@ public class DispatchSlipController implements Initializable {
         }
         DispatchSlip selected = slipsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            logger.info("Printing Annexe 5 for slip: {}", selected.getSlipNumber());
-            
-            concurrencyManager.runAsync(
-                () -> {
-                    java.util.Map<String, Object> params = org.marrok.amriirad.util.ReportParamBuilder.create(tafqeetService)
-                        .withInstitution(institutionService.getInfo())
-                        .put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "")
-                        .put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00")
-                        .put("TOTAL_WORDS", selected.getTotalAmount() != null ? tafqeetService.toArabicWords(selected.getTotalAmount()) : "")
-                        .put("DATE", selected.getDispatchDate() != null ? selected.getDispatchDate().toString() : "")
-                        .build();
-                    
-                    java.util.List<SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();
-                    if (selected.getOrders() != null) {
-                        for (RevenueOrder order : selected.getOrders()) {
-                            dataSourceList.add(new SlipOrderDTO(
-                                order.getOrderNumber(),
-                                order.getDebtor() != null ? order.getDebtor().getFullName() : "",
-                                order.getAmount()
-                            ));
-                        }
-                    }
-                    
-                    net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource = 
-                        new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(dataSourceList);
-                    
-                    reportService.showReport("/org/marrok/amriirad/report/annexe5_dispatch.jrxml", params, dataSource);
-                    return true;
-                },
-                res -> logger.info("Print triggered for slip: {}", selected.getSlipNumber()),
-                err -> DialogHelper.showError("خطأ", "فشل الطباعة: " + err.getMessage())
-            );
+            showLanguageDialog(lang -> printSlip(selected, lang));
         }
+    }
+
+    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("لغة الطباعة / Langue d'impression");
+        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
+        
+        ButtonType btnAr = new ButtonType("العربية (AR)");
+        ButtonType btnFr = new ButtonType("Français (FR)");
+        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        
+        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
+        
+        alert.showAndWait().ifPresent(type -> {
+            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+        });
+    }
+
+    private void printSlip(DispatchSlip selected, org.marrok.amriirad.model.PrintLanguage lang) {
+        logger.info("Printing Annexe 5 for slip: {} in {}", selected.getSlipNumber(), lang);
+        String reportPath = "/org/marrok/amriirad/report/annexe5_dispatch_" + lang.getCode() + ".jrxml";
+        
+        concurrencyManager.runAsync(
+            () -> {
+                String totalWords = "";
+                if (selected.getTotalAmount() != null) {
+                    totalWords = (lang == org.marrok.amriirad.model.PrintLanguage.FRENCH) ?
+                        tafqeetService.toFrenchWords(selected.getTotalAmount()) :
+                        tafqeetService.toArabicWords(selected.getTotalAmount());
+                }
+
+                java.util.Map<String, Object> params = org.marrok.amriirad.util.ReportParamBuilder.create(tafqeetService)
+                    .withLanguage(lang)
+                    .withInstitution(institutionService.getInfo())
+                    .put("SLIP_NUMBER", selected.getSlipNumber() != null ? selected.getSlipNumber() : "")
+                    .put("TOTAL_AMOUNT", selected.getTotalAmount() != null ? selected.getTotalAmount().toString() : "0.00")
+                    .put("TOTAL_WORDS", totalWords)
+                    .put("DATE", selected.getDispatchDate() != null ? selected.getDispatchDate().toString() : "")
+                    .build();
+                
+                java.util.List<SlipOrderDTO> dataSourceList = new java.util.ArrayList<>();
+                if (selected.getOrders() != null) {
+                    for (RevenueOrder order : selected.getOrders()) {
+                        dataSourceList.add(new SlipOrderDTO(
+                            order.getOrderNumber(),
+                            order.getDebtor() != null ? order.getDebtor().getFullName() : "",
+                            order.getAmount()
+                        ));
+                    }
+                }
+                
+                net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource = 
+                    new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(dataSourceList);
+                
+                reportService.showReport(reportPath, params, dataSource);
+                return true;
+            },
+            res -> logger.info("Print triggered for slip: {}", selected.getSlipNumber()),
+            err -> DialogHelper.showError("خطأ", "فشل الطباعة: " + err.getMessage())
+        );
     }
 
     public static class SlipOrderDTO {

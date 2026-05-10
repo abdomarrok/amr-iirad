@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -14,6 +16,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.model.OrderStatus;
+import org.marrok.amriirad.model.CancellationType;
 import org.marrok.amriirad.service.ReportService;
 import org.marrok.amriirad.service.TafqeetService;
 import org.marrok.amriirad.service.InstitutionService;
@@ -229,7 +232,7 @@ public class OrderDetailsController extends BaseFormController implements Initia
         headerBox.getChildren().addAll(statusIcon, statusLabel);
 
         Label descLabel = new Label(description);
-        descLabel.setStyle("-fx-text-fill: var(--text-muted-color); -fx-font-size: 12;");
+        descLabel.setStyle("-fx-text-fill: -fx-theme-text-muted; -fx-font-size: 12;");
         descLabel.setWrapText(true);
 
         timelineItem.getChildren().addAll(headerBox, descLabel, timestampLabel);
@@ -259,34 +262,54 @@ public class OrderDetailsController extends BaseFormController implements Initia
 
     @FXML
     private void handlePrintAdmin() {
-        printAnnexe("/org/marrok/amriirad/report/annexe1_order.jrxml");
+        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe1_order", lang));
     }
 
     @FXML
     private void handlePrintDebtor() {
-        printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy.jrxml");
+        showLanguageDialog(lang -> printAnnexe("/org/marrok/amriirad/report/annexe2_debtor_copy", lang));
     }
 
     @FXML
     private void handlePrintCancel() {
-        fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe3_full_cancel.jrxml");
+        showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe3_full_cancel", lang));
     }
 
     @FXML
     private void handlePrintReduce() {
-        fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction.jrxml");
+        showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction", lang));
     }
 
-    private void fetchCancellationAndPrint(String reportPath) {
+    private void showLanguageDialog(java.util.function.Consumer<org.marrok.amriirad.model.PrintLanguage> onSelect) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("لغة الطباعة / Langue d'impression");
+        alert.setHeaderText("اختر لغة طباعة الوثيقة / Choisir la langue d'impression");
+        
+        ButtonType btnAr = new ButtonType("العربية (AR)");
+        ButtonType btnFr = new ButtonType("Français (FR)");
+        ButtonType btnCancel = new ButtonType("إلغاء / Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+        
+        alert.getButtonTypes().setAll(btnAr, btnFr, btnCancel);
+        
+        alert.showAndWait().ifPresent(type -> {
+            if (type == btnAr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
+            else if (type == btnFr) onSelect.accept(org.marrok.amriirad.model.PrintLanguage.FRENCH);
+        });
+    }
+
+    private void fetchCancellationAndPrint(String baseReportPath, org.marrok.amriirad.model.PrintLanguage lang) {
+        String fullPath = baseReportPath + "_" + lang.getCode() + ".jrxml";
         concurrencyManager.runAsync(
             () -> cancellationService.findByOrderId(currentOrder.getId()),
             opt -> {
                 opt.ifPresentOrElse(
                     c -> {
                         Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                            .withLanguage(lang)
+                            .withInstitution(institutionService.getInfo())
                             .withCancellation(c)
                             .build();
-                        reportService.showReportWithParamsOnly(reportPath, params);
+                        reportService.showReportWithParamsOnly(fullPath, params);
                     },
                     () -> showError("تعذر العثور على سجل الإلغاء/التخفيض.")
                 );
@@ -295,44 +318,46 @@ public class OrderDetailsController extends BaseFormController implements Initia
         );
     }
 
-    private void printAnnexe(String reportPath) {
+    private void printAnnexe(String baseReportPath, org.marrok.amriirad.model.PrintLanguage lang) {
         if (currentOrder == null) {
             showError("No order data available");
             return;
         }
+        String fullPath = baseReportPath + "_" + lang.getCode() + ".jrxml";
         concurrencyManager.runAsync(
             () -> {
                 Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withLanguage(lang)
                     .withInstitution(institutionService.getInfo())
                     .withOrder(currentOrder)
                     .build();
                 
-                reportService.showReportWithParamsOnly(reportPath, params);
+                reportService.showReportWithParamsOnly(fullPath, params);
                 return true;
             },
-            res -> logger.info("Print triggered for {}", reportPath),
+            res -> logger.info("Print triggered for {} in {}", fullPath, lang),
             err -> showError("خطأ في الطباعة: " + err.getMessage())
         );
     }
 
     @FXML
     private void handleCancelAction() {
-        openCancellationForm();
+        openCancellationForm(CancellationType.FULL_CANCEL);
     }
 
     @FXML
     private void handleReduceAction() {
-        openCancellationForm();
+        openCancellationForm(CancellationType.REDUCTION);
     }
 
-    private void openCancellationForm() {
+    private void openCancellationForm(CancellationType defaultType) {
         Stage stage = (Stage) titleLabel.getScene().getWindow();
         javafx.fxml.FXMLLoader loader = org.marrok.amriirad.util.SceneManager.openModal(
             stage, "/org/marrok/amriirad/view/orders/cancellation-form-view.fxml", "إلغاء / تخفيض أمر الإيراد");
         
         if (loader != null) {
             CancellationFormController controller = loader.getController();
-            controller.initData(currentOrder, () -> {
+            controller.initData(currentOrder, defaultType, () -> {
                 // Refresh order data and UI
                 refreshOrder();
             });

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.0.final -->
+<jasperReport name="annexe5_dispatch_ar" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5d731fb3-e69c-48be-8f3a-f1001dfa1f0a">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
+	<property name="net.sf.jasperreports.default.pdf.font.name" value="Traditional Arabic"/>
+	
+	<parameter name="SLIP_NUMBER" class="java.lang.String"/>
+	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
+	<parameter name="TOTAL_WORDS" class="java.lang.String"/>
+	<parameter name="DATE" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME_AR" class="java.lang.String"/>
+	<parameter name="MINISTRY_NAME_AR" class="java.lang.String"/>
+	<parameter name="TREASURY_REF" class="java.lang.String"/>
+	
+	<field name="orderNumber" class="java.lang.String"/>
+	<field name="debtorName" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="issueDate" class="java.lang.String"/>
+	
+	<pageHeader height="100" splitType="Stretch">
+		<element kind="staticText" x="400" y="0" width="100" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[الملحق رقم 05]]></text>
+		</element>
+		<element kind="staticText" x="0" y="20" width="555" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[الجمهورية الجزائرية الديمقراطية الشعبية]]></text>
+		</element>
+		<element kind="staticText" x="0" y="40" width="555" height="15" fontName="SansSerif" fontSize="10.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE]]></text>
+		</element>
+		<element kind="rectangle" x="350" y="65" width="205" height="35">
+			<pen lineWidth="0.5"/>
+		</element>
+		<element kind="textField" x="355" y="68" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
+			<expression><![CDATA["الالمر بالصرف : " + ($P{INSTITUTION_NAME_AR} != null ? $P{INSTITUTION_NAME_AR} : "")]]></expression>
+		</element>
+		<element kind="textField" x="355" y="83" width="195" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right">
+			<expression><![CDATA["رمز الآمر بالصرف : " + ($P{SLIP_NUMBER} != null ? $P{SLIP_NUMBER} : "")]]></expression>
+		</element>
+	</pageHeader>
+
+	<title height="80" splitType="Stretch">
+		<element kind="staticText" x="0" y="0" width="555" height="40" fontName="Traditional Arabic" fontSize="22.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[جدول إرسال أوامر الإيرادات]]></text>
+		</element>
+		<element kind="textField" x="280" y="45" width="270" height="15" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Right">
+			<expression><![CDATA["رقم جدول الإرسال : " + $P{SLIP_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" x="280" y="60" width="270" height="15" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Right">
+			<expression><![CDATA["رقم الحساب : " + $P{TREASURY_REF}]]></expression>
+		</element>
+	</title>
+	
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="staticText" mode="Opaque" backcolor="#E0E0E0" x="480" y="0" width="75" height="30" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[رقم الأمر]]></text>
+			<box><pen lineWidth="1.0"/></box>
+		</element>
+		<element kind="staticText" mode="Opaque" backcolor="#E0E0E0" x="405" y="0" width="75" height="30" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[تاريخ الأمر]]></text>
+			<box><pen lineWidth="1.0"/></box>
+		</element>
+		<element kind="staticText" mode="Opaque" backcolor="#E0E0E0" x="200" y="0" width="205" height="30" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[إسم المدينين]]></text>
+			<box><pen lineWidth="1.0"/></box>
+		</element>
+		<element kind="staticText" mode="Opaque" backcolor="#E0E0E0" x="100" y="0" width="100" height="30" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[المبلغ المراد تحصيله]]></text>
+			<box><pen lineWidth="1.0"/></box>
+		</element>
+		<element kind="staticText" mode="Opaque" backcolor="#E0E0E0" x="0" y="0" width="100" height="30" fontName="Traditional Arabic" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[ملاحظات]]></text>
+			<box><pen lineWidth="1.0"/></box>
+		</element>
+	</columnHeader>
+	
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="textField" x="480" y="0" width="75" height="20" fontName="Traditional Arabic" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{orderNumber}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="405" y="0" width="75" height="20" fontName="Traditional Arabic" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{issueDate}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="200" y="0" width="205" height="20" fontName="Traditional Arabic" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{debtorName}]]></expression>
+				<box><pen lineWidth="0.5" rightPadding="5"/></box>
+			</element>
+			<element kind="textField" x="100" y="0" width="100" height="20" fontName="Traditional Arabic" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{amount}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="staticText" x="0" y="0" width="100" height="20"><text><![CDATA[]]></text><box><pen lineWidth="0.5"/></box></element>
+		</band>
+	</detail>
+	
+	<summary height="150" splitType="Stretch">
+		<!-- Totals Table -->
+		<element kind="staticText" x="100" y="0" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right"><text><![CDATA[إجمالي أوامر الإيرادات]]></text><box><pen lineWidth="0.5"/></box></element>
+		<element kind="textField" x="0" y="0" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Center"><expression><![CDATA[$P{TOTAL_AMOUNT}]]></expression><box><pen lineWidth="0.5"/></box></element>
+
+		<element kind="staticText" x="100" y="15" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right"><text><![CDATA[مجموع المبلغ السابق]]></text><box><pen lineWidth="0.5"/></box></element>
+		<element kind="staticText" x="0" y="15" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Center"><text><![CDATA[0.00]]></text><box><pen lineWidth="0.5"/></box></element>
+
+		<element kind="staticText" x="100" y="30" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" bold="true" hTextAlign="Right"><text><![CDATA[المبلغ الإجمالي]]></text><box><pen lineWidth="0.5"/></box></element>
+		<element kind="textField" x="0" y="30" width="100" height="15" fontName="Traditional Arabic" fontSize="9.0" bold="true" hTextAlign="Center"><expression><![CDATA[$P{TOTAL_AMOUNT}]]></expression><box><pen lineWidth="0.5"/></box></element>
+
+		<element kind="textField" x="0" y="60" width="555" height="40" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
+			<expression><![CDATA["يُوقف الأمر بالإيراد على مبلغ : " + $P{TOTAL_AMOUNT} + "\n(بالأحرف) " + $P{TOTAL_WORDS}]]></expression>
+		</element>
+		
+		<element kind="staticText" x="0" y="110" width="200" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[الآمر بالصرف]]></text>
+		</element>
+	</summary>
+</jasperReport>

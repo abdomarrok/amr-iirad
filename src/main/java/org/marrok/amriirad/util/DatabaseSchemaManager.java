@@ -159,12 +159,19 @@ public class DatabaseSchemaManager {
                                     is_deleted          TINYINT(1) NOT NULL DEFAULT 0,
                                     deleted_at          DATETIME DEFAULT NULL,
                                     deleted_by          VARCHAR(100) DEFAULT NULL,
-                                    UNIQUE KEY uq_order_number_year (order_number, fiscal_year_id),
                                     FOREIGN KEY (fiscal_year_id)    REFERENCES fiscal_year(id)      ON DELETE RESTRICT,
                                     FOREIGN KEY (debtor_id)         REFERENCES debtor(id)           ON DELETE RESTRICT,
                                     FOREIGN KEY (budget_chapter_id) REFERENCES budget_chapter(id)   ON DELETE RESTRICT
                                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                             """);
+
+            // Migration: Add French fields to revenue_order
+            try {
+                stmt.execute("ALTER TABLE revenue_order ADD COLUMN IF NOT EXISTS object_fr TEXT");
+                stmt.execute("ALTER TABLE revenue_order ADD COLUMN IF NOT EXISTS amount_in_words_fr TEXT");
+            } catch (SQLException e) {
+                logger.warn("Revenue order column migration skip: {}", e.getMessage());
+            }
 
             // -- revenue_order_cancellation (أمر الإلغاء / التخفيض - Annexe 3 & 4) --
             stmt.execute("""
@@ -182,6 +189,13 @@ public class DatabaseSchemaManager {
                             FOREIGN KEY (original_order_id) REFERENCES revenue_order(id) ON DELETE RESTRICT
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                     """);
+
+            // Migration: Add French fields to cancellation
+            try {
+                stmt.execute("ALTER TABLE revenue_order_cancellation ADD COLUMN IF NOT EXISTS reason_fr TEXT");
+            } catch (SQLException e) {
+                logger.warn("Cancellation column migration skip: {}", e.getMessage());
+            }
 
             // -- dispatch_slip (بوردرو الإرسال - Annexe 5) --
             stmt.execute("""
@@ -213,16 +227,22 @@ public class DatabaseSchemaManager {
             // -- institution_info --
             stmt.execute("""
                         CREATE TABLE IF NOT EXISTS institution_info (
-                            id              INT PRIMARY KEY DEFAULT 1,
-                            name_ar         VARCHAR(255) NOT NULL,
-                            name_fr         VARCHAR(255),
-                            authorizing_officer_ar VARCHAR(255),
-                            treasury_account_ar   VARCHAR(255),
-                            rib_number      VARCHAR(50),
-                            logo_path       VARCHAR(255),
-                            address_ar      TEXT,
-                            wilaya_ar       VARCHAR(100),
-                            last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                            id                      INT PRIMARY KEY DEFAULT 1,
+                            name_ar                 VARCHAR(255) NOT NULL,
+                            name_fr                 VARCHAR(255),
+                            ministry_name_ar        VARCHAR(255),
+                            ministry_name_fr        VARCHAR(255),
+                            ordonnateur_code        VARCHAR(50),
+                            authorizing_officer_ar  VARCHAR(255),
+                            authorizing_officer_fr  VARCHAR(255),
+                            treasury_account_ar     VARCHAR(255),
+                            treasury_name_fr        VARCHAR(255),
+                            rib_number              VARCHAR(50),
+                            logo_path               VARCHAR(255),
+                            address_ar              TEXT,
+                            wilaya_ar               VARCHAR(100),
+                            wilaya_fr               VARCHAR(100),
+                            last_updated_at         DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                     """);
 
@@ -231,6 +251,26 @@ public class DatabaseSchemaManager {
                         INSERT IGNORE INTO institution_info (id, name_ar, authorizing_officer_ar)
                         VALUES (1, 'المدرسة العليا للقضاء', 'الأمين العام')
                     """);
+
+            // Migration for institution_info (add missing columns)
+            String[] newCols = {
+                    "name_fr VARCHAR(255)",
+                    "ministry_name_ar VARCHAR(255)",
+                    "ministry_name_fr VARCHAR(255)",
+                    "ordonnateur_code VARCHAR(50)",
+                    "authorizing_officer_fr VARCHAR(255)",
+                    "treasury_name_ar VARCHAR(255)",
+                    "treasury_name_fr VARCHAR(255)",
+                    "wilaya_fr VARCHAR(100)",
+                    "address_fr TEXT"
+            };
+            for (String col : newCols) {
+                try {
+                    stmt.execute("ALTER TABLE institution_info ADD COLUMN IF NOT EXISTS " + col);
+                } catch (SQLException e) {
+                    logger.warn("Column migration skip: {}", e.getMessage());
+                }
+            }
 
             // -- audit_log --
             stmt.execute("""

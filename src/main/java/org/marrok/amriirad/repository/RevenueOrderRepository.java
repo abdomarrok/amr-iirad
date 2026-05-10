@@ -72,7 +72,7 @@ public class RevenueOrderRepository {
 
     public RevenueOrder save(RevenueOrder ro) throws SQLException {
         String sql = "INSERT INTO revenue_order (order_number, fiscal_year_id, issue_date, debtor_id, budget_chapter_id, " +
-                     "object_ar, amount, amount_in_words_ar, status, created_by) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                     "object_ar, object_fr, amount, amount_in_words_ar, amount_in_words_fr, status, created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             bindInsert(ps, ro);
@@ -87,7 +87,7 @@ public class RevenueOrderRepository {
 
     public void update(RevenueOrder ro) throws SQLException {
         String sql = "UPDATE revenue_order SET order_number=?, fiscal_year_id=?, issue_date=?, debtor_id=?, budget_chapter_id=?, " +
-                     "object_ar=?, amount=?, amount_in_words_ar=?, status=? WHERE id=? AND is_deleted=0";
+                     "object_ar=?, object_fr=?, amount=?, amount_in_words_ar=?, amount_in_words_fr=?, status=? WHERE id=? AND is_deleted=0";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, ro.getOrderNumber());
@@ -96,10 +96,12 @@ public class RevenueOrderRepository {
             ps.setInt(4, ro.getDebtor().getId());
             ps.setInt(5, ro.getBudgetChapter().getId());
             ps.setString(6, ro.getObjectAr());
-            ps.setBigDecimal(7, ro.getAmount());
-            ps.setString(8, ro.getAmountInWordsAr());
-            ps.setString(9, ro.getStatus().name());
-            ps.setInt(10, ro.getId());
+            ps.setString(7, ro.getObjectFr());
+            ps.setBigDecimal(8, ro.getAmount());
+            ps.setString(9, ro.getAmountInWordsAr());
+            ps.setString(10, ro.getAmountInWordsFr());
+            ps.setString(11, ro.getStatus().name());
+            ps.setInt(12, ro.getId());
             ps.executeUpdate();
         }
         logger.info("Updated revenue order id={}", ro.getId());
@@ -151,10 +153,12 @@ public class RevenueOrderRepository {
         ps.setInt(4, ro.getDebtor().getId());
         ps.setInt(5, ro.getBudgetChapter().getId());
         ps.setString(6, ro.getObjectAr());
-        ps.setBigDecimal(7, ro.getAmount());
-        ps.setString(8, ro.getAmountInWordsAr());
-        ps.setString(9, ro.getStatus().name());
-        ps.setString(10, ro.getCreatedBy());
+        ps.setString(7, ro.getObjectFr());
+        ps.setBigDecimal(8, ro.getAmount());
+        ps.setString(9, ro.getAmountInWordsAr());
+        ps.setString(10, ro.getAmountInWordsFr());
+        ps.setString(11, ro.getStatus().name());
+        ps.setString(12, ro.getCreatedBy());
     }
 
     /**
@@ -203,8 +207,10 @@ public class RevenueOrderRepository {
         if (issueDate != null) ro.setIssueDate(issueDate.toLocalDate());
 
         ro.setObjectAr(rs.getString("object_ar"));
+        ro.setObjectFr(rs.getString("object_fr"));
         ro.setAmount(rs.getBigDecimal("amount"));
         ro.setAmountInWordsAr(rs.getString("amount_in_words_ar"));
+        ro.setAmountInWordsFr(rs.getString("amount_in_words_fr"));
         ro.setStatus(OrderStatus.valueOf(rs.getString("status")));
         ro.setCreatedBy(rs.getString("created_by"));
 

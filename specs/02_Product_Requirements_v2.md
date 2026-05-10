@@ -23,16 +23,15 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - **Batch Dispatching:** Collective "Dispatch Slips" (Bordereaux) for sending multiple issued orders to the treasury.
 
 ### 2.4 Reporting Excellence
-- **Five Mandatory Annexes:** Pixel-perfect JasperReports for:
-  1. Original Revenue Order (Annexe 1)
-  2. Debtor Copy (Annexe 2)
-  3. Full Cancellation Order (Annexe 3)
-  4. Reduction Order (Annexe 4)
-  5. Dispatch Slip (Annexe 5)
+- **Five Mandatory Annexes:** Pixel-perfect JasperReports for all mandatory documents.
+- **Bilingual Core:** Full support for Arabic (AR) and French (FR) documentation.
+- **2-JRXML Strategy:** Specialized templates for each language (`_ar.jrxml` and `_fr.jrxml`) ensuring linguistic accuracy and cultural compliance.
+- **On-the-fly Selection:** Interactive language choosing at the moment of printing.
 
 ## 3. Design System & UX
 - **Premium Aesthetics:** GstockDz-inspired UI with HSL colors, smooth transitions, and shadow-based cards.
-- **Full RTL Support:** Native Right-To-Left layout orientation at the Scene level.
+- **Full RTL Support:** Native Right-To-Left layout orientation at the Scene level for Arabic mode.
+- **Bilingual Inputs:** Dedicated fields for French translations of objects, reasons, and institution info.
 - **Modern Typography:** High-quality **Cairo** font integration for superior Arabic legibility.
 - **Smart Modals:** Standardized modal window management with auto-sizing and centering.
 
@@ -46,4 +45,6 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - [x] Phase 5.1: **Enhanced Visualization** — Modern order details view and visual audit timeline.
 - [x] Phase 5.2: **Extended CRUD** — Implement "Edit Debtor" functionality and direct "Budget Chapter" creation from the order form.
 - [x] Phase 5.3: **Security & QA** — Full RBAC integration, Dispatch Slips activation, and unit test coverage.
+- [x] Phase 6.1: **Bilingual Reporting** — Implement French documentation support and 2-JRXML printing strategy.
+- [ ] Phase 6.2: **Data Export** — CSV/Excel export for financial auditing.
 

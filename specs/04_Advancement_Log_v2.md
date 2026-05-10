@@ -20,6 +20,14 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-10: Full Bilingual Reporting & 2-JRXML Strategy
+- ✅ **End-to-End Bilingual Support**: Implemented French fields across the entire order lifecycle, including Revenue Orders, Cancellations, Reductions, and Dispatch Slips.
+- ✅ **2-JRXML Printing Strategy**: Adopted a robust reporting architecture using separate templates for Arabic (`_ar.jrxml`) and French (`_fr.jrxml`), ensuring high-fidelity layouts for both RTL and LTR orientations.
+- ✅ **Bilingual Schema Migration**: Updated `revenue_order`, `revenue_order_cancellation`, and `institution_info` tables with parallel French columns (`object_fr`, `reason_fr`, `address_fr`, etc.).
+- ✅ **On-the-Fly Language Selection**: Standardized a bilingual `Alert` dialog across all print actions, allowing users to choose the output language at the moment of generation.
+- ✅ **Multi-Language Tafqeet**: Expanded `TafqeetService` and `ReportParamBuilder` to support automated amount-to-words conversion in both Arabic and French.
+- ✅ **Enterprise Settings Expansion**: Added French support for Institution Address and Authorizing Officer in the settings view, ensuring compliance with bilingual administrative requirements.
+
 ### 📅 2026-05-10: Fiscal Year Scoping & Premium UI Refinement
 - ✅ **Fiscal-Year-Scoped Budgeting**: Refactored the entire budget hierarchy to be specific to the active fiscal year. Budget chapters are now isolated by year, preventing data pollution across financial cycles.
 - ✅ **Database Migration**: Implemented idempotent migration for `budget_chapter` table, adding `fiscal_year_id` and a `UNIQUE KEY uq_code_year (code, fiscal_year_id)`.

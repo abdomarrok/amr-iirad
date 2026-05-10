@@ -15,10 +15,10 @@
     <!-- Header -->
     <HBox alignment="CENTER_LEFT" spacing="12" styleClass="modal-header">
         <FontIcon iconLiteral="fas-file-invoice" iconSize="24" styleClass="icon-primary"/>
-        <Label fx:id="titleLabel" styleClass="text-subheading" text="إنشاء أمر إيراد جديد"/>
+        <Label fx:id="titleLabel" styleClass="text-subheading" text="إنشاء أمر إيراد جديد / Nouvel Ordre de Recette"/>
     </HBox>
 
-    <Label styleClass="text-small, text-muted" text="يتم إنشاء رقم الأمر والمبلغ بالحروف تلقائياً عند الحفظ والإصدار."/>
+    <Label styleClass="text-small, text-muted" text="يتم إنشاء رقم الأمر والمبلغ بالحروف تلقائياً عند الحفظ والإصدار. / Le numéro et le montant en lettres sont générés automatiquement."/>
 
     <!-- Form Area -->
     <VBox styleClass="card" spacing="20">
@@ -32,13 +32,13 @@
                 <ColumnConstraints hgrow="ALWAYS" />
             </columnConstraints>
 
-            <Label styleClass="form-label" text="السنة المالية:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label styleClass="form-label" text="السنة المالية / Exercice :" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="fiscalYearField" editable="false" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-            <Label styleClass="form-label" text="تاريخ الإصدار:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label styleClass="form-label" text="تاريخ الإصدار / Date d'Émission :" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <DatePicker fx:id="issueDatePicker" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-            <Label styleClass="form-label" text="المدين:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label styleClass="form-label" text="المدين / Débiteur :" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <ComboBox fx:id="debtorCombo" prefWidth="300" promptText="اختر المدين..."/>
                 <Button styleClass="btn-outline" onAction="#handleNewDebtor">
@@ -47,7 +47,7 @@
                 </Button>
             </HBox>
 
-            <Label styleClass="form-label" text="محور الميزانية:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Label styleClass="form-label" text="محور الميزانية / Chapitre :" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
             <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
                 <ComboBox fx:id="budgetChapterCombo" prefWidth="400" promptText="اختر البند/المحور..."/>
                 <Button styleClass="btn-outline" onAction="#handleNewBudgetChapter">
@@ -56,11 +56,14 @@
                 </Button>
             </HBox>
 
-            <Label styleClass="form-label" text="المبلغ (د.ج):" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <Label styleClass="form-label" text="المبلغ (د.ج) / Montant (DA) :" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
             <TextField fx:id="amountField" promptText="0.00" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="200"/>
 
-            <Label styleClass="form-label" text="الموضوع (الأسباب):" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
-            <TextArea fx:id="objectField" prefRowCount="3" promptText="موضوع الإيراد وأساس التصفية..." GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            <Label styleClass="form-label" text="الموضوع / Objet (Ar) :" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
+            <TextArea fx:id="objectField" prefRowCount="2" promptText="موضوع الإيراد وأساس التصفية..." GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+            <Label styleClass="form-label" text="Objet (Fr) :" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.valignment="TOP"/>
+            <TextArea fx:id="objectFrField" prefRowCount="2" promptText="Objet de la recette et base de liquidation..." GridPane.columnIndex="1" GridPane.rowIndex="6"/>
         </GridPane>
     </VBox>
 

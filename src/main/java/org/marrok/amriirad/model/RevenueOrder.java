@@ -17,8 +17,10 @@ public class RevenueOrder {
     private Debtor debtor;              // المدين
     private BudgetChapter budgetChapter;// محور الميزانية
     private String objectAr;            // موضوع الإيراد (بالعربية)
+    private String objectFr;            // Objet de la recette (Français)
     private BigDecimal amount;          // المبلغ (DECIMAL 18,2)
     private String amountInWordsAr;     // المبلغ بالحروف (TafqeetJ)
+    private String amountInWordsFr;     // Montant en lettres (Français)
     private OrderStatus status;         // حالة الأمر
     private String createdBy;           // المستخدم المنشئ
     private LocalDateTime createdAt;
@@ -53,11 +55,17 @@ public class RevenueOrder {
     public String getObjectAr()                     { return objectAr; }
     public void setObjectAr(String o)               { this.objectAr = o; }
 
+    public String getObjectFr()                     { return objectFr; }
+    public void setObjectFr(String o)               { this.objectFr = o; }
+
     public BigDecimal getAmount()                   { return amount; }
     public void setAmount(BigDecimal amount)        { this.amount = amount; }
 
     public String getAmountInWordsAr()              { return amountInWordsAr; }
     public void setAmountInWordsAr(String w)        { this.amountInWordsAr = w; }
+
+    public String getAmountInWordsFr()              { return amountInWordsFr; }
+    public void setAmountInWordsFr(String w)        { this.amountInWordsFr = w; }
 
     public OrderStatus getStatus()                  { return status; }
     public void setStatus(OrderStatus status)       { this.status = status; }

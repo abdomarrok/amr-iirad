@@ -17,6 +17,7 @@ public class ReportParamBuilder {
 
     private final Map<String, Object> params = new HashMap<>();
     private final TafqeetService tafqeet;
+    private org.marrok.amriirad.model.PrintLanguage language = org.marrok.amriirad.model.PrintLanguage.ARABIC;
 
     private ReportParamBuilder(TafqeetService tafqeet) {
         this.tafqeet = tafqeet;
@@ -24,6 +25,13 @@ public class ReportParamBuilder {
 
     public static ReportParamBuilder create(TafqeetService tafqeet) {
         return new ReportParamBuilder(tafqeet);
+    }
+
+    public ReportParamBuilder withLanguage(org.marrok.amriirad.model.PrintLanguage lang) {
+        this.language = lang;
+        params.put("REPORT_LOCALE", lang == org.marrok.amriirad.model.PrintLanguage.ARABIC ? new java.util.Locale("ar") : java.util.Locale.FRENCH);
+        params.put("PRINT_LANGUAGE", lang.getCode());
+        return this;
     }
 
     public ReportParamBuilder withOrder(RevenueOrder order) {
@@ -34,16 +42,38 @@ public class ReportParamBuilder {
         params.put("AMOUNT_RAW", order.getAmount() != null ? order.getAmount().toString() : "0.00");
         
         if (tafqeet != null && order.getAmount() != null) {
-            params.put("AMOUNT_WORDS", tafqeet.toArabicWords(order.getAmount()));
+            if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
+                params.put("AMOUNT_WORDS", tafqeet.toFrenchWords(order.getAmount()));
+            } else {
+                params.put("AMOUNT_WORDS", tafqeet.toArabicWords(order.getAmount()));
+            }
         }
 
-        params.put("REASON_AR", order.getObjectAr() != null ? order.getObjectAr() : "");
-        params.put("LIQUIDATION_BASIS", order.getObjectAr() != null ? order.getObjectAr() : "");
-        // TREASURY_REF will be overwritten by withInstitution if provided
+        if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
+            params.put("OBJECT", order.getObjectFr() != null ? order.getObjectFr() : "");
+            params.put("LIQUIDATION_BASIS", order.getObjectFr() != null ? order.getObjectFr() : "");
+        } else {
+            params.put("OBJECT", order.getObjectAr() != null ? order.getObjectAr() : "");
+            params.put("LIQUIDATION_BASIS", order.getObjectAr() != null ? order.getObjectAr() : "");
+        }
+        // Legacy support if JRXMLs still use REASON_AR
+        params.put("REASON_AR", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? 
+            (order.getObjectFr() != null ? order.getObjectFr() : "") : 
+            (order.getObjectAr() != null ? order.getObjectAr() : ""));
+
         params.put("TREASURY_REF", ""); 
 
         if (order.getBudgetChapter() != null) {
             params.put("BUDGET_CHAPTER", order.getBudgetChapter().getCode());
+            params.put("BUDGET_CODE", order.getBudgetChapter().getCode());
+            params.put("BUDGET_LABEL", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? 
+                order.getBudgetChapter().getLabelFr() : order.getBudgetChapter().getLabelAr());
+
+            // Try to extract LOLF components from code (assuming dots separator)
+            String[] parts = order.getBudgetChapter().getCode().split("\\.");
+            if (parts.length >= 1) params.put("PORTEFEUILLE", parts[0]);
+            if (parts.length >= 2) params.put("PROGRAMME", parts[1]);
+            if (parts.length >= 3) params.put("ACTION", parts[2]);
         }
 
         if (order.getDebtor() != null) {
@@ -64,17 +94,37 @@ public class ReportParamBuilder {
 
     public ReportParamBuilder withInstitution(InstitutionInfo info) {
         if (info == null) return this;
-        params.put("INSTITUTION_NAME", info.getNameAr());
-        params.put("OFFICER_NAME", info.getAuthorizingOfficerAr());
-        params.put("WILAYA", info.getWilayaAr());
+        
+        // Language-aware unified parameters
+        boolean isFr = (language == org.marrok.amriirad.model.PrintLanguage.FRENCH);
+        params.put("MINISTRY_NAME", isFr ? info.getMinistryNameFr() : info.getMinistryNameAr());
+        params.put("INSTITUTION_NAME", isFr ? info.getNameFr() : info.getNameAr());
+        params.put("WILAYA", isFr ? info.getWilayaFr() : info.getWilayaAr());
+        params.put("OFFICER_NAME", isFr ? info.getAuthorizingOfficerFr() : info.getAuthorizingOfficerAr());
+        params.put("TREASURY_NAME", isFr ? info.getTreasuryNameFr() : info.getTreasuryAccountAr());
+        params.put("INSTITUTION_ADDRESS", isFr ? info.getAddressFr() : info.getAddressAr());
+
+        // Legacy/Direct parameters
+        params.put("MINISTRY_NAME_AR", info.getMinistryNameAr());
+        params.put("MINISTRY_NAME_FR", info.getMinistryNameFr());
+        params.put("INSTITUTION_NAME_AR", info.getNameAr());
+        params.put("INSTITUTION_NAME_FR", info.getNameFr());
+        params.put("ORDONNATEUR_CODE", info.getOrdonnateurCode());
+        params.put("OFFICER_NAME_AR", info.getAuthorizingOfficerAr());
+        params.put("WILAYA_AR", info.getWilayaAr());
         params.put("TREASURY_REF", info.getTreasuryAccountAr());
+        params.put("TREASURY_NAME_FR", info.getTreasuryNameFr());
         return this;
     }
 
     public ReportParamBuilder withCancellation(RevenueOrderCancellation cancel) {
         params.put("CANCEL_NUMBER", cancel.getCancellationNumber() != null ? cancel.getCancellationNumber() : "");
         params.put("DATE", cancel.getCancellationDate() != null ? cancel.getCancellationDate().toString() : "");
-        params.put("REASON", cancel.getReasonAr() != null ? cancel.getReasonAr() : "");
+        if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
+            params.put("REASON", cancel.getReasonFr() != null ? cancel.getReasonFr() : "");
+        } else {
+            params.put("REASON", cancel.getReasonAr() != null ? cancel.getReasonAr() : "");
+        }
         
         if (cancel.getOriginalOrder() != null) {
             params.put("ORDER_NUMBER", cancel.getOriginalOrder().getOrderNumber());
@@ -86,7 +136,11 @@ public class ReportParamBuilder {
         
         params.put("AMOUNT", amount.toString());
         if (tafqeet != null) {
-            params.put("AMOUNT_WORDS", tafqeet.toArabicWords(amount));
+            if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
+                params.put("AMOUNT_WORDS", tafqeet.toFrenchWords(amount));
+            } else {
+                params.put("AMOUNT_WORDS", tafqeet.toArabicWords(amount));
+            }
         }
         
         return this;
