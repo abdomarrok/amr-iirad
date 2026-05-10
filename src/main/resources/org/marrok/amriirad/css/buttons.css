@@ -1,0 +1,63 @@
+/* Button Styles */
+
+.btn-primary {
+    -fx-background-color: -fx-theme-primary;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: -fx-theme-primary-hover;
+}
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-theme-border;
+    -fx-text-fill: -fx-theme-text-primary;
+    -fx-cursor: hand;
+}
+.btn-outline:hover {
+    -fx-background-color: -fx-theme-bg-hover;
+}
+
+.btn-danger {
+    -fx-background-color: -fx-theme-danger;
+    -fx-text-fill: white;
+}
+.btn-danger:hover {
+    -fx-background-color: -fx-theme-danger-hover;
+}
+
+/* Premium Action Buttons */
+.btn-premium-danger {
+    -fx-background-color: linear-gradient(to bottom, -fx-theme-danger, -fx-theme-danger-hover);
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, -fx-theme-shadow-danger, 8, 0, 0, 2);
+}
+.btn-premium-danger:hover {
+    -fx-background-color: linear-gradient(to bottom, -fx-theme-danger-light, -fx-theme-danger-dark);
+    -fx-effect: dropshadow(three-pass-box, -fx-theme-shadow-danger-hover, 12, 0, 0, 4);
+    -fx-translate-y: -1;
+}
+
+.btn-premium-secondary {
+    -fx-background-color: linear-gradient(to bottom, -fx-theme-purple, -fx-theme-purple-hover);
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, -fx-theme-shadow-purple, 8, 0, 0, 2);
+}
+.btn-premium-secondary:hover {
+    -fx-background-color: linear-gradient(to bottom, -fx-theme-purple-light, -fx-theme-purple-dark);
+    -fx-effect: dropshadow(three-pass-box, -fx-theme-shadow-purple-hover, 12, 0, 0, 4);
+    -fx-translate-y: -1;
+}
+
+.icon-white {
+    -fx-icon-color: white;
+}

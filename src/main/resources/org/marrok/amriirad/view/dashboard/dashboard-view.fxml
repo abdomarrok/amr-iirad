@@ -108,6 +108,17 @@
                     </graphic>
                 </Button>
 
+                <!-- Budget Chapters -->
+                <Button fx:id="budgetChaptersBtn" styleClass="btn-outline" onAction="#handleViewChapters" prefWidth="220" prefHeight="80"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-sitemap" iconSize="24" styleClass="icon-primary"/>
+                            <Label text="محاور الميزانية" style="-fx-text-fill: -fx-theme-primary; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
             </FlowPane>
 
         </VBox>

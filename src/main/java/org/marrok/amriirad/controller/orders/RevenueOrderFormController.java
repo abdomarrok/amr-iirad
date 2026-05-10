@@ -131,7 +131,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
                 Optional<FiscalYear> activeFy = fyRepo.findActive();
                 activeFy.ifPresent(fy -> activeYear = fy);
                 var debtors = debtorRepo.findAll();
-                var chapters = chapterRepo.findAll();
+                var chapters = activeYear != null ? chapterRepo.findAll(activeYear.getId()) : java.util.Collections.emptyList();
                 return new Object[]{debtors, chapters};
             },
             result -> {
@@ -188,7 +188,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/orders/budget-chapter-form-view.fxml", "بند ميزانية جديد");
         if (loader != null) {
             BudgetChapterFormController controller = loader.getController();
-            controller.initForCreate(this::loadDropdownData);
+            controller.initForCreate(activeYear != null ? activeYear.getId() : 0, this::loadDropdownData);
         }
     }
 

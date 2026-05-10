@@ -48,7 +48,7 @@
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #fafbfc;
+    -fx-background-color: -fx-theme-bg-alt;
 }
 
 .table-row-cell:hover {
@@ -65,7 +65,7 @@
 
 /* Custom style for selected rows (not necessarily focused) */
 .table-row-cell.selected-row {
-    -fx-background-color: #e0f2f7; /* A light blue */
+    -fx-background-color: -fx-theme-bg-highlight; /* A light blue */
 }
 
 .table-row-cell.selected-row .text {
@@ -79,12 +79,12 @@
 }
 
 .table-view .scroll-bar .thumb {
-    -fx-background-color: #cbd5e0;
+    -fx-background-color: -fx-theme-scroll-thumb;
     -fx-background-radius: 10;
 }
 
 .table-view .scroll-bar .thumb:hover {
-    -fx-background-color: #a0aec0;
+    -fx-background-color: -fx-theme-scroll-thumb-hover;
 }
 
 /* Corner region */

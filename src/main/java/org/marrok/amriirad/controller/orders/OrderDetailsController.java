@@ -190,12 +190,12 @@ public class OrderDetailsController extends BaseFormController implements Initia
 
         // DISPATCHED status (if applicable)
         if (currentOrder.getStatus() == OrderStatus.DISPATCHED) {
-            addTimelineItem("مُرسل (DISPATCHED)", currentOrder.getUpdatedAt(), "تم إرسال الأمر للخزينة", true, "fas-paper-plane");
+            addTimelineItem("مُرسل (DISPATCHED)", currentOrder.getUpdatedAt(), "تم إرسال الأمر للخزينة", true, "fas-truck");
         }
 
         // CANCELLED status (if applicable)
         if (currentOrder.getStatus() == OrderStatus.CANCELLED) {
-            addTimelineItem("ملغى (CANCELLED)", currentOrder.getUpdatedAt(), "تم إلغاء الأمر كلياً (ملحق 3)", true, "fas-times-circle");
+            addTimelineItem("ملغى (CANCELLED)", currentOrder.getUpdatedAt(), "تم إلغاء الأمر كلياً (ملحق 3)", true, "fas-ban");
         }
 
         // REDUCED status (if applicable)
@@ -216,10 +216,9 @@ public class OrderDetailsController extends BaseFormController implements Initia
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
         // Status icon
-        FontIcon statusIcon = new FontIcon();
-        statusIcon.setIconLiteral(icon);
+        FontIcon statusIcon = new FontIcon(icon);
         statusIcon.setIconSize(20);
-        statusIcon.setStyle(isActive ? "-fx-icon-color: -fx-theme-primary;" : "-fx-icon-color: -fx-theme-text-muted;");
+        statusIcon.getStyleClass().add(isActive ? "icon-primary" : "icon-secondary");
 
         Label statusLabel = new Label(statusName);
         statusLabel.setStyle("-fx-font-size: 14; -fx-font-weight: bold;");
@@ -250,11 +249,11 @@ public class OrderDetailsController extends BaseFormController implements Initia
 
     private String getStatusColor(OrderStatus status) {
         return switch (status) {
-            case DRAFT -> "-fx-text-fill: #FF9800;";  // Orange
-            case ISSUED -> "-fx-text-fill: #4CAF50;";  // Green
-            case DISPATCHED -> "-fx-text-fill: #2196F3;";  // Blue
-            case CANCELLED -> "-fx-text-fill: #F44336;";  // Red
-            case REDUCED -> "-fx-text-fill: #9C27B0;";  // Purple
+            case DRAFT -> "-fx-text-fill: -fx-theme-warning;";
+            case ISSUED -> "-fx-text-fill: -fx-theme-success;";
+            case DISPATCHED -> "-fx-text-fill: -fx-theme-info;";
+            case CANCELLED -> "-fx-text-fill: -fx-theme-danger;";
+            case REDUCED -> "-fx-text-fill: -fx-theme-purple;";
         };
     }
 

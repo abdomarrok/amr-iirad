@@ -158,11 +158,11 @@
         
         <HBox HBox.hgrow="ALWAYS" />
         
-        <Button fx:id="reduceActionBtn" managed="false" onAction="#handleReduceAction" styleClass="btn-secondary" text="تخفيض الأمر" visible="false">
-            <graphic><FontIcon iconLiteral="fas-compress" iconSize="18" styleClass="icon-white" /></graphic>
+        <Button fx:id="reduceActionBtn" managed="false" onAction="#handleReduceAction" styleClass="btn-premium-secondary" text="تخفيض الأمر" visible="false">
+            <graphic><FontIcon iconLiteral="fas-minus-circle" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
-        <Button fx:id="cancelActionBtn" managed="false" onAction="#handleCancelAction" styleClass="btn-danger" text="إلغاء الأمر" visible="false">
-            <graphic><FontIcon iconLiteral="fas-times-circle" iconSize="18" styleClass="icon-white" /></graphic>
+        <Button fx:id="cancelActionBtn" managed="false" onAction="#handleCancelAction" styleClass="btn-premium-danger" text="إلغاء الأمر" visible="false">
+            <graphic><FontIcon iconLiteral="fas-ban" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
         
         <Button onAction="#handleClose" styleClass="btn-outline" text="إغلاق">

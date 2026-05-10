@@ -19,14 +19,21 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
     private static final Logger logger = LogManager.getLogger(BudgetChapterFormController.class);
 
-    @FXML private Label titleLabel;
-    @FXML private ComboBox<Integer> levelCombo;
-    @FXML private TextField codeField;
-    @FXML private TextField labelArField;
-    @FXML private TextField labelFrField;
-    @FXML private ComboBox<BudgetChapter> parentCombo;
-    @FXML private Label errorLabel;
-    
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private ComboBox<Integer> levelCombo;
+    @FXML
+    private TextField codeField;
+    @FXML
+    private TextField labelArField;
+    @FXML
+    private TextField labelFrField;
+    @FXML
+    private ComboBox<BudgetChapter> parentCombo;
+    @FXML
+    private Label errorLabel;
+
     private final BudgetChapterRepository chapterRepo;
     private BudgetChapter currentChapter;
 
@@ -47,7 +54,8 @@ public class BudgetChapterFormController extends BaseFormController implements I
         levelCombo.setConverter(new javafx.util.StringConverter<Integer>() {
             @Override
             public String toString(Integer level) {
-                if (level == null) return "";
+                if (level == null)
+                    return "";
                 return switch (level) {
                     case 1 -> "1 - العنوان (Titre)";
                     case 2 -> "2 - الفصل (Chapitre)";
@@ -80,61 +88,89 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
     private void loadParentChapters() {
         concurrencyManager.runAsync(
-            () -> {
+                () -> {
                 Integer level = levelCombo.getValue();
                 if (level == null || level <= 1) {
-                    return chapterRepo.findAll();
+                    return chapterRepo.findAll(currentChapter.getFiscalYearId());
                 }
-                return chapterRepo.findByLevel(level - 1);
-            },
-            result -> {
-                parentCombo.setItems(FXCollections.observableArrayList((java.util.List<BudgetChapter>) result));
-                parentCombo.setConverter(new javafx.util.StringConverter<BudgetChapter>() {
-                    @Override
-                    public String toString(BudgetChapter chapter) {
-                        if (chapter == null) return "";
-                        return chapter.getCode() + " - " + chapter.getLabelAr();
-                    }
+                return chapterRepo.findByLevel(currentChapter.getFiscalYearId(), level - 1);
+                },
+                result -> {
+                    parentCombo.setItems(FXCollections.observableArrayList((java.util.List<BudgetChapter>) result));
+                    parentCombo.setConverter(new javafx.util.StringConverter<BudgetChapter>() {
+                        @Override
+                        public String toString(BudgetChapter chapter) {
+                            if (chapter == null)
+                                return "";
+                            return chapter.getCode() + " - " + chapter.getLabelAr();
+                        }
 
-                    @Override
-                    public BudgetChapter fromString(String string) {
-                        return null;
-                    }
-                });
-            },
-            err -> showError("خطأ في تحميل البنود الأب: " + err.getMessage())
-        );
+                        @Override
+                        public BudgetChapter fromString(String string) {
+                            return null;
+                        }
+                    });
+                },
+                err -> showError("خطأ في تحميل البنود الأب: " + err.getMessage()));
     }
 
-    public void initForCreate(Runnable onSuccess) {
+    public void initForCreate(int fiscalYearId, Runnable onSuccess) {
         this.currentChapter = new BudgetChapter();
+        this.currentChapter.setFiscalYearId(fiscalYearId);
         this.onSuccess = onSuccess;
         titleLabel.setText("إضافة بند/محور جديد");
     }
 
+    public void initForEdit(BudgetChapter chapter, Runnable onSuccess) {
+        this.currentChapter = chapter;
+        this.onSuccess = onSuccess;
+        titleLabel.setText("تعديل بند/محور: " + chapter.getCode());
+
+        levelCombo.setValue(chapter.getLevel());
+        codeField.setText(chapter.getCode());
+        labelArField.setText(chapter.getLabelAr());
+        labelFrField.setText(chapter.getLabelFr());
+
+        // Select parent chapter after loading the list
+        if (chapter.getParentId() != null) {
+            concurrencyManager.runAsync(
+                () -> chapterRepo.findByLevel(chapter.getFiscalYearId(), chapter.getLevel() - 1),
+                result -> {
+                    java.util.List<BudgetChapter> parents = (java.util.List<BudgetChapter>) result;
+                    parentCombo.setItems(FXCollections.observableArrayList(parents));
+                    parents.stream()
+                        .filter(p -> p.getId() == chapter.getParentId())
+                        .findFirst()
+                        .ifPresent(parentCombo.getSelectionModel()::select);
+                },
+                err -> logger.error("Failed to load parent during edit init", err)
+            );
+        }
+    }
+
     @FXML
     private void handleSave() {
-        if (!validateForm()) return;
+        if (!validateForm())
+            return;
         clearError();
 
         currentChapter.setLevel(levelCombo.getValue());
         currentChapter.setCode(codeField.getText().trim());
         currentChapter.setLabelAr(labelArField.getText().trim());
         currentChapter.setLabelFr(labelFrField.getText().trim());
-        
+
         if (parentCombo.getValue() != null) {
             currentChapter.setParentId(parentCombo.getValue().getId());
         }
 
         concurrencyManager.runAsync(
-            () -> chapterRepo.save(currentChapter),
-            result -> {
-                logger.info("Saved budget chapter: {}", result.getCode());
-                closeWindow();
-                runOnSuccess();
-            },
-            err -> showError("خطأ في حفظ البند: " + err.getMessage())
-        );
+                () -> chapterRepo.save(currentChapter),
+                result -> {
+                    logger.info("Saved budget chapter: {}", result.getCode());
+                    closeWindow();
+                    runOnSuccess();
+                },
+                err -> showError("خطأ في حفظ البند: " + err.getMessage()));
     }
 
     @Override

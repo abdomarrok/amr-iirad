@@ -45,6 +45,7 @@ public class DashboardController implements Initializable {
     @FXML private javafx.scene.control.Button orderListBtn;
     @FXML private javafx.scene.control.Button debtorsBtn;
     @FXML private javafx.scene.control.Button dispatchBtn;
+    @FXML private javafx.scene.control.Button budgetChaptersBtn;
 
     private final FiscalYearRepository fyRepo;
     private final RevenueOrderRepository orderRepo;
@@ -81,6 +82,7 @@ public class DashboardController implements Initializable {
         setBtnVisible(orderListBtn, auth.canView("orders"));
         setBtnVisible(debtorsBtn, auth.canView("debtors"));
         setBtnVisible(dispatchBtn, auth.canView("orders"));
+        setBtnVisible(budgetChaptersBtn, auth.canDo("budget_chapter.manage"));
     }
 
     private void setBtnVisible(javafx.scene.control.Button btn, boolean visible) {
@@ -150,5 +152,11 @@ public class DashboardController implements Initializable {
     private void handleViewSlips() {
         Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
         SceneManager.loadScene(stage, "/org/marrok/amriirad/view/dispatch/dispatch-slip-view.fxml");
+    }
+
+    @FXML
+    private void handleViewChapters() {
+        Stage stage = (Stage) totalOrdersLabel.getScene().getWindow();
+        SceneManager.loadScene(stage, "/org/marrok/amriirad/view/budget/budget-chapter-list-view.fxml");
     }
 }

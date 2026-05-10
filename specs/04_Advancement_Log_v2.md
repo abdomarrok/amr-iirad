@@ -1,5 +1,5 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
-> **Latest Update:** 2026-05-10  
+> **Latest Update:** 2026-05-10 (Afternoon)  
 > **Current Focus:** Phase 6 — Maintenance & Feature Expansion
 
 ---
@@ -20,7 +20,16 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
-### 📅 2026-05-10: Database Lifecycle & Server Configuration Hardening
+### 📅 2026-05-10: Fiscal Year Scoping & Premium UI Refinement
+- ✅ **Fiscal-Year-Scoped Budgeting**: Refactored the entire budget hierarchy to be specific to the active fiscal year. Budget chapters are now isolated by year, preventing data pollution across financial cycles.
+- ✅ **Database Migration**: Implemented idempotent migration for `budget_chapter` table, adding `fiscal_year_id` and a `UNIQUE KEY uq_code_year (code, fiscal_year_id)`.
+- ✅ **Repository Hardening**: Updated `BudgetChapterRepository` to strictly enforce year-based filtering for all query and update operations.
+- ✅ **Design System Modularization**: Refactored CSS architecture by creating `buttons.css` and expanding `theme.css` design tokens. Moved over 60 lines of styles into modular components.
+- ✅ **Premium UI/UX Polish**: Upgraded "Cancel" and "Reduce" action buttons with linear gradients, depth shadows, and interactive hover effects, while maintaining geometric consistency (8px radius).
+- ✅ **Timeline Rendering Fix**: Resolved "broken icons" issue in the status timeline by adopting the dashboard's CSS pattern (`styleClass` based rendering) and Constructor-based `FontIcon` initialization in Java.
+- ✅ **Global Theme Cleanup**: Successfully eliminated all inline hex codes and RGBA values from CSS and Controller files, routing all styling through centralized design tokens.
+
+### 📅 2026-05-10 (Morning): Database Lifecycle & Server Configuration Hardening
 - ✅ **Graceful Shutdown**: Implemented a JVM shutdown hook in `AmrIiradApp` to ensure the MariaDB connection pool is properly closed on application exit.
 - ✅ **Advanced Server Configuration**: Updated `AppSettings` and `ServerConfigController` to support custom Database Names and Password persistence for remote connections.
 - ✅ **Background Connection Testing**: Refactored the database initialization and connection test logic to run on background threads, ensuring a smooth, non-freezing UI during setup.
@@ -85,10 +94,6 @@
 ---
 
 ## 🎯 Next Objectives
-1. ✅ **UX Expansion**: ~~Add "Edit Debtor" support~~ **DONE** — and `+` quick-add button for Budget Chapters **DONE**.
-2. ✅ **Advanced Visualization**: ~~Create a modern "Order Details" modal~~ **DONE** with graphical status timeline **DONE**.
-3. ✅ **Testing**: ~~Implement unit tests~~ **DONE** for `RevenueOrderService` (20+ test cases).
-4. ✅ **QA & Final Review**: Conducted final security audit and permission enforcement across all new features.
-5. ✅ **Audit Log Viewer**: Created dedicated UI to browse audit trail.
-6. ✅ **Performance Optimization**: Indexed key database queries for faster loading.
+8. ✅ **Fiscal Scoping**: Refactored budget management to be year-isolated.
+9. 🚧 **Copy to Next Year**: Planned feature to clone budget hierarchies across fiscal years.
 
