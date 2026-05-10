@@ -4,7 +4,7 @@
 ---
 
 ## 1. Executive Summary
-The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, and aesthetically premium desktop application. It now features a modular architecture, multi-user authentication, and a design system specifically optimized for the Algerian administrative context (RTL, Cairo font, GstockDz-inspired).
+The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, and aesthetically premium desktop application. Version 1.0 has been successfully delivered, featuring a modular architecture, multi-user authentication, and a design system specifically optimized for the Algerian administrative context (RTL, Cairo font, GstockDz-inspired).
 
 ## 2. Core Functional Pillars (Current State)
 
@@ -19,7 +19,7 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - **Relational Integrity:** Seamless linking between Fiscal Years, Debtors, and Budget Chapters.
 
 ### 2.3 Debtor & Dispatch Management
-- **Comprehensive Profiles:** Detailed debtor tracking including CNAS, NIF, and Bank Accounts.
+- **Comprehensive Profiles:** Detailed debtor tracking including CNAS, NIF, NIS, and Bank Accounts.
 - **Batch Dispatching:** Collective "Dispatch Slips" (Bordereaux) for sending multiple issued orders to the treasury.
 
 ### 2.4 Reporting Excellence

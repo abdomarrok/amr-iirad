@@ -20,6 +20,18 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-10 (Night): Fat JAR Deployment & Debtor Metadata Expansion
+- ✅ **Production Build Architecture**: Transitioned to a "Fat JAR" model using `maven-shade-plugin`. This bundles all dependencies (JavaFX, Jasper, MariaDB) into a single executable file, eliminating classpath issues on client machines.
+- ✅ **Main Launcher Implementation**: Created a specialized `Main.java` entry point to bypass JavaFX module-path requirements for standalone execution.
+- ✅ **Ikonli SPI Merging**: Configured `ServicesResourceTransformer` in the build process to resolve runtime icon loading failures in the executable JAR.
+- ✅ **Debtor Metadata Expansion (NIS)**: Added full support for the **NIS Number** (رقم التعريف الإحصائي) across the stack:
+    - Added `nisNumber` to `Debtor` model.
+    - Implemented database migration for `nis_number` column.
+    - Updated `DebtorRepository` and `DebtorFormController` UI.
+    - Integrated NIS parameter into all 10 JasperReport templates via `ReportParamBuilder`.
+- ✅ **Test Suite Stabilization**: Fixed compilation errors in `RevenueOrderServiceTest` caused by recent model refactoring, ensuring the CI/CD pipeline remains green.
+- ✅ **Build Automation**: Hardened `pom.xml` with robust shade, dependency, and surefire plugin configurations, aligning with professional enterprise standards.
+
 ### 📅 2026-05-10 (Late Afternoon): FXML Modernization & Reporting Data Integrity
 - ✅ **Architectural Decoupling (FXML-First)**: Successfully extracted all programmatic UI layouts from Java code into declarative FXML templates. This includes loading dialogs, language selection modals, timeline items, and permission grids.
 - ✅ **Report Data Consistency**: Hardened `ReportParamBuilder` to eliminate "null" displays in official documents. Standardized parameter naming (`REASON_AR`, `LIQUIDATION_BASIS`, etc.) across all 10 Jasper templates.

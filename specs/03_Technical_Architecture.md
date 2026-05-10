@@ -14,6 +14,7 @@ The application has transitioned from a flat structure to a **Feature-Based Modu
 - `org.marrok.amriirad.service`: Business logic layer.
 - `org.marrok.amriirad.repository`: Data access layer.
 - `org.marrok.amriirad.util`: Cross-cutting concerns (`SceneManager`, `DialogHelper`, `AppSettings`).
+- `org.marrok.amriirad.Main`: The non-Application entry point for Fat JAR execution.
 
 ### 1.2 Dependency Injection (DI)
 We use a **Strict Constructor Injection** pattern managed by `AppContext`.
@@ -28,6 +29,7 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 - **FXML-First Architecture**: Strictly enforce declarative UI. Programmatic UI construction (e.g., `new VBox()`, `new Label()`) is deprecated. Dynamic components (like timelines or grids) must use `FXMLLoader` to load component-level FXML templates.
 - **State Awareness**: `SceneManager` tracks the `lastLoadedFxml` to support the `refresh()` method, which is triggered when global state (like Fiscal Year) changes.
 - **2-JRXML Strategy**: For every report (Annex 1-5), the system maintains two separate `.jrxml` templates (`[report]_ar.jrxml` and `[report]_fr.jrxml`). This ensures pixel-perfect alignment and correct font rendering for both RTL (Arabic) and LTR (French) layouts.
+- **Metadata Hardening (NIS)**: All external entity models (Debtors) must support full tax/statistical metadata (NIF, NIS, CNAS, NIN) to comply with official financial audit requirements.
 
 ---
 
@@ -56,6 +58,14 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 - **Bilingual Schema**: Database tables (`revenue_order`, `revenue_order_cancellation`, `institution_info`) use parallel columns for bilingual storage (e.g., `object_ar` and `object_fr`).
 - **Tafqeet (Multi-lang)**: Numeric amounts are automatically converted to words in both Arabic and French via `TafqeetService`, depending on the selected print language.
 - **Soft Deletion**: Records are never permanently deleted from the DB; they are marked `is_deleted = 1`.
+
+---
+
+## 4. Deployment Strategy
+The application uses a **Fat JAR (Uber-JAR)** model for distribution:
+- **Build Plugin**: `maven-shade-plugin` is configured to merge all dependencies and SPI files (`ServicesResourceTransformer`).
+- **Entry Point**: `org.marrok.amriirad.Main` is used to launch the JavaFX environment, avoiding module-path complexity.
+- **Installer**: `jpackage` is the recommended tool for generating OS-native installers (EXE/DEB), using the Fat JAR as the primary input.
 
 ---
 

@@ -13,6 +13,7 @@ public class Debtor {
     private String bankAccount;     // الحساب البنكي / الجاري
     private String cnasNumber;      // رقم الضمان الاجتماعي
     private String nifNumber;       // رقم التعريف الجبائي
+    private String nisNumber;       // رقم التعريف الإحصائي
     private DebtorType debtorType;  // النوع
     private LocalDateTime createdAt;
 
@@ -55,6 +56,9 @@ public class Debtor {
 
     public String getNifNumber()                { return nifNumber; }
     public void setNifNumber(String n)          { this.nifNumber = n; }
+
+    public String getNisNumber()                { return nisNumber; }
+    public void setNisNumber(String n)          { this.nisNumber = n; }
 
     public DebtorType getDebtorType()           { return debtorType; }
     public void setDebtorType(DebtorType t)     { this.debtorType = t; }

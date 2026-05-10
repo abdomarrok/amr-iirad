@@ -45,7 +45,7 @@ public class DebtorRepository {
     // -------------------------------------------------------------------------
 
     public Debtor save(Debtor d) throws SQLException {
-        String sql = "INSERT INTO debtor (full_name, id_number, address, phone, bank_account, cnas_number, nif_number, debtor_type) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO debtor (full_name, id_number, address, phone, bank_account, cnas_number, nif_number, nis_number, debtor_type) VALUES (?,?,?,?,?,?,?,?,?)";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             bind(ps, d);
@@ -59,7 +59,7 @@ public class DebtorRepository {
     }
 
     public void update(Debtor d) throws SQLException {
-        String sql = "UPDATE debtor SET full_name=?, id_number=?, address=?, phone=?, bank_account=?, cnas_number=?, nif_number=?, debtor_type=? WHERE id=?";
+        String sql = "UPDATE debtor SET full_name=?, id_number=?, address=?, phone=?, bank_account=?, cnas_number=?, nif_number=?, nis_number=?, debtor_type=? WHERE id=?";
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
              bind(ps, d);
@@ -96,7 +96,8 @@ public class DebtorRepository {
         ps.setString(5, d.getBankAccount());
         ps.setString(6, d.getCnasNumber());
         ps.setString(7, d.getNifNumber());
-        ps.setString(8, d.getDebtorType().name());
+        ps.setString(8, d.getNisNumber());
+        ps.setString(9, d.getDebtorType().name());
     }
 
     private Debtor map(ResultSet rs) throws SQLException {
@@ -109,6 +110,7 @@ public class DebtorRepository {
         d.setBankAccount(rs.getString("bank_account"));
         d.setCnasNumber(rs.getString("cnas_number"));
         d.setNifNumber(rs.getString("nif_number"));
+        d.setNisNumber(rs.getString("nis_number"));
         d.setDebtorType(DebtorType.valueOf(rs.getString("debtor_type")));
         Timestamp ts = rs.getTimestamp("created_at");
         if (ts != null) d.setCreatedAt(ts.toLocalDateTime());

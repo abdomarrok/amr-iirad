@@ -31,6 +31,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
     @FXML private TextField bankAccountField;
     @FXML private TextField cnasNumberField;
     @FXML private TextField nifNumberField;
+    @FXML private TextField nisNumberField;
     @FXML private Label errorLabel;
     
     private final DebtorRepository debtorRepo;
@@ -81,6 +82,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
         if (bankAccountField != null) bankAccountField.setText(debtor.getBankAccount());
         if (cnasNumberField != null) cnasNumberField.setText(debtor.getCnasNumber());
         if (nifNumberField != null) nifNumberField.setText(debtor.getNifNumber());
+        if (nisNumberField != null) nisNumberField.setText(debtor.getNisNumber());
     }
 
     @FXML
@@ -96,6 +98,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
         currentDebtor.setBankAccount(bankAccountField != null && bankAccountField.getText() != null ? bankAccountField.getText().trim() : "");
         currentDebtor.setCnasNumber(cnasNumberField != null && cnasNumberField.getText() != null ? cnasNumberField.getText().trim() : "");
         currentDebtor.setNifNumber(nifNumberField != null && nifNumberField.getText() != null ? nifNumberField.getText().trim() : "");
+        currentDebtor.setNisNumber(nisNumberField != null && nisNumberField.getText() != null ? nisNumberField.getText().trim() : "");
 
         concurrencyManager.runAsync(
             () -> {

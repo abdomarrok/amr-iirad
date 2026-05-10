@@ -48,13 +48,13 @@ class RevenueOrderServiceTest {
         service = new RevenueOrderService(mockOrderRepo, mockAuditService, mockFyRepo, mockTafqeetService);
 
         // Create test data
-        activeFiscalYear = new FiscalYear(1, 2025, true);
+        activeFiscalYear = new FiscalYear(1, "2025", true, LocalDateTime.now());
         testDebtor = new Debtor();
         testDebtor.setId(1);
         testDebtor.setFullName("Ahmed Mohamed");
         testDebtor.setDebtorType(DebtorType.INDIVIDUAL);
 
-        testChapter = new BudgetChapter(1, "01", "الرواتب والأجور", "Salaires", null, 1);
+        testChapter = new BudgetChapter(1, "01", "الرواتب والأجور", "Salaires", null, 1, 1);
 
         testOrder = new RevenueOrder();
         testOrder.setFiscalYear(activeFiscalYear);

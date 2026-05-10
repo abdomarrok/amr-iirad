@@ -52,6 +52,9 @@
 
             <Label styleClass="form-label" text="الرقم الضريبي (NIF):" GridPane.columnIndex="0" GridPane.rowIndex="7" />
             <TextField fx:id="nifNumberField" promptText="NIF..." GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+            <Label styleClass="form-label" text="الرقم الإحصائي (NIS):" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+            <TextField fx:id="nisNumberField" promptText="NIS..." GridPane.columnIndex="1" GridPane.rowIndex="8" />
          <rowConstraints>
             <RowConstraints />
             <RowConstraints />
