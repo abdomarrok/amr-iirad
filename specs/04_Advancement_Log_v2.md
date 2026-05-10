@@ -1,5 +1,5 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
-> **Latest Update:** 2026-05-07  
+> **Latest Update:** 2026-05-10  
 > **Current Focus:** Phase 6 — Maintenance & Feature Expansion
 
 ---
@@ -19,6 +19,14 @@
 ---
 
 ## 🔧 Recent Achievements (Stabilization Phase)
+
+### 📅 2026-05-10: Database Lifecycle & Server Configuration Hardening
+- ✅ **Graceful Shutdown**: Implemented a JVM shutdown hook in `AmrIiradApp` to ensure the MariaDB connection pool is properly closed on application exit.
+- ✅ **Advanced Server Configuration**: Updated `AppSettings` and `ServerConfigController` to support custom Database Names and Password persistence for remote connections.
+- ✅ **Background Connection Testing**: Refactored the database initialization and connection test logic to run on background threads, ensuring a smooth, non-freezing UI during setup.
+- ✅ **UX Labeling Overhaul**: Replaced cryptic regulatory labels (e.g., "Annexe 1") with clear, descriptive Arabic titles (e.g., "أمر الإيراد (المحاسب)") across all printing actions.
+- ✅ **Premium UI Refinement**: Modernized the `ModeSelection` and `ServerConfig` views with GstockDz-inspired aesthetics, larger iconography, and responsive layouts.
+- ✅ **Code Quality**: Hardened `DatabaseConnection` with synchronized shutdown logic and fixed `FontIcon` literal initialization in `OrderDetailsController`.
 
 ### 📅 2026-05-07 (Late Night): Reporting Unification & Design System Polish
 - ✅ **Annexes 1-4 Printing**: Fully restored and enhanced order-specific reporting in `OrderDetailsController`. Support added for Annex 1 (Admin Order), Annex 2 (Debtor), Annex 3 (Cancellation), and Annex 4 (Reduction).
