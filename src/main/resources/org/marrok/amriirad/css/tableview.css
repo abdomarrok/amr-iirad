@@ -63,6 +63,15 @@
     -fx-fill: -fx-theme-primary;
 }
 
+/* Custom style for selected rows (not necessarily focused) */
+.table-row-cell.selected-row {
+    -fx-background-color: #e0f2f7; /* A light blue */
+}
+
+.table-row-cell.selected-row .text {
+    -fx-fill: -fx-theme-primary;
+}
+
 /* Scroll bar styles */
 .table-view .scroll-bar:horizontal,
 .table-view .scroll-bar:vertical {

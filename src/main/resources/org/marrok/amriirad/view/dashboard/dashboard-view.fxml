@@ -2,10 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -38,21 +36,21 @@
 
                 <!-- Issued -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
-                    <FontIcon iconLiteral="fas-check-circle" iconSize="28" style="-fx-fill: #3498db; -fx-icon-color: #3498db;"/>
+                    <FontIcon iconLiteral="fas-check-circle" iconSize="28" styleClass="icon-info"/>
                     <Label fx:id="issuedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #3498db;"/>
                     <Label styleClass="stat-label" text="أوامر مُصدرة"/>
                 </VBox>
 
                 <!-- Dispatched -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
-                    <FontIcon iconLiteral="fas-truck" iconSize="28" style="-fx-fill: #27ae60; -fx-icon-color: #27ae60;"/>
+                    <FontIcon iconLiteral="fas-truck" iconSize="28" styleClass="icon-success"/>
                     <Label fx:id="dispatchedOrdersLabel" styleClass="stat-value" text="0" style="-fx-text-fill: #27ae60;"/>
                     <Label styleClass="stat-label" text="أوامر مُرسلة"/>
                 </VBox>
 
                 <!-- Total Amount -->
                 <VBox styleClass="stat-card" alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS">
-                    <FontIcon iconLiteral="fas-coins" iconSize="28" style="-fx-fill: #f39c12; -fx-icon-color: #f39c12;"/>
+                    <FontIcon iconLiteral="fas-coins" iconSize="28" styleClass="icon-warning"/>
                     <Label fx:id="totalAmountLabel" styleClass="stat-value" text="0.00" style="-fx-text-fill: #f39c12;"/>
                     <Label styleClass="stat-label" text="المبلغ الإجمالي (د.ج)"/>
                 </VBox>

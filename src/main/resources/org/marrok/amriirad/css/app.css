@@ -213,8 +213,19 @@
     -fx-fill: -fx-theme-danger;
     -fx-icon-color: -fx-theme-danger;
 }
+.icon-info {
+    -fx-icon-color: -fx-theme-primary;
+    -fx-fill: -fx-theme-primary;
+}
+.icon-success {
+    -fx-icon-color: -fx-theme-primary;
+    -fx-fill: -fx-theme-primary;
+}
+.icon-warning {
+    -fx-icon-color: -fx-theme-primary;
+    -fx-fill: -fx-theme-primary;
+}
 
-/* ========== TABLE VIEW ========== */
 
 /* Handled by tableview.css via master.css */
 

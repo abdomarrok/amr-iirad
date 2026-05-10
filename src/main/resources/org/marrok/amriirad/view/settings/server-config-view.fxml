@@ -22,7 +22,6 @@
 
     <!-- Form -->
     <VBox styleClass="card" spacing="15">
-        <padding><Insets all="20"/></padding>
         <VBox spacing="8">
             <Label styleClass="form-label" text="عنوان الخادم (Host):" />
             <TextField fx:id="hostField" promptText="localhost أو 192.168.1.X" />

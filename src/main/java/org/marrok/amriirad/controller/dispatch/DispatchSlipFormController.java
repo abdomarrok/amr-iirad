@@ -8,12 +8,11 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
+import javafx.stage.Stage; // Unused import, will be removed by IDE
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.controller.BaseFormController;
-import org.marrok.amriirad.core.ConcurrencyManager;
+import org.marrok.amriirad.core.ConcurrencyManager; // Unused import, will be removed by IDE
 import org.marrok.amriirad.model.DispatchSlip;
 import org.marrok.amriirad.model.OrderStatus;
 import org.marrok.amriirad.model.RevenueOrder;
@@ -23,13 +22,14 @@ import org.marrok.amriirad.service.DispatchSlipService;
 import org.marrok.amriirad.service.ReportService;
 import org.marrok.amriirad.service.TafqeetService;
 import org.marrok.amriirad.util.DialogHelper;
-import org.marrok.amriirad.util.ReportParamBuilder;
+import org.marrok.amriirad.util.ReportParamBuilder; // Unused import, will be removed by IDE
 
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DispatchSlipFormController extends BaseFormController implements javafx.fxml.Initializable {
 
@@ -42,6 +42,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
     @FXML private TableColumn<OrderWrapper, String> colDebtor;
     @FXML private TableColumn<OrderWrapper, String> colAmount;
     @FXML private TableColumn<OrderWrapper, String> colIssueDate;
+    @FXML private CheckBox selectAllCheckBox; // Added for header checkbox
 
     // Dispatch Slip Details
     @FXML private DatePicker dispatchDatePicker;
@@ -67,6 +68,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
     private ObservableList<OrderWrapper> allOrders;
     private FilteredList<OrderWrapper> filteredOrders;
     private Runnable onSuccess;
+    private int lastSelectedIndex = -1; // For Shift+Click
 
     public DispatchSlipFormController(FiscalYearRepository fyRepo,
                                       RevenueOrderRepository orderRepo,
@@ -89,7 +91,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         dispatchDatePicker.setValue(LocalDate.now());
         initOrdersTable();
         setupSearch();
-        setupSelectionListener();
+        // setupSelectionListener() is removed as its logic is now integrated
         loadIssuedOrdersAsync();
     }
 
@@ -99,33 +101,116 @@ public class DispatchSlipFormController extends BaseFormController implements ja
     private void initOrdersTable() {
         // Checkbox column
         colSelect.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
+        // Use the simple forTableColumn() as setCellValueFactory already provides the ObservableValue<Boolean>
         colSelect.setCellFactory(CheckBoxTableCell.forTableColumn(colSelect));
 
         // Other columns
         colOrderNumber.setCellValueFactory(cellData -> new SimpleStringProperty(
-            cellData.getValue().getOrder().getOrderNumber()));
+                cellData.getValue().getOrder().getOrderNumber()));
 
         colDebtor.setCellValueFactory(cellData -> new SimpleStringProperty(
-            cellData.getValue().getOrder().getDebtor() != null
-                ? cellData.getValue().getOrder().getDebtor().getFullName()
-                : "-"));
+                cellData.getValue().getOrder().getDebtor() != null
+                        ? cellData.getValue().getOrder().getDebtor().getFullName()
+                        : "-"));
 
         colAmount.setCellValueFactory(cellData -> new SimpleStringProperty(
-            cellData.getValue().getOrder().getAmount() != null
-                ? String.format("%,.2f", cellData.getValue().getOrder().getAmount())
-                : "0.00"));
+                cellData.getValue().getOrder().getAmount() != null
+                        ? String.format("%,.2f", cellData.getValue().getOrder().getAmount())
+                        : "0.00"));
 
         colIssueDate.setCellValueFactory(cellData -> new SimpleStringProperty(
-            cellData.getValue().getOrder().getIssueDate() != null
-                ? cellData.getValue().getOrder().getIssueDate().toString()
-                : "-"));
+                cellData.getValue().getOrder().getIssueDate() != null
+                        ? cellData.getValue().getOrder().getIssueDate().toString()
+                        : "-"));
+
+        // Handle header checkbox action
+        selectAllCheckBox.setOnAction(event -> {
+            boolean select = selectAllCheckBox.isSelected();
+            filteredOrders.forEach(wrapper -> wrapper.setSelected(select));
+            lastSelectedIndex = -1; // Reset last selected index after bulk action
+            updateTotalAmountAndHeaderCheckbox(); // Update UI after bulk selection
+        });
+
+        // Add mouse click listener for Shift+Click and Ctrl+Click on the table rows
+        ordersTable.setRowFactory(tv -> {
+            TableRow<OrderWrapper> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (newItem != null) {
+                    // Listener for the individual OrderWrapper's selected property
+                    // This ensures the row style is updated when the checkbox is clicked
+                    newItem.selectedProperty().addListener((sObs, sOldVal, sNewVal) -> {
+                        if (sNewVal) {
+                            row.getStyleClass().add("selected-row");
+                        } else {
+                            row.getStyleClass().remove("selected-row");
+                        }
+                    });
+                    // Set initial style
+                    if (newItem.isSelected()) {
+                        row.getStyleClass().add("selected-row");
+                    } else {
+                        row.getStyleClass().remove("selected-row");
+                    }
+                } else {
+                    row.getStyleClass().remove("selected-row");
+                }
+            });
+
+            row.setOnMouseClicked(event -> {
+                OrderWrapper clickedItem = row.getItem();
+                if (clickedItem == null || row.isEmpty()) {
+                    return;
+                }
+
+                // If the click is on the checkbox itself, let the CheckBoxTableCell handle it
+                // This check is a bit tricky as the event target might be the cell or the checkbox graphic
+                // For simplicity, we'll assume if the row is clicked, we handle selection.
+                // The CheckBoxTableCell will also trigger the selectedProperty listener.
+
+                int clickedIndex = ordersTable.getItems().indexOf(clickedItem);
+
+                if (event.isShiftDown() && lastSelectedIndex != -1 && filteredOrders.size() > 0) {
+                    // Shift+Click for range selection
+                    int start = Math.min(clickedIndex, lastSelectedIndex);
+                    int end = Math.max(clickedIndex, lastSelectedIndex);
+
+                    // Determine the selection state based on the first item in the range or the clicked item
+                    boolean targetSelectionState = clickedItem.isSelected();
+                    if (lastSelectedIndex >= 0 && lastSelectedIndex < filteredOrders.size()) {
+                        targetSelectionState = filteredOrders.get(lastSelectedIndex).isSelected();
+                    }
+
+
+                    for (int i = start; i <= end; i++) {
+                        if (i >= 0 && i < filteredOrders.size()) {
+                            filteredOrders.get(i).setSelected(targetSelectionState);
+                        }
+                    }
+                } else if (event.isControlDown()) {
+                    // Ctrl+Click for toggling individual selection
+                    clickedItem.setSelected(!clickedItem.isSelected());
+                } else {
+                    // Regular click: deselect all others and select only this one
+                    boolean wasSelected = clickedItem.isSelected();
+                    filteredOrders.forEach(wrapper -> wrapper.setSelected(false));
+                    clickedItem.setSelected(!wasSelected); // Toggle the clicked item
+                }
+                lastSelectedIndex = clickedIndex;
+                // No need to clear table's internal selection model if we manage selection via OrderWrapper
+                updateTotalAmountAndHeaderCheckbox();
+            });
+            return row;
+        });
     }
 
     /**
      * Setup search filter.
      */
     private void setupSearch() {
-        searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
+        searchField.textProperty().addListener((obs, oldV, newV) -> {
+            updatePredicate();
+            lastSelectedIndex = -1; // Reset last selected index on search
+        });
     }
 
     /**
@@ -133,26 +218,19 @@ public class DispatchSlipFormController extends BaseFormController implements ja
      */
     private void updatePredicate() {
         if (filteredOrders == null) return;
-        
+
         String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase().trim();
-        
+
         filteredOrders.setPredicate(wrapper -> {
             RevenueOrder order = wrapper.getOrder();
             if (search.isEmpty()) return true;
-            
+
             String orderNum = order.getOrderNumber() != null ? order.getOrderNumber().toLowerCase() : "";
             String debtorName = order.getDebtor() != null ? order.getDebtor().getFullName().toLowerCase() : "";
-            
+
             return orderNum.contains(search) || debtorName.contains(search);
         });
-    }
-
-    /**
-     * Listen to selection changes and update total amount.
-     */
-    private void setupSelectionListener() {
-        // This will be called whenever any item's selection changes
-        // We'll rely on the property change listener in the wrapper
+        updateTotalAmountAndHeaderCheckbox(); // Update counts and header checkbox after filter changes
     }
 
     /**
@@ -164,52 +242,54 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         errorLabel.setText("");
 
         concurrencyManager.runAsync(
-            () -> {
-                var activeFy = fyRepo.findActive();
-                if (activeFy.isEmpty()) {
-                    throw new RuntimeException("لا توجد سنة مالية نشطة.");
-                }
-                int fyId = activeFy.get().getId();
-                return orderRepo.findByStatus(fyId, OrderStatus.ISSUED);
-            },
-            orders -> {
-                allOrders = FXCollections.observableArrayList();
-                for (RevenueOrder order : orders) {
-                    OrderWrapper wrapper = new OrderWrapper(order);
-                    // Add listener to wrapper's selection property
-                    wrapper.selectedProperty().addListener((obs, oldV, newV) -> updateTotalAmount());
-                    allOrders.add(wrapper);
-                }
+                () -> {
+                    var activeFy = fyRepo.findActive();
+                    if (activeFy.isEmpty()) {
+                        throw new RuntimeException("لا توجد سنة مالية نشطة.");
+                    }
+                    int fyId = activeFy.get().getId();
+                    return orderRepo.findByStatus(fyId, OrderStatus.ISSUED);
+                },
+                orders -> {
+                    allOrders = FXCollections.observableArrayList();
+                    for (RevenueOrder order : orders) {
+                        OrderWrapper wrapper = new OrderWrapper(order);
+                        // Add listener to wrapper's selection property
+                        // This listener will trigger updateTotalAmountAndHeaderCheckbox()
+                        wrapper.selectedProperty().addListener((obs, oldV, newV) -> updateTotalAmountAndHeaderCheckbox());
+                        allOrders.add(wrapper);
+                    }
 
-                filteredOrders = new FilteredList<>(allOrders, p -> true);
-                ordersTable.setItems(filteredOrders);
+                    filteredOrders = new FilteredList<>(allOrders, p -> true);
+                    ordersTable.setItems(filteredOrders);
 
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
+                    loadingIndicator.setVisible(false);
+                    loadingIndicator.setManaged(false);
 
-                if (orders.isEmpty()) {
-                    errorLabel.setText("⚠️ لا توجد أوامر إيراد في حالة ISSUED.");
+                    if (orders.isEmpty()) {
+                        errorLabel.setText("⚠️ لا توجد أوامر إيراد في حالة ISSUED.");
+                    }
+                    updateTotalAmountAndHeaderCheckbox(); // Initial update
+                },
+                err -> {
+                    logger.error("Failed to load issued orders", err);
+                    loadingIndicator.setVisible(false);
+                    loadingIndicator.setManaged(false);
+                    errorLabel.setText("❌ " + err.getMessage());
                 }
-            },
-            err -> {
-                logger.error("Failed to load issued orders", err);
-                loadingIndicator.setVisible(false);
-                loadingIndicator.setManaged(false);
-                errorLabel.setText("❌ " + err.getMessage());
-            }
         );
     }
 
     /**
-     * Recalculate total amount based on selected orders.
+     * Recalculate total amount based on selected orders and update header checkbox.
      */
-    private void updateTotalAmount() {
+    private void updateTotalAmountAndHeaderCheckbox() {
         BigDecimal total = BigDecimal.ZERO;
-        int selectedCount = 0;
+        long selectedCount = filteredOrders.stream().filter(OrderWrapper::isSelected).count();
+        long totalFilteredCount = filteredOrders.size();
 
-        for (OrderWrapper wrapper : allOrders) {
+        for (OrderWrapper wrapper : filteredOrders) {
             if (wrapper.isSelected()) {
-                selectedCount++;
                 BigDecimal amt = wrapper.getOrder().getAmount();
                 if (amt != null) {
                     total = total.add(amt);
@@ -219,20 +299,22 @@ public class DispatchSlipFormController extends BaseFormController implements ja
 
         totalAmountLabel.setText(String.format("%,.2f د.ج", total));
         selectedCountLabel.setText(String.format("تم تحديد %d أمر", selectedCount));
-    }
 
-    @FXML
-    private void handleSelectAll() {
-        for (OrderWrapper wrapper : filteredOrders) {
-            wrapper.setSelected(true);
+        // Update header checkbox state
+        if (totalFilteredCount == 0) {
+            selectAllCheckBox.setIndeterminate(false);
+            selectAllCheckBox.setSelected(false);
+        } else if (selectedCount == 0) {
+            selectAllCheckBox.setIndeterminate(false);
+            selectAllCheckBox.setSelected(false);
+        } else if (selectedCount == totalFilteredCount) {
+            selectAllCheckBox.setIndeterminate(false);
+            selectAllCheckBox.setSelected(true);
+        } else {
+            selectAllCheckBox.setIndeterminate(true);
+            selectAllCheckBox.setSelected(false);
         }
-    }
-
-    @FXML
-    private void handleDeselectAll() {
-        for (OrderWrapper wrapper : filteredOrders) {
-            wrapper.setSelected(false);
-        }
+        ordersTable.refresh(); // Refresh table to update row styles
     }
 
     @FXML
@@ -245,12 +327,10 @@ public class DispatchSlipFormController extends BaseFormController implements ja
             return;
         }
 
-        List<RevenueOrder> selectedOrders = new ArrayList<>();
-        for (OrderWrapper wrapper : allOrders) {
-            if (wrapper.isSelected()) {
-                selectedOrders.add(wrapper.getOrder());
-            }
-        }
+        List<RevenueOrder> selectedOrders = allOrders.stream()
+                .filter(OrderWrapper::isSelected)
+                .map(OrderWrapper::getOrder)
+                .collect(Collectors.toList());
 
         // Create dispatch slip
         DispatchSlip slip = new DispatchSlip();
@@ -270,20 +350,20 @@ public class DispatchSlipFormController extends BaseFormController implements ja
 
         // Save asynchronously
         concurrencyManager.runAsync(
-            () -> {
-                try {
-                    slipService.createSlip(slip);
-                } catch (java.sql.SQLException e) {
-                    throw new RuntimeException("خطأ في حفظ البوردرو: " + e.getMessage(), e);
-                }
-                return slip;
-            },
-            createdSlip -> {
-                printAnnexe5(createdSlip);
-                closeWindow();
-                runOnSuccess();
-            },
-            err -> showError(err.getMessage())
+                () -> {
+                    try {
+                        slipService.createSlip(slip);
+                    } catch (java.sql.SQLException e) {
+                        throw new RuntimeException("خطأ في حفظ البوردرو: " + e.getMessage(), e);
+                    }
+                    return slip;
+                },
+                createdSlip -> {
+                    printAnnexe5(createdSlip);
+                    closeWindow();
+                    runOnSuccess();
+                },
+                err -> showError(err.getMessage())
         );
     }
 
@@ -297,9 +377,9 @@ public class DispatchSlipFormController extends BaseFormController implements ja
             params.put("DISPATCH_DATE", slip.getDispatchDate() != null ? slip.getDispatchDate().toString() : "");
             params.put("TREASURY_REF", slip.getTreasuryRef() != null ? slip.getTreasuryRef() : "");
             params.put("TOTAL_AMOUNT", slip.getTotalAmount() != null ? slip.getTotalAmount().toString() : "0");
-            params.put("TOTAL_AMOUNT_WORDS", slip.getTotalAmount() != null 
-                ? tafqeetService.toArabicWords(slip.getTotalAmount()) 
-                : "صفر");
+            params.put("TOTAL_AMOUNT_WORDS", slip.getTotalAmount() != null
+                    ? tafqeetService.toArabicWords(slip.getTotalAmount())
+                    : "صفر");
 
             // Create a data source from the orders
             List<Map<String, Object>> ordersList = new ArrayList<>();
@@ -313,12 +393,12 @@ public class DispatchSlipFormController extends BaseFormController implements ja
 
             // Use bean collection data source
             net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource =
-                new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(ordersList);
+                    new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(ordersList);
 
             reportService.showReport(
-                "/org/marrok/amriirad/report/annexe5_dispatch.jrxml",
-                params,
-                dataSource
+                    "/org/marrok/amriirad/report/annexe5_dispatch.jrxml",
+                    params,
+                    dataSource
             );
         } catch (Exception e) {
             showError("خطأ في الطباعة: " + e.getMessage());
@@ -330,7 +410,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         clearError();
 
         // Check if at least one order is selected
-        int selectedCount = (int) allOrders.stream().filter(OrderWrapper::isSelected).count();
+        long selectedCount = allOrders.stream().filter(OrderWrapper::isSelected).count();
         if (selectedCount == 0) {
             showError("يجب تحديد أمر إيراد واحد على الأقل.");
             return false;
