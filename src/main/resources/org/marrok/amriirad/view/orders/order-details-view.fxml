@@ -143,29 +143,31 @@
 
     <!-- Buttons -->
     <HBox alignment="CENTER_RIGHT" spacing="12">
-        <Button fx:id="printAdminBtn" managed="false" onAction="#handlePrintAdmin" styleClass="btn-outline" text="طباعة الملحق 1" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary" /></graphic>
+        <Button fx:id="printAdminBtn" managed="false" onAction="#handlePrintAdmin" styleClass="btn-outline" text="أمر الإيراد (المحاسب)" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" iconSize="18" styleClass="icon-primary" /></graphic>
         </Button>
-        <Button fx:id="printDebtorBtn" managed="false" onAction="#handlePrintDebtor" styleClass="btn-outline" text="طباعة الملحق 2" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary" /></graphic>
+        <Button fx:id="printDebtorBtn" managed="false" onAction="#handlePrintDebtor" styleClass="btn-outline" text="أمر الإيراد (المدين)" visible="false">
+            <graphic><FontIcon iconLiteral="fas-print" iconSize="18" styleClass="icon-primary" /></graphic>
         </Button>
-        <Button fx:id="printCancelBtn" managed="false" onAction="#handlePrintCancel" styleClass="btn-outline" text="طباعة الملحق 3" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #f44336;" /></graphic>
+        <Button fx:id="printCancelBtn" managed="false" onAction="#handlePrintCancel" styleClass="btn-outline" text="أمر الإلغاء" visible="false">
+            <graphic><FontIcon iconLiteral="fas-ban" iconSize="18" style="-fx-icon-color: #f44336;" /></graphic>
         </Button>
-        <Button fx:id="printReduceBtn" managed="false" onAction="#handlePrintReduce" styleClass="btn-outline" text="طباعة الملحق 4" visible="false">
-            <graphic><FontIcon iconLiteral="fas-print" style="-fx-icon-color: #9c27b0;" /></graphic>
+        <Button fx:id="printReduceBtn" managed="false" onAction="#handlePrintReduce" styleClass="btn-outline" text="أمر التخفيض" visible="false">
+            <graphic><FontIcon iconLiteral="fas-minus-circle" iconSize="18" style="-fx-icon-color: #9c27b0;" /></graphic>
         </Button>
         
         <HBox HBox.hgrow="ALWAYS" />
         
         <Button fx:id="reduceActionBtn" managed="false" onAction="#handleReduceAction" styleClass="btn-secondary" text="تخفيض الأمر" visible="false">
-            <graphic><FontIcon iconLiteral="fas-compress" styleClass="icon-white" /></graphic>
+            <graphic><FontIcon iconLiteral="fas-compress" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
         <Button fx:id="cancelActionBtn" managed="false" onAction="#handleCancelAction" styleClass="btn-danger" text="إلغاء الأمر" visible="false">
-            <graphic><FontIcon iconLiteral="fas-times-circle" styleClass="icon-white" /></graphic>
+            <graphic><FontIcon iconLiteral="fas-times-circle" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
         
-        <Button onAction="#handleClose" styleClass="btn-outline" text="إغلاق" />
+        <Button onAction="#handleClose" styleClass="btn-outline" text="إغلاق">
+            <graphic><FontIcon iconLiteral="fas-times" iconSize="16" styleClass="icon-primary" /></graphic>
+        </Button>
     </HBox>
     <stylesheets>
         <URL value="@../../css/master.css" />

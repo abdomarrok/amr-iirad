@@ -13,6 +13,8 @@ public class AppSettings {
     private static final String KEY_DB_HOST    = "db_host";
     private static final String KEY_DB_PORT    = "db_port";
     private static final String KEY_DB_USER    = "db_user";
+    private static final String KEY_DB_PASS    = "db_pass";
+    private static final String KEY_DB_NAME    = "db_name";
 
     /** In-memory current mode (set after initialization). */
     private static AppMode currentMode;
@@ -58,15 +60,19 @@ public class AppSettings {
     // Server connection parameters (for SERVER mode)
     // -------------------------------------------------------------------------
 
-    public static void saveServerConfig(String host, int port, String user) {
+    public static void saveServerConfig(String host, int port, String user, String pass, String dbName) {
         prefs.put(KEY_DB_HOST, host);
         prefs.putInt(KEY_DB_PORT, port);
         prefs.put(KEY_DB_USER, user);
+        prefs.put(KEY_DB_PASS, pass);
+        prefs.put(KEY_DB_NAME, dbName);
     }
 
     public static String getDbHost()  { return prefs.get(KEY_DB_HOST, "localhost"); }
     public static int    getDbPort()  { return prefs.getInt(KEY_DB_PORT, 3306); }
     public static String getDbUser()  { return prefs.get(KEY_DB_USER, "root"); }
+    public static String getDbPass()  { return prefs.get(KEY_DB_PASS, ""); }
+    public static String getDbName()  { return prefs.get(KEY_DB_NAME, "amr_iirad"); }
 
     /** Clears all saved settings (useful for reset / re-configuration). */
     public static void clearAll() {

@@ -31,6 +31,7 @@ public class ServerConfigController implements Initializable {
     @FXML private TextField hostField;
     @FXML private TextField portField;
     @FXML private TextField userField;
+    @FXML private TextField dbNameField;
     @FXML private PasswordField passwordField;
     @FXML private Label statusLabel;
     @FXML private javafx.scene.control.Button saveBtn;
@@ -41,6 +42,8 @@ public class ServerConfigController implements Initializable {
         hostField.setText(AppSettings.getDbHost());
         portField.setText(String.valueOf(AppSettings.getDbPort()));
         userField.setText(AppSettings.getDbUser());
+        dbNameField.setText(AppSettings.getDbName());
+        passwordField.setText(AppSettings.getDbPass());
     }
 
     @FXML
@@ -77,6 +80,7 @@ public class ServerConfigController implements Initializable {
     @FXML
     private void handleSave() {
         String host = hostField.getText().trim();
+        String dbName = dbNameField.getText().trim();
         int port;
         try {
             port = Integer.parseInt(portField.getText().trim());
@@ -89,24 +93,40 @@ public class ServerConfigController implements Initializable {
         String user = userField.getText().trim();
         String password = passwordField.getText();
 
-        // Save to preferences
-        AppSettings.saveServerConfig(host, port, user);
-
-        // Configure the connection pool
-        DatabaseConnection.configure(host, port, user, password);
-
-        // Navigate to dashboard
-        try {
-            DatabaseConnection.initialize(AppMode.SERVER);
-            DatabaseSchemaManager.runMigrations();
-
-            Stage stage = (Stage) saveBtn.getScene().getWindow();
-            SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login/login-view.fxml");
-        } catch (Exception e) {
-            logger.error("Database connection failed", e);
+        if (host.isEmpty() || dbName.isEmpty() || user.isEmpty()) {
             statusLabel.setStyle("-fx-text-fill: -fx-theme-danger;");
-            statusLabel.setText("❌ فشل الاتصال: " + e.getMessage());
+            statusLabel.setText("❌ يرجى ملء جميع الحقول المطلوبة");
+            return;
         }
+
+        statusLabel.setStyle("-fx-text-fill: -fx-theme-text-secondary;");
+        statusLabel.setText("جاري الاتصال بقاعدة البيانات...");
+        saveBtn.setDisable(true);
+
+        // Run on background thread to keep UI alive
+        new Thread(() -> {
+            try {
+                // Save to preferences
+                AppSettings.saveServerConfig(host, port, user, password, dbName);
+
+                // Configure and initialize the connection pool
+                DatabaseConnection.configure(host, port, user, password, dbName);
+                DatabaseConnection.initialize(AppMode.SERVER);
+                DatabaseSchemaManager.runMigrations();
+
+                javafx.application.Platform.runLater(() -> {
+                    Stage stage = (Stage) saveBtn.getScene().getWindow();
+                    SceneManager.loadScene(stage, "/org/marrok/amriirad/view/login/login-view.fxml");
+                });
+            } catch (Exception e) {
+                logger.error("Database connection failed", e);
+                javafx.application.Platform.runLater(() -> {
+                    saveBtn.setDisable(false);
+                    statusLabel.setStyle("-fx-text-fill: -fx-theme-danger;");
+                    statusLabel.setText("❌ فشل الاتصال: " + e.getMessage());
+                });
+            }
+        }).start();
     }
 
     @FXML

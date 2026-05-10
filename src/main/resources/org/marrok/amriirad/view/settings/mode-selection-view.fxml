@@ -11,71 +11,60 @@
 <VBox alignment="CENTER" prefHeight="650.0" prefWidth="800.0" spacing="30.0" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.settings.ModeSelectionController">
 
-    <VBox alignment="CENTER" spacing="30.0" maxWidth="600">
+    <VBox alignment="CENTER" spacing="40.0" maxWidth="700">
         <padding>
-            <Insets bottom="40" left="60" right="60" top="40"/>
+            <Insets bottom="50" left="60" right="60" top="50"/>
         </padding>
-
+        
         <!-- Header -->
-        <VBox alignment="CENTER" spacing="8">
-            <Label styleClass="text-heading" text="إعدادات الاتصال"/>
-            <Label styleClass="text-muted" text="اختر قاعدة البيانات لمتابعة العمل على نظام أوامر الإيراد"/>
+        <VBox alignment="CENTER" spacing="12">
+            <Label styleClass="text-title" text="إعدادات الاتصال" style="-fx-font-size: 32px;"/>
+            <Label styleClass="text-muted" text="اختر قاعدة البيانات لمتابعة العمل على نظام أوامر الإيراد" style="-fx-font-size: 16px;"/>
         </VBox>
-
-        <!-- Mode Cards -->
-        <VBox fx:id="cardsContainer" spacing="12">
-
-            <!-- Local Mode Card -->
-            <Button fx:id="localBtn" styleClass="btn-card" maxWidth="Infinity" contentDisplay="GRAPHIC_ONLY">
+        
+        <!-- Cards Container -->
+        <VBox spacing="15" fx:id="cardsContainer">
+            <!-- Local Card -->
+            <Button fx:id="localBtn" styleClass="mode-card" maxWidth="Infinity" contentDisplay="GRAPHIC_ONLY">
                 <graphic>
-                    <HBox alignment="CENTER_RIGHT" spacing="15">
-                        <padding>
-                            <Insets bottom="16" left="20" right="20" top="16"/>
-                        </padding>
-                        <VBox alignment="CENTER_RIGHT" spacing="4" HBox.hgrow="ALWAYS">
-                            <HBox alignment="CENTER_RIGHT" spacing="8">
-                                <Label fx:id="localBadge" styleClass="badge-primary" text="✓ مُوصى به" managed="false" visible="false"/>
-                                <Label styleClass="text-subheading" text="محلي (Local)"/>
+                    <HBox alignment="CENTER_RIGHT" spacing="20" prefHeight="100">
+                        <padding><Insets left="30" right="30"/></padding>
+                        <VBox alignment="CENTER_RIGHT" spacing="5" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_RIGHT" spacing="10">
+                                <Label fx:id="localBadge" styleClass="mode-badge-recommended" text="⭐ مُوصى به" visible="true" managed="true"/>
+                                <Label text="محلي (Local)" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -fx-theme-text-primary;"/>
                             </HBox>
-                            <Label styleClass="text-small, text-muted" text="قاعدة بيانات مدمجة على هذا الجهاز. سرعة عالية وتعمل بدون إنترنت."/>
+                            <Label styleClass="text-muted" text="قاعدة بيانات مدمجة على هذا الجهاز. سرعة عالية وتعمل بدون إنترنت." wrapText="true" alignment="CENTER_RIGHT"/>
                         </VBox>
-                        <FontIcon fx:id="localIcon" iconLiteral="fas-database" iconSize="40" styleClass="icon-primary"/>
+                        <FontIcon iconLiteral="fas-database" iconSize="48" styleClass="icon-primary"/>
                     </HBox>
                 </graphic>
             </Button>
-
-            <!-- Server Mode Card -->
-            <Button fx:id="serverBtn" styleClass="btn-card-outline" maxWidth="Infinity" contentDisplay="GRAPHIC_ONLY">
+            
+            <!-- Server Card -->
+            <Button fx:id="serverBtn" styleClass="mode-card" maxWidth="Infinity" contentDisplay="GRAPHIC_ONLY">
                 <graphic>
-                    <HBox alignment="CENTER_RIGHT" spacing="15">
-                        <padding>
-                            <Insets bottom="12" left="20" right="20" top="12"/>
-                        </padding>
-                        <VBox alignment="CENTER_RIGHT" spacing="4" HBox.hgrow="ALWAYS">
-                            <HBox alignment="CENTER_RIGHT" spacing="8">
-                                <Label styleClass="text-subheading" text="شبكة (Server)"/>
+                    <HBox alignment="CENTER_RIGHT" spacing="20" prefHeight="100">
+                        <padding><Insets left="30" right="30"/></padding>
+                        <VBox alignment="CENTER_RIGHT" spacing="5" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_RIGHT" spacing="10">
+                                <Label fx:id="serverBadge" styleClass="mode-badge-current" text="✓ الوضع الحالي" visible="false" managed="false"/>
+                                <Label text="شبكة (Server)" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -fx-theme-text-primary;"/>
                             </HBox>
-                            <Label styleClass="text-small, text-muted" text="الاتصال بقاعدة بيانات MariaDB على الشبكة (XAMPP أو خادم مخصص)."/>
+                            <Label styleClass="text-muted" text="الاتصال بقاعدة بيانات خارجية للمزامنة مع فروع أخرى أو أجهزة متعددة." wrapText="true" alignment="CENTER_RIGHT"/>
                         </VBox>
-                        <FontIcon fx:id="serverIcon" iconLiteral="fas-server" iconSize="36" styleClass="icon-secondary"/>
+                        <FontIcon iconLiteral="fas-server" iconSize="42" styleClass="icon-secondary"/>
                     </HBox>
                 </graphic>
             </Button>
-
         </VBox>
-
-        <!-- Continue Button -->
-        <VBox spacing="16" alignment="CENTER">
-            <padding>
-                <Insets top="10"/>
-            </padding>
-            <Button fx:id="continueBtn" styleClass="btn-primary" maxWidth="Infinity" text="متابعة" prefHeight="50">
-                <graphic>
-                    <FontIcon iconLiteral="fas-arrow-left" styleClass="icon-white"/>
-                </graphic>
-            </Button>
-        </VBox>
-
+        
+        <!-- Continue -->
+        <Button fx:id="continueBtn" styleClass="mode-continue-btn" maxWidth="Infinity" text="متابعة">
+            <graphic>
+                <FontIcon iconLiteral="fas-arrow-left" styleClass="icon-white" iconSize="18"/>
+            </graphic>
+        </Button>
     </VBox>
     <stylesheets>
         <URL value="@../../css/master.css" />

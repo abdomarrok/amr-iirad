@@ -51,9 +51,9 @@
                     <HBox alignment="CENTER_LEFT" spacing="12">
                         <Label fx:id="detailTitleLabel" styleClass="text-subheading" text="تفاصيل البوردرو" />
                         <HBox HBox.hgrow="ALWAYS" />
-                        <Button fx:id="printBtn" disable="true" onAction="#handlePrint" styleClass="btn-outline" text="طباعة الملحق 5">
+                        <Button fx:id="printBtn" disable="true" onAction="#handlePrint" styleClass="btn-outline" text="طباعة بوردرو الإرسال">
                             <graphic>
-                                <FontIcon iconLiteral="fas-print" iconSize="14" styleClass="icon-primary" />
+                                <FontIcon iconLiteral="fas-print" iconSize="18" styleClass="icon-primary" />
                             </graphic>
                         </Button>
                     </HBox>

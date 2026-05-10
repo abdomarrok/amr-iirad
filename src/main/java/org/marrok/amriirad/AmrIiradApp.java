@@ -18,6 +18,12 @@ public class AmrIiradApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         logger.info("Starting Amr-Iirad application...");
 
+        // Register a shutdown hook to ensure DB cleanup on hard exits
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Shutdown hook triggered. Cleaning up...");
+            DatabaseConnection.shutdown();
+        }));
+
         primaryStage.setTitle("نظام أوامر الإيراد");
 
         // Load fonts
@@ -27,30 +33,8 @@ public class AmrIiradApp extends Application {
             logger.warn("Failed to load Cairo font, using fallback system font");
         }
 
-        if (!AppSettings.isModeConfigured()) {
-                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");
-        } else {
-            try {
-                AppMode mode = AppSettings.getAppMode();
-                if (mode == AppMode.SERVER) {
-                    DatabaseConnection.configure(
-                            AppSettings.getDbHost(),
-                            AppSettings.getDbPort(),
-                            AppSettings.getDbUser(),
-                            ""
-                    );
-                }
-                DatabaseConnection.initialize(mode);
-                DatabaseSchemaManager.runMigrations();
-                
-                // Load initial scene
-                SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/login/login-view.fxml");
-            } catch (Exception e) {
-                logger.error("Database initialization failed, showing mode selection", e);
-                AppSettings.clearAll();
-                    SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");
-            }
-        }
+        // Always start with mode selection to allow changing connection settings if needed
+        SceneManager.loadScene(primaryStage, "/org/marrok/amriirad/view/settings/mode-selection-view.fxml");
     }
 
     @Override

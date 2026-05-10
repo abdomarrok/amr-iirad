@@ -6,51 +6,41 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import java.net.URL?>
-<VBox prefWidth="500" spacing="25" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox alignment="CENTER" prefWidth="500" spacing="30.0" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.settings.ServerConfigController">
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30"/>
+        <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
 
     <!-- Header -->
-    <VBox alignment="CENTER" spacing="10">
-        <FontIcon iconLiteral="fas-server" iconSize="40" styleClass="icon-primary"/>
-        <Label styleClass="text-subheading" text="إعدادات الخادم"/>
-        <Label styleClass="text-small, text-muted" text="أدخل بيانات الاتصال بقاعدة بيانات MariaDB/MySQL"/>
+    <VBox alignment="CENTER" spacing="12">
+        <FontIcon iconLiteral="fas-server" iconSize="64" styleClass="icon-primary" />
+        <Label style="-fx-font-size: 28px;" styleClass="text-title" text="إعدادات الخادم" />
+        <Label style="-fx-font-size: 14px;" styleClass="text-muted" text="اتصال بقاعدة بيانات خارجية" />
     </VBox>
 
-    <Separator />
-
-    <!-- Form -->
-    <VBox styleClass="card" spacing="15">
-        <VBox spacing="8">
-            <Label styleClass="form-label" text="عنوان الخادم (Host):" />
-            <TextField fx:id="hostField" promptText="localhost أو 192.168.1.X" />
-        </VBox>
-        <VBox spacing="8">
-            <Label styleClass="form-label" text="المنفذ (Port):" />
-            <TextField fx:id="portField" promptText="3306" />
-        </VBox>
-        <VBox spacing="8">
-            <Label styleClass="form-label" text="اسم المستخدم:" />
-            <TextField fx:id="userField" promptText="root" />
-        </VBox>
-        <VBox spacing="8">
-            <Label styleClass="form-label" text="كلمة المرور:" />
-            <PasswordField fx:id="passwordField" />
-        </VBox>
+    <!-- Fields Container -->
+    <VBox spacing="15">
+        <TextField fx:id="hostField" prefHeight="45" promptText="عنوان الخادم (Host)" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+        <TextField fx:id="portField" prefHeight="45" promptText="المنفذ (Port)" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+        <TextField fx:id="userField" prefHeight="45" promptText="اسم المستخدم" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+        <TextField fx:id="dbNameField" prefHeight="45" promptText="اسم قاعدة البيانات" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
+        <PasswordField fx:id="passwordField" prefHeight="45" promptText="كلمة المرور" style="-fx-background-radius: 20; -fx-border-radius: 20;" />
     </VBox>
 
     <!-- Actions -->
-    <HBox spacing="12" alignment="CENTER_RIGHT">
-        <Button onAction="#handleBack" styleClass="btn-outline" text="رجوع" prefWidth="100"/>
-        <Button fx:id="testBtn" onAction="#handleTest" styleClass="btn-outline" text="اختبار الاتصال" prefWidth="130">
-            <graphic><FontIcon iconLiteral="fas-network-wired" styleClass="icon-primary"/></graphic>
+    <VBox alignment="CENTER" spacing="15">
+        <Button fx:id="saveBtn" maxWidth="Infinity" onAction="#handleSave" styleClass="mode-continue-btn" text="اتصال">
+            <graphic>
+                <FontIcon iconLiteral="fas-plug" iconSize="18" styleClass="icon-white" />
+            </graphic>
         </Button>
-        <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ ومتابعة" prefWidth="130">
-            <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
-        </Button>
-    </HBox>
+        
+        <Button maxWidth="Infinity" onAction="#handleBack" style="-fx-border-radius: 20; -fx-background-radius: 20;" styleClass="btn-outline" text="الرجوع للخلف" />
+        
+        <Label fx:id="statusLabel" alignment="CENTER" styleClass="text-small" wrapText="true" />
+    </VBox>
+
     <stylesheets>
         <URL value="@../../css/master.css" />
     </stylesheets>

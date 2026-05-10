@@ -30,7 +30,7 @@
                     <TextField fx:id="searchField" promptText="بحث عن أمر..." prefWidth="250.0" styleClass="text-field-search" />
                     <ComboBox fx:id="statusFilterCombo" promptText="تصفية بالحالة" prefWidth="150.0" />
                     <Button fx:id="addOrderBtn" onAction="#handleNewOrder" styleClass="btn-primary" text="أمر جديد">
-                        <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-white"/></graphic>
+                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="icon-white"/></graphic>
                     </Button>
                 </HBox>
             </HBox>

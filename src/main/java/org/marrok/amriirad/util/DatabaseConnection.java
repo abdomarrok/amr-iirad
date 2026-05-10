@@ -73,11 +73,12 @@ public class DatabaseConnection {
     /**
      * Configures server connection parameters (used by ServerConfigController).
      */
-    public static void configure(String host, int port, String user, String password) {
+    public static void configure(String host, int port, String user, String password, String dbName) {
         DATABASE_HOST     = host;
         DATABASE_PORT     = port;
         DATABASE_USER     = user;
         DATABASE_PASSWORD = password;
+        DATABASE_NAME     = dbName;
     }
 
     private static void initializePool() {
@@ -110,7 +111,12 @@ public class DatabaseConnection {
         return dataSource.getConnection();
     }
 
-    public static void shutdown() {
+    private static boolean isShuttingDown = false;
+
+    public static synchronized void shutdown() {
+        if (isShuttingDown) return;
+        isShuttingDown = true;
+        
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
             logger.info("HikariCP pool shut down.");

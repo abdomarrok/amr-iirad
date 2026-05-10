@@ -30,6 +30,7 @@ public class ModeSelectionController implements Initializable {
     @FXML public Button serverBtn;
     @FXML public Button continueBtn;
     @FXML public Label localBadge;
+    @FXML public Label serverBadge;
     @FXML public FontIcon localIcon;
     @FXML public FontIcon serverIcon;
     @FXML public VBox cardsContainer;
@@ -82,11 +83,13 @@ public class ModeSelectionController implements Initializable {
     private void setServerAsActive() {
         serverBtn.getStyleClass().removeAll("mode-card-active", "mode-card-secondary");
         serverBtn.getStyleClass().add("mode-card-active");
+        showBadge(serverBadge, "✓ الوضع الحالي", "mode-badge-current");
     }
 
     private void setServerAsSecondary() {
         serverBtn.getStyleClass().removeAll("mode-card-active", "mode-card-secondary");
         serverBtn.getStyleClass().add("mode-card-secondary");
+        hideBadge(serverBadge);
     }
 
     // ===================== HELPERS =====================

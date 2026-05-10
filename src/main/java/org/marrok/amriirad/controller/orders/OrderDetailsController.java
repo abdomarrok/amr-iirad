@@ -180,7 +180,7 @@ public class OrderDetailsController extends BaseFormController implements Initia
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         // DRAFT status (always present)
-        addTimelineItem("مسودة (DRAFT)", currentOrder.getCreatedAt(), "تم إنشاء الأمر في نظام", true, "fas-file-alt");
+        addTimelineItem("مسودة (DRAFT)", currentOrder.getCreatedAt(), "تم إنشاء الأمر في نظام", true, "fas-file-invoice");
 
         // ISSUED status (if applicable)
         if (currentOrder.getStatus().ordinal() >= OrderStatus.ISSUED.ordinal() || isCancelledOrReduced()) {
@@ -200,7 +200,7 @@ public class OrderDetailsController extends BaseFormController implements Initia
 
         // REDUCED status (if applicable)
         if (currentOrder.getStatus() == OrderStatus.REDUCED) {
-            addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تخفيض مبلغ الأمر (ملحق 4)", true, "fas-compress");
+            addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تخفيض مبلغ الأمر (ملحق 4)", true, "fas-minus-circle");
         }
     }
 
@@ -216,7 +216,8 @@ public class OrderDetailsController extends BaseFormController implements Initia
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
         // Status icon
-        FontIcon statusIcon = new FontIcon(icon);
+        FontIcon statusIcon = new FontIcon();
+        statusIcon.setIconLiteral(icon);
         statusIcon.setIconSize(20);
         statusIcon.setStyle(isActive ? "-fx-icon-color: -fx-theme-primary;" : "-fx-icon-color: -fx-theme-text-muted;");
 
