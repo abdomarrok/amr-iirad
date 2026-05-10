@@ -165,7 +165,7 @@
             <graphic><FontIcon iconLiteral="fas-ban" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
         
-        <Button onAction="#handleClose" styleClass="btn-outline" text="إغلاق">
+        <Button fx:id="cancelBtn" onAction="#handleClose" styleClass="btn-outline" text="إغلاق">
             <graphic><FontIcon iconLiteral="fas-times" iconSize="16" styleClass="icon-primary" /></graphic>
         </Button>
     </HBox>

@@ -42,7 +42,6 @@ public class CancellationFormController extends BaseFormController implements In
     @FXML private Button saveBtn;
 
     private RevenueOrder targetOrder;
-    private Runnable onSuccess;
     private final CancellationOrderService cancellationService;
     private final org.marrok.amriirad.service.ReportService reportService;
     private final org.marrok.amriirad.service.TafqeetService tafqeetService;

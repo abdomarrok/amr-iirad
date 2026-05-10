@@ -57,7 +57,7 @@
 
     <!-- Buttons -->
     <HBox spacing="12" alignment="CENTER_RIGHT">
-        <Button styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
+        <Button fx:id="cancelBtn" styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
         <Button fx:id="saveBtn" styleClass="btn-danger" text="تأكيد وحفظ" onAction="#handleSave">
             <graphic><FontIcon iconLiteral="fas-check-circle" styleClass="icon-white"/></graphic>
         </Button>

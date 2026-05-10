@@ -23,6 +23,9 @@
 ### 📅 2026-05-10 (Night): Fat JAR Deployment & Debtor Metadata Expansion
 - ✅ **Production Build Architecture**: Transitioned to a "Fat JAR" model using `maven-shade-plugin`. This bundles all dependencies (JavaFX, Jasper, MariaDB) into a single executable file, eliminating classpath issues on client machines.
 - ✅ **Main Launcher Implementation**: Created a specialized `Main.java` entry point to bypass JavaFX module-path requirements for standalone execution.
+- ✅ **UI Refresh Stabilization**: Implemented reactive table refreshes using `ObservableList.setAll()` to maintain UI state (search/sort/scroll) during background re-fetches.
+- ✅ **Modal Closure Fix**: Resolved a critical issue where the "Close" button in the Details view was unresponsive by hardening `BaseFormController` to resolve the Stage from any injected node.
+- ✅ **Callback Integrity**: Fixed a shadowed field bug in `CancellationFormController` and `DispatchSlipFormController` that was silently blocking table refreshes after successful actions.
 - ✅ **Ikonli SPI Merging**: Configured `ServicesResourceTransformer` in the build process to resolve runtime icon loading failures in the executable JAR.
 - ✅ **Debtor Metadata Expansion (NIS)**: Added full support for the **NIS Number** (رقم التعريف الإحصائي) across the stack:
     - Added `nisNumber` to `Debtor` model.
@@ -122,5 +125,7 @@
 
 ## 🎯 Next Objectives
 8. ✅ **Fiscal Scoping**: Refactored budget management to be year-isolated.
-9. 🚧 **Copy to Next Year**: Planned feature to clone budget hierarchies across fiscal years.
+9. ✅ **UI Refresh Stabilization**: Guaranteed real-time consistency across modals and lists.
+10. 🚧 **Copy to Next Year**: Planned feature to clone budget hierarchies across fiscal years.
+11. 🚧 **Data Export**: Implement CSV/Excel export for financial audits.
 

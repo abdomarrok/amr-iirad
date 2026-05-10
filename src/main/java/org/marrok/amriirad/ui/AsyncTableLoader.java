@@ -53,13 +53,19 @@ public class AsyncTableLoader<T> {
         concurrencyManager.runAsync(
             fetcher,
             items -> {
-                masterList = FXCollections.observableArrayList(items);
-                filteredList = new FilteredList<>(masterList, p -> true);
-                SortedList<T> sortedList = new SortedList<>(filteredList);
-                
-                // Bind sorting
-                sortedList.comparatorProperty().bind(tableView.comparatorProperty());
-                tableView.setItems(sortedList);
+                if (masterList == null) {
+                    masterList = FXCollections.observableArrayList(items);
+                    filteredList = new FilteredList<>(masterList, p -> true);
+                    SortedList<T> sortedList = new SortedList<>(filteredList);
+                    
+                    // Bind sorting
+                    sortedList.comparatorProperty().bind(tableView.comparatorProperty());
+                    tableView.setItems(sortedList);
+                } else {
+                    // Updating existing list preserves FilteredList predicate and tableView binding
+                    masterList.setAll(items);
+                    tableView.refresh();
+                }
 
                 if (loadingIndicator != null) {
                     loadingIndicator.setVisible(false);

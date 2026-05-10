@@ -34,11 +34,18 @@ public abstract class BaseFormController {
     }
 
     protected void closeWindow() {
-        // Use either saveBtn or cancelBtn to get the stage
-        Button refBtn = saveBtn != null ? saveBtn : cancelBtn;
-        if (refBtn != null && refBtn.getScene() != null) {
-            Stage stage = (Stage) refBtn.getScene().getWindow();
+        // Try to get stage from any injected node
+        javafx.scene.Node refNode = null;
+        if (saveBtn != null && saveBtn.getScene() != null) refNode = saveBtn;
+        else if (cancelBtn != null && cancelBtn.getScene() != null) refNode = cancelBtn;
+        else if (titleLabel != null && titleLabel.getScene() != null) refNode = titleLabel;
+        else if (errorLabel != null && errorLabel.getScene() != null) refNode = errorLabel;
+
+        if (refNode != null) {
+            Stage stage = (Stage) refNode.getScene().getWindow();
             stage.close();
+        } else {
+            getLogger().warn("Could not find a reference node to close the window.");
         }
     }
 

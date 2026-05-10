@@ -185,18 +185,18 @@ public class RevenueOrderListController implements Initializable {
                 if (selected.getStatus() == org.marrok.amriirad.model.OrderStatus.DRAFT) {
                     openFormModal(selected);
                 } else {
-                    openDetailsModal(selected);
+                    openDetailsModal(selected, this::loadDataAsync);
                 }
             }
         });
     }
 
-    private void openDetailsModal(RevenueOrder order) {
+    private void openDetailsModal(RevenueOrder order, Runnable onRefresh) {
         Stage stage = (Stage) tableView.getScene().getWindow();
         FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/orders/order-details-view.fxml", "تفاصيل أمر الإيراد");
         if (loader != null) {
             OrderDetailsController controller = loader.getController();
-            controller.initForView(order);
+            controller.initForView(order, onRefresh);
         }
     }
 

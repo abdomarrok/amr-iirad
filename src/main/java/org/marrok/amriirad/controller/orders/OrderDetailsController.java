@@ -89,8 +89,9 @@ public class OrderDetailsController extends BaseFormController implements Initia
         // Nothing to do on initialization — wait for initForView()
     }
 
-    public void initForView(RevenueOrder order) {
+    public void initForView(RevenueOrder order, Runnable onRefresh) {
         this.currentOrder = order;
+        this.onSuccess = onRefresh;
         loadOrderDetails();
     }
 
@@ -344,12 +345,9 @@ public class OrderDetailsController extends BaseFormController implements Initia
     }
 
     private void refreshOrder() {
-        // We need to reload order from repo to get updated status
-        // For now, we'll just close and let the list view handle it, 
-        // OR better, we could have a reference to the service here.
-        // Actually, let's just close the details for now to be safe, 
-        // or re-fetch if we had the repository.
+        // Close details and trigger parent refresh
         closeWindow();
+        runOnSuccess();
     }
 
     @FXML

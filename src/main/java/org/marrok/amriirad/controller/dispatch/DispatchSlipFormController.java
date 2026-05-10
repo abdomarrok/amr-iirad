@@ -67,7 +67,6 @@ public class DispatchSlipFormController extends BaseFormController implements ja
     // Data
     private ObservableList<OrderWrapper> allOrders;
     private FilteredList<OrderWrapper> filteredOrders;
-    private Runnable onSuccess;
     private int lastSelectedIndex = -1; // For Shift+Click
 
     public DispatchSlipFormController(FiscalYearRepository fyRepo,

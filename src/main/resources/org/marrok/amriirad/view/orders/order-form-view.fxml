@@ -78,7 +78,7 @@
             <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
         </Button>
         <HBox HBox.hgrow="ALWAYS" />
-        <Button styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
+        <Button fx:id="cancelBtn" styleClass="btn-outline" text="إلغاء" onAction="#handleCancel"/>
         <Button fx:id="saveBtn" styleClass="btn-primary" text="حفظ مسودة" onAction="#handleSave">
             <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white"/></graphic>
         </Button>
