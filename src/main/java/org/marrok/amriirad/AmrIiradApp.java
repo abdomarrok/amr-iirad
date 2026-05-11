@@ -25,6 +25,7 @@ public class AmrIiradApp extends Application {
         }));
 
         primaryStage.setTitle("نظام أوامر الإيراد");
+        SceneManager.setAppIcon(primaryStage);
 
         // Load fonts
         try {

@@ -133,8 +133,8 @@ public class DialogHelper {
 
             Scene scene = new Scene(root);
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            SceneManager.applyStylesAndTheme(scene);
             dialog.setScene(scene);
+            SceneManager.applyStylesAndTheme(scene, dialog);
             dialog.showAndWait();
         } catch (java.io.IOException e) {
             org.apache.logging.log4j.LogManager.getLogger(DialogHelper.class).error("Failed to load language selection FXML", e);

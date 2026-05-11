@@ -139,8 +139,9 @@ public class TopBarController implements Initializable {
             cancelBtn.setOnAction(e -> dialog.close());
 
             Scene scene = new Scene(root);
-            SceneManager.applyStylesAndTheme(scene);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             dialog.setScene(scene);
+            SceneManager.applyStylesAndTheme(scene, dialog);
             dialog.showAndWait();
         } catch (java.io.IOException e) {
             logger.error("Failed to load fiscal year dialog FXML", e);

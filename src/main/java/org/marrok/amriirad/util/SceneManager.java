@@ -31,9 +31,8 @@ public class SceneManager {
             
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            applyStylesAndTheme(scene);
-            
             stage.setScene(scene);
+            applyStylesAndTheme(scene, stage);
             stage.setResizable(isResizable);
 
             // Handle sizing and centering pattern from GstockDz
@@ -72,9 +71,8 @@ public class SceneManager {
 
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            applyStylesAndTheme(scene);
-
             dialog.setScene(scene);
+            applyStylesAndTheme(scene, dialog);
             dialog.sizeToScene();
             dialog.centerOnScreen();
             dialog.show();
@@ -107,6 +105,21 @@ public class SceneManager {
 
     public static void applyStylesAndTheme(Scene scene) {
         if (scene == null) return;
+        Stage stage = null;
+        if (scene.getWindow() instanceof Stage s) {
+            stage = s;
+        }
+        applyStylesAndTheme(scene, stage);
+    }
+
+    public static void applyStylesAndTheme(Scene scene, Stage stage) {
+        if (scene == null) return;
+        
+        // Apply global icon to the stage
+        if (stage != null) {
+            setAppIcon(stage);
+        }
+
         scene.getStylesheets().clear();
         String css = SceneManager.class.getResource("/org/marrok/amriirad/css/app.css").toExternalForm();
         scene.getStylesheets().add(css);
@@ -116,5 +129,17 @@ public class SceneManager {
         
         // Ensure standard cursor
         scene.setCursor(javafx.scene.Cursor.DEFAULT);
+    }
+
+    public static void setAppIcon(Stage stage) {
+        try {
+            String iconPath = "/org/marrok/amriirad/img/logo.png";
+            var iconStream = SceneManager.class.getResourceAsStream(iconPath);
+            if (iconStream != null) {
+                stage.getIcons().setAll(new javafx.scene.image.Image(iconStream));
+            }
+        } catch (Exception e) {
+            logger.warn("Failed to load application icon: {}", e.getMessage());
+        }
     }
 }
