@@ -12,114 +12,146 @@
     </top>
 
     <center>
-        <VBox maxWidth="800" spacing="20.0" styleClass="main-container">
-            <padding>
-                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-            </padding>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
+            <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="main-container">
+                <padding>
+                    <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                </padding>
 
-            <!-- Header -->
-            <HBox alignment="CENTER_LEFT" spacing="15">
-                <FontIcon iconLiteral="fas-university" iconSize="32" styleClass="icon-primary" />
-                <VBox>
-                    <Label styleClass="text-subheading" text="إعدادات المؤسسة / Paramètres de l'Institution" />
-                    <Label styleClass="text-small, text-muted" text="المعلومات التي ستظهر على وثائق أمر الإيراد والتقارير / Informations apparaissant sur les documents" />
+                <!-- Header -->
+                <VBox maxWidth="900" spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <FontIcon iconLiteral="fas-university" iconSize="32" styleClass="icon-primary" />
+                        <VBox>
+                            <Label styleClass="text-subheading" text="إعدادات المؤسسة / Paramètres de l'Institution" />
+                            <Label styleClass="text-small, text-muted" text="المعلومات التي ستظهر على وثائق أمر الإيراد والتقارير / Informations apparaissant sur les documents" />
+                        </VBox>
+                    </HBox>
+                    <Separator />
                 </VBox>
-            </HBox>
 
-            <Separator />
+                <VBox maxWidth="900" spacing="20">
+                    <!-- Identity Section -->
+                    <VBox styleClass="card" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                        <Label styleClass="text-small, text-muted" text="هوية المؤسسة / Identité de l'institution"  />
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                            </columnConstraints>
+                            
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="الوزارة الوصية (بالعربية)" />
+                                <TextField fx:id="ministryArField" promptText="مثلاً: وزارة العدل" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Ministère (en français)" />
+                                <TextField fx:id="ministryFrField" promptText="e.g. Ministère de la Justice" />
+                            </VBox>
 
-            <!-- Form -->
-            <VBox styleClass="card" spacing="20">
-                <GridPane hgap="20" vgap="20">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    
-                    <!-- Ministry Row -->
-                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label styleClass="form-label" text="الوزارة الوصية (بالعربية)" />
-                        <TextField fx:id="ministryArField" promptText="مثلاً: وزارة العدل" />
-                    </VBox>
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label styleClass="form-label" text="Ministère (en français)" />
-                        <TextField fx:id="ministryFrField" promptText="e.g. Ministère de la Justice" />
-                    </VBox>
-
-                    <!-- Institution Row -->
-                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <Label styleClass="form-label" text="اسم المؤسسة (بالعربية)" />
-                        <TextField fx:id="nameArField" promptText="مثلاً: المدرسة العليا للقضاء" />
-                    </VBox>
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <Label styleClass="form-label" text="Institution (en français)" />
-                        <TextField fx:id="nameFrField" promptText="e.g. Ecole Supérieure de la Magistrature" />
-                    </VBox>
-
-                    <!-- Officer & Code Row -->
-                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                        <Label styleClass="form-label" text="الآمر بالصرف (بالعربية)" />
-                        <TextField fx:id="officerArField" promptText="الأمين العام" />
-                    </VBox>
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <Label styleClass="form-label" text="Ordonnateur (en français)" />
-                        <TextField fx:id="officerFrField" promptText="Secrétaire Général" />
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="اسم المؤسسة (بالعربية)" />
+                                <TextField fx:id="nameArField" promptText="مثلاً: المدرسة العليا للقضاء" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="Institution (en français)" />
+                                <TextField fx:id="nameFrField" promptText="e.g. Ecole Supérieure de la Magistrature" />
+                            </VBox>
+                        </GridPane>
                     </VBox>
 
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
-                        <Label styleClass="form-label" text="رمز الآمر بالصرف / Code Ordonnateur" />
-                        <TextField fx:id="ordonnateurCodeField" promptText="Code Ordonnateur" />
+                    <!-- Authority Section -->
+                    <VBox styleClass="card" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                        <Label styleClass="text-small, text-muted" text="سلطة الصرف / Autorité d'ordonnancement"  />
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                            </columnConstraints>
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="الآمر بالصرف (بالعربية)" />
+                                <TextField fx:id="officerArField" promptText="الأمين العام" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Ordonnateur (en français)" />
+                                <TextField fx:id="officerFrField" promptText="Secrétaire Général" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="رمز الآمر بالصرف / Code Ordonnateur" />
+                                <TextField fx:id="ordonnateurCodeField" promptText="Code Ordonnateur" />
+                            </VBox>
+                        </GridPane>
                     </VBox>
 
-                    <!-- Wilaya & Treasury Row -->
-                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                        <Label styleClass="form-label" text="الولاية (بالعربية)" />
-                        <TextField fx:id="wilayaArField" promptText="مثلاً: الجزائر" />
-                    </VBox>
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                        <Label styleClass="form-label" text="Wilaya (en français)" />
-                        <TextField fx:id="wilayaFrField" promptText="e.g. Alger" />
-                    </VBox>
-
-                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                        <Label styleClass="form-label" text="أمين خزينة ولاية ..." />
-                        <TextField fx:id="treasuryArField" promptText="مثلاً: أمين خزينة ولاية الجزائر" />
-                    </VBox>
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="5">
-                        <Label styleClass="form-label" text="Trésorier de la Wilaya de..." />
-                        <TextField fx:id="treasuryFrField" promptText="e.g. Trésorier de la Wilaya d'Alger" />
-                    </VBox>
-
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6">
-                        <Label styleClass="form-label" text="حساب الخزينة / Compte du Trésor (N° RIB/Ligne)" />
-                        <TextField fx:id="treasuryAccountField" promptText="مثلاً: حساب رقم ..." />
-                    </VBox>
-
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="7">
-                        <Label styleClass="form-label" text="رقم الحساب الجاري / Compte Courant (RIB)" />
-                        <TextField fx:id="ribField" promptText="0000 0000 0000 0000 00" />
-                    </VBox>
-
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="8">
-                        <Label styleClass="form-label" text="العنوان الكامل (بالعربية)" />
-                        <TextField fx:id="addressField" promptText="العنوان..." />
+                    <!-- Location Section -->
+                    <VBox styleClass="card" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                        <Label styleClass="text-small, text-muted" text="الموقع والعنوان / Localisation et Adresse"  />
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                            </columnConstraints>
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="الولاية (بالعربية)" />
+                                <TextField fx:id="wilayaArField" promptText="مثلاً: الجزائر" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Wilaya (en français)" />
+                                <TextField fx:id="wilayaFrField" promptText="e.g. Alger" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="العنوان الكامل (بالعربية)" />
+                                <TextField fx:id="addressField" promptText="العنوان..." />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="Adresse Complète (en français)" />
+                                <TextField fx:id="addressFrField" promptText="Adresse..." />
+                            </VBox>
+                        </GridPane>
                     </VBox>
 
-                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="9">
-                        <Label styleClass="form-label" text="Adresse Complète (en français)" />
-                        <TextField fx:id="addressFrField" promptText="Adresse..." />
+                    <!-- Finance Section -->
+                    <VBox styleClass="card" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                        <Label styleClass="text-small, text-muted" text="المعلومات المالية / Informations financières" />
+                        <GridPane hgap="20" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="50" />
+                            </columnConstraints>
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="أمين خزينة ولاية ..." />
+                                <TextField fx:id="treasuryArField" promptText="مثلاً: أمين خزينة ولاية الجزائر" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Trésorier de la Wilaya de..." />
+                                <TextField fx:id="treasuryFrField" promptText="e.g. Trésorier de la Wilaya d'Alger" />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="حساب الخزينة / Compte du Trésor (N° RIB/Ligne)" />
+                                <TextField fx:id="treasuryAccountField" promptText="مثلاً: حساب رقم ..." />
+                            </VBox>
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                <Label styleClass="form-label" text="رقم الحساب الجاري / Compte Courant (RIB)" />
+                                <TextField fx:id="ribField" promptText="0000 0000 0000 0000 00" />
+                            </VBox>
+                        </GridPane>
                     </VBox>
-                </GridPane>
+
+                    <!-- Actions -->
+                    <HBox alignment="CENTER_RIGHT" spacing="12">
+                        <padding><Insets bottom="20" top="10" /></padding>
+                        <Button onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" prefWidth="120" />
+                        <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ التغييرات" prefWidth="180">
+                            <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white" /></graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
             </VBox>
-
-            <!-- Actions -->
-            <HBox alignment="CENTER_RIGHT" spacing="12">
-                <Button onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" prefWidth="100" />
-                <Button onAction="#handleSave" styleClass="btn-primary" text="حفظ التغييرات" prefWidth="150">
-                    <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white" /></graphic>
-                </Button>
-            </HBox>
-        </VBox>
+        </ScrollPane>
     </center>
 
     <bottom>
