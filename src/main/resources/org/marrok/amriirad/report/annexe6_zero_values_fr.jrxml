@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="annexe6_zero_values_fr" language="java" orientation="Landscape" pageWidth="842" pageHeight="595" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8f148516-3a27-47db-9743-ed56139b5bfe">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
+	
+	<parameter name="DECISION_NUMBER" class="java.lang.String"/>
+	<parameter name="DECISION_DATE" class="java.lang.String"/>
+	<parameter name="FISCAL_YEAR" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
+	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
+	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
+	
+	<field name="revenueOrder.orderNumber" class="java.lang.String"/>
+	<field name="revenueOrder.amount" class="java.math.BigDecimal"/>
+	<field name="revenueOrder.debtor.fullName" class="java.lang.String"/>
+	<field name="nonCollectionReasons" class="java.lang.String"/>
+	<field name="enforcementActions" class="java.lang.String"/>
+	<field name="accountantObservations" class="java.lang.String"/>
+	<field name="deliberativeOpinion" class="java.lang.String"/>
+
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box><pen lineWidth="0.5" lineColor="#000000"/></box>
+	</style>
+
+	<pageHeader height="100">
+		<element kind="staticText" x="0" y="0" width="802" height="30" fontSize="16.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[ANNEXE N° 06: LISTE DES CREANCES ADMISES EN VALEURS EN NON-VALEUR]]></text>
+		</element>
+		<element kind="textField" x="0" y="40" width="802" height="20" fontSize="10.0" hTextAlign="Left">
+			<expression><![CDATA["Conformément aux dispositions du " + $P{DECREE_REFERENCE}]]></expression>
+		</element>
+		<element kind="textField" x="0" y="70" width="300" height="20" fontSize="10.0" hTextAlign="Left">
+			<expression><![CDATA["Décision n°: " + $P{DECISION_NUMBER} + " du: " + $P{DECISION_DATE}]]></expression>
+		</element>
+	</pageHeader>
+
+	<columnHeader height="30">
+		<element kind="staticText" x="0" y="0" width="80" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[N° Ordre]]></text></element>
+		<element kind="staticText" x="80" y="0" width="80" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[Montant]]></text></element>
+		<element kind="staticText" x="160" y="0" width="150" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[Débiteur]]></text></element>
+		<element kind="staticText" x="310" y="0" width="150" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[Motifs de non-recouvrement]]></text></element>
+		<element kind="staticText" x="460" y="0" width="150" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[Poursuites effectuées]]></text></element>
+		<element kind="staticText" x="610" y="0" width="192" height="30" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[Avis / Observations]]></text></element>
+	</columnHeader>
+
+	<detail>
+		<band height="30">
+			<element kind="textField" x="0" y="0" width="80" height="30" fontSize="9.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.orderNumber}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="80" y="0" width="80" height="30" fontSize="9.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.amount}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="160" y="0" width="150" height="30" fontSize="9.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.debtor.fullName}]]></expression>
+				<box leftPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="310" y="0" width="150" height="30" fontSize="9.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{nonCollectionReasons}]]></expression>
+				<box leftPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="460" y="0" width="150" height="30" fontSize="9.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{enforcementActions}]]></expression>
+				<box leftPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="610" y="0" width="192" height="30" fontSize="9.0" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[($F{accountantObservations} != null ? $F{accountantObservations} : "") + ($F{deliberativeOpinion} != null ? "\n" + $F{deliberativeOpinion} : "")]]></expression>
+				<box leftPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+		</band>
+	</detail>
+
+	<summary height="50">
+		<element kind="textField" x="0" y="10" width="400" height="20" fontSize="12.0" bold="true" hTextAlign="Left">
+			<expression><![CDATA["TOTAL GENERAL: " + $P{TOTAL_AMOUNT}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

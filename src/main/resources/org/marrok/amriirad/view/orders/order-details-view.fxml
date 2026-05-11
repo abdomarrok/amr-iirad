@@ -155,6 +155,9 @@
         <Button fx:id="printReduceBtn" managed="false" onAction="#handlePrintReduce" styleClass="btn-outline" text="أمر التخفيض" visible="false">
             <graphic><FontIcon iconLiteral="fas-minus-circle" iconSize="18" style="-fx-icon-color: #9c27b0;" /></graphic>
         </Button>
+        <Button fx:id="printIncreaseBtn" managed="false" onAction="#handlePrintIncrease" styleClass="btn-outline" text="أمر الرفع" visible="false">
+            <graphic><FontIcon iconLiteral="fas-plus-circle" iconSize="18" style="-fx-icon-color: #2980b9;" /></graphic>
+        </Button>
         
         <HBox HBox.hgrow="ALWAYS" />
         
@@ -163,6 +166,9 @@
         </Button>
         <Button fx:id="cancelActionBtn" managed="false" onAction="#handleCancelAction" styleClass="btn-premium-danger" text="إلغاء الأمر" visible="false">
             <graphic><FontIcon iconLiteral="fas-ban" iconSize="18" styleClass="icon-white" /></graphic>
+        </Button>
+        <Button fx:id="increaseActionBtn" managed="false" onAction="#handleIncreaseAction" styleClass="btn-premium-info" text="رفع الأمر" visible="false">
+            <graphic><FontIcon iconLiteral="fas-plus-circle" iconSize="18" styleClass="icon-white" /></graphic>
         </Button>
         
         <Button fx:id="cancelBtn" onAction="#handleClose" styleClass="btn-outline" text="إغلاق">

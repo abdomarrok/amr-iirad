@@ -1,5 +1,5 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
-> **Latest Update:** 2026-05-10 (Afternoon)  
+> **Latest Update:** 2026-05-11 (Morning)  
 > **Current Focus:** Phase 6 — Maintenance & Feature Expansion
 
 ---
@@ -19,6 +19,18 @@
 ---
 
 ## 🔧 Recent Achievements (Stabilization Phase)
+
+### 📅 2026-05-11 (Morning): Decree 24-358 Compliance & Annex 6 (Zero Value) System
+- ✅ **Legal Framework Migration**: Successfully transitioned the entire system from the previous 2023 Instruction to **Decree 24-358 (November 7, 2024)**. This establishes a new legal authority for all financial adjustments and write-offs.
+- ✅ **Revenue Increase Workflow (Annex 2)**: Implemented full support for "Revenue Increase" (*زيادة الإيراد*), enabling accountants to raise order amounts according to the new regulatory model.
+- ✅ **Annex 6: Zero Value Decision Management**: Built a comprehensive system for grouping uncollectible debts into batch write-off decisions:
+    - Implemented `ZeroValueService` and `ZeroValueRepository` for persistent batching.
+    - Created a specialized **Zero Value Decision Form** with audit trail fields (non-collection reasons, enforcement history, deliberative opinion).
+    - Designed a new **Landscape JasperReport (Annex 6)** for official submission.
+- ✅ **UI State Expansion**: Added `INCREASED` and `ZERO_VALUE` states to the `OrderStatus` state machine, complete with timeline visualization and status-specific color coding.
+- ✅ **Reporting Engine Alignment**: Updated `ReportParamBuilder` to automatically inject the Decree 24-358 citation and handle dynamic adjustment titles across all 10 templates.
+- ✅ **Template Restoration**: Fully restored and standardized `annexe1_order_ar.jrxml` and `annexe3_full_cancel_ar.jrxml`, resolving accidental layout truncations while maintaining Decree 24-358 compliance.
+- ✅ **DI Registration**: Integrated all new services and controllers into `AppContext`, ensuring seamless navigation from the main orders list.
 
 ### 📅 2026-05-10 (Night): Fat JAR Deployment & Debtor Metadata Expansion
 - ✅ **Production Build Architecture**: Transitioned to a "Fat JAR" model using `maven-shade-plugin`. This bundles all dependencies (JavaFX, Jasper, MariaDB) into a single executable file, eliminating classpath issues on client machines.

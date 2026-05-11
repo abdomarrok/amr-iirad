@@ -11,6 +11,7 @@
 	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
 	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
 	<parameter name="WILAYA" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
 	
 	<field name="orderNumber" class="java.lang.String"/>
 	<field name="debtorName" class="java.lang.String"/>
@@ -36,6 +37,9 @@
 		</element>
 		<element kind="textField" x="0" y="55" width="270" height="20" fontSize="12.0" hTextAlign="Left">
 			<expression><![CDATA["DATE: " + $P{DATE}]]></expression>
+		</element>
+		<element kind="textField" x="0" y="35" width="270" height="15" fontSize="9.0" hTextAlign="Left">
+			<expression><![CDATA["Conformément au " + $P{DECREE_REFERENCE}]]></expression>
 		</element>
 	</title>
 	

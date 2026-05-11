@@ -1,7 +1,7 @@
 # Technical Manifest: Amr-Iirad State of the Union
-> **Date:** 2026-05-07  
+> **Date:** 2026-05-11  
 > **Status:** Production-Ready Core / Refactored & Polished  
-> **Context:** This document serves as the primary "fingerprint" for any future AI agent or developer taking over this project. It summarizes the architectural truth as of May 7th, 2026.
+> **Context:** This document serves as the primary "fingerprint" for any future AI agent or developer taking over this project. It summarizes the architectural truth as of May 11th, 2026.
 
 ---
 
@@ -28,7 +28,8 @@ We use a **Strict Constructor Injection** pattern managed by `AppContext`.
 - **Root Layout**: All main views are wrapped in a `BorderPane` that includes `top-bar.fxml` and `footer.fxml`.
 - **FXML-First Architecture**: Strictly enforce declarative UI. Programmatic UI construction (e.g., `new VBox()`, `new Label()`) is deprecated. Dynamic components (like timelines or grids) must use `FXMLLoader` to load component-level FXML templates.
 - **State Awareness**: `SceneManager` tracks the `lastLoadedFxml` to support the `refresh()` method, which is triggered when global state (like Fiscal Year) changes.
-- **2-JRXML Strategy**: For every report (Annex 1-5), the system maintains two separate `.jrxml` templates (`[report]_ar.jrxml` and `[report]_fr.jrxml`). This ensures pixel-perfect alignment and correct font rendering for both RTL (Arabic) and LTR (French) layouts.
+- **2-JRXML Strategy**: For every report (Annex 1-6), the system maintains two separate `.jrxml` templates (`[report]_ar.jrxml` and `[report]_fr.jrxml`).
+- **JasperReports 7 Core**: Upgraded to JasperReports 7.0.0, utilizing dynamic parameter injection via `ReportParamBuilder`. This allows single templates to serve multiple adjustment types (e.g., Annexe 4 for both Reduction and Increase) by injecting dynamic titles and legal references.
 - **Metadata Hardening (NIS)**: All external entity models (Debtors) must support full tax/statistical metadata (NIF, NIS, CNAS, NIN) to comply with official financial audit requirements.
 
 ---
@@ -57,6 +58,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 - **Audit Trail**: Every significant business action (Save, Issue, Print) MUST be logged via `AuditService`.
 - **Bilingual Schema**: Database tables (`revenue_order`, `revenue_order_cancellation`, `institution_info`) use parallel columns for bilingual storage (e.g., `object_ar` and `object_fr`).
 - **Tafqeet (Multi-lang)**: Numeric amounts are automatically converted to words in both Arabic and French via `TafqeetService`, depending on the selected print language.
+- **Status Matrix**: Orders transition through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`/`INCREASED`/`ZERO_VALUE`.
+- **Safe Enum Mapping**: Repositories implement robust mapping with safe fallbacks and logging to handle legacy or inconsistent database records during enum transitions.
 - **Soft Deletion**: Records are never permanently deleted from the DB; they are marked `is_deleted = 1`.
 
 ---
@@ -74,7 +77,8 @@ The application uses a **Fat JAR (Uber-JAR)** model for distribution:
 2. ✅ **Permission Enforcement**: Integrated a comprehensive Permission Matrix using `authService.canDo()` across all core controllers and UI actions — **IMPLEMENTED**.
 3. ✅ **Bilingual Reporting**: Implemented full French documentation support and 2-JRXML printing strategy — **IMPLEMENTED**.
 4. ✅ **UI Extraction**: Migrated all programmatic Java UI code to declarative FXML views — **IMPLEMENTED**.
-5. **Data Export**: Implement CSV/Excel export for financial reporting.
+5. ✅ **Administrative Compliance**: Fully implemented Decree 24-358, including "Increase Revenue" and "Zero Value Decisions" (Annex 6) — **IMPLEMENTED**.
+6. **Data Export**: Implement CSV/Excel export for financial reporting.
 
 ---
 *If you are the next AI agent: Maintain the pattern. If you need to add a feature, create a sub-package in `controller/` and `view/`, register the controller in `AppContext`, and use `SceneManager` for navigation.*

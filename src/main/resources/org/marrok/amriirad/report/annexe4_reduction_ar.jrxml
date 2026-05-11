@@ -13,6 +13,8 @@
 	<parameter name="AMOUNT" class="java.lang.String"/>
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
 	<parameter name="REASON" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
+	<parameter name="ADJUSTMENT_TITLE" class="java.lang.String"/>
 	
 	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
 	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
@@ -49,8 +51,8 @@
 
 	<detail>
 		<band height="650">
-			<element kind="staticText" x="0" y="0" width="555" height="40" fontName="Traditional Arabic" fontSize="20.0" bold="true" hTextAlign="Center">
-				<text><![CDATA[إشعار إصدار أمر بإلغاء أو تخفيض الإيراد]]></text>
+			<element kind="textField" x="0" y="0" width="555" height="40" fontName="Traditional Arabic" fontSize="20.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["إشعار إصدار أمر بـ " + $P{ADJUSTMENT_TITLE} + " الإيراد"]]></expression>
 			</element>
 
 			<!-- Metadata Box (Right) -->
@@ -80,7 +82,7 @@
 
 			<!-- Body Text -->
 			<element kind="textField" x="0" y="240" width="555" height="100" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
-				<expression><![CDATA["الأمر بالإيراد رقم " + $P{ORDER_NUMBER} + " الصادر بتاريخ " + $P{DATE} + " ضد " + $P{DEBTOR_NAME} + " بمبلغ " + $P{AMOUNT} + " د.ج الملغى أو المخفض بمبلغ " + $P{AMOUNT} + " د.ج للسبب التالي :"]]></expression>
+				<expression><![CDATA["وفقاً لأحكام " + $P{DECREE_REFERENCE} + "، فإن الأمر بالإيراد رقم " + $P{ORDER_NUMBER} + " الصادر بتاريخ " + $P{DATE} + " ضد " + $P{DEBTOR_NAME} + " بمبلغ " + $P{AMOUNT} + " د.ج قد شمله " + $P{ADJUSTMENT_TITLE} + " بمبلغ " + $P{AMOUNT} + " د.ج للسبب التالي :"]]></expression>
 			</element>
 			
 			<element kind="textField" x="20" y="350" width="515" height="100" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Center">

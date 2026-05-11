@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="annexe6_zero_values_ar" language="java" orientation="Landscape" pageWidth="842" pageHeight="595" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8f148516-3a27-47db-9743-ed56139b5bfe">
+	<property name="net.sf.jasperreports.default.pdf.encoding" value="Identity-H"/>
+	<property name="net.sf.jasperreports.default.pdf.font.name" value="Traditional Arabic"/>
+	
+	<parameter name="DECISION_NUMBER" class="java.lang.String"/>
+	<parameter name="DECISION_DATE" class="java.lang.String"/>
+	<parameter name="FISCAL_YEAR" class="java.lang.String"/>
+	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
+	<parameter name="ORDONNATEUR_CODE" class="java.lang.String"/>
+	<parameter name="TOTAL_AMOUNT" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
+	
+	<field name="revenueOrder.orderNumber" class="java.lang.String"/>
+	<field name="revenueOrder.amount" class="java.math.BigDecimal"/>
+	<field name="revenueOrder.debtor.fullName" class="java.lang.String"/>
+	<field name="nonCollectionReasons" class="java.lang.String"/>
+	<field name="enforcementActions" class="java.lang.String"/>
+	<field name="accountantObservations" class="java.lang.String"/>
+	<field name="deliberativeOpinion" class="java.lang.String"/>
+
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box><pen lineWidth="0.5" lineColor="#000000"/></box>
+	</style>
+
+	<pageHeader height="100">
+		<element kind="staticText" x="0" y="0" width="802" height="30" fontName="Traditional Arabic" fontSize="18.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[الملحق رقم 06: قائمة الديون المقبولة كقيم منعدمة]]></text>
+		</element>
+		<element kind="textField" x="0" y="40" width="802" height="20" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
+			<expression><![CDATA["وفقاً لأحكام " + $P{DECREE_REFERENCE}]]></expression>
+		</element>
+		<element kind="textField" x="500" y="70" width="300" height="20" fontName="Traditional Arabic" fontSize="10.0" hTextAlign="Right">
+			<expression><![CDATA["مقرر رقم: " + $P{DECISION_NUMBER} + " بتاريخ: " + $P{DECISION_DATE}]]></expression>
+		</element>
+	</pageHeader>
+
+	<columnHeader height="30">
+		<element kind="staticText" x="730" y="0" width="72" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[رقم الأمر]]></text></element>
+		<element kind="staticText" x="650" y="0" width="80" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[المبلغ]]></text></element>
+		<element kind="staticText" x="500" y="0" width="150" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[المدين]]></text></element>
+		<element kind="staticText" x="350" y="0" width="150" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[أسباب عدم التحصيل]]></text></element>
+		<element kind="staticText" x="200" y="0" width="150" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[المتابعات]]></text></element>
+		<element kind="staticText" x="0" y="0" width="200" height="30" fontName="Traditional Arabic" bold="true" hTextAlign="Center" style="Table_TH"><text><![CDATA[رأي الهيئة / ملاحظات المحاسب]]></text></element>
+	</columnHeader>
+
+	<detail>
+		<band height="30">
+			<element kind="textField" x="730" y="0" width="72" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.orderNumber}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="650" y="0" width="80" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.amount}]]></expression>
+				<box><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="500" y="0" width="150" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{revenueOrder.debtor.fullName}]]></expression>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="350" y="0" width="150" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{nonCollectionReasons}]]></expression>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="200" y="0" width="150" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{enforcementActions}]]></expression>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+			<element kind="textField" x="0" y="0" width="200" height="30" fontName="Traditional Arabic" fontSize="9.0" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[($F{accountantObservations} != null ? $F{accountantObservations} : "") + ($F{deliberativeOpinion} != null ? "\n" + $F{deliberativeOpinion} : "")]]></expression>
+				<box rightPadding="5"><pen lineWidth="0.5"/></box>
+			</element>
+		</band>
+	</detail>
+
+	<summary height="50">
+		<element kind="textField" x="402" y="10" width="400" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Right">
+			<expression><![CDATA["المجموع العام: " + $P{TOTAL_AMOUNT}]]></expression>
+		</element>
+	</summary>
+</jasperReport>

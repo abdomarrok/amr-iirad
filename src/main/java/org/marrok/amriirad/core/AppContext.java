@@ -35,6 +35,7 @@ public class AppContext implements Disposable {
     private RoleRepository roleRepository;
     private PermissionRepository permissionRepository;
     private AuditLogRepository auditLogRepository;
+    private ZeroValueRepository zeroValueRepository;
 
     // Services
     private ConcurrencyManager concurrencyManager;
@@ -48,6 +49,7 @@ public class AppContext implements Disposable {
     private InstitutionService institutionService;
     private AuditLogService auditLogService;
     private ExportService exportService;
+    private ZeroValueService zeroValueService;
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
     private AppContext() {
@@ -86,6 +88,7 @@ public class AppContext implements Disposable {
         this.roleRepository = new RoleRepository();
         this.permissionRepository = new PermissionRepository();
         this.auditLogRepository = new AuditLogRepository();
+        this.zeroValueRepository = new ZeroValueRepository();
     }
 
     private void initializeServices() {
@@ -114,6 +117,7 @@ public class AppContext implements Disposable {
         this.institutionService = new InstitutionService(institutionRepository, auditService);
         this.auditLogService = new AuditLogService(auditLogRepository);
         this.exportService = new ExportService();
+        this.zeroValueService = new ZeroValueService(zeroValueRepository, revenueOrderRepository, auditService);
     }
 
     /**
@@ -133,6 +137,7 @@ public class AppContext implements Disposable {
         if (clazz == InstitutionService.class) return institutionService;
         if (clazz == AuditLogService.class) return auditLogService;
         if (clazz == ExportService.class) return exportService;
+        if (clazz == ZeroValueService.class) return zeroValueService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
@@ -194,6 +199,12 @@ public class AppContext implements Disposable {
             
         if (clazz == org.marrok.amriirad.controller.settings.AuditLogController.class)
             return new org.marrok.amriirad.controller.settings.AuditLogController(auditLogService, concurrencyManager);
+
+        if (clazz == org.marrok.amriirad.controller.orders.ZeroValueListController.class)
+            return new org.marrok.amriirad.controller.orders.ZeroValueListController(zeroValueService, fiscalYearRepository, concurrencyManager);
+
+        if (clazz == org.marrok.amriirad.controller.orders.ZeroValueFormController.class)
+            return new org.marrok.amriirad.controller.orders.ZeroValueFormController(zeroValueService, revenueOrderService, fiscalYearRepository, concurrencyManager);
 
         if (clazz == org.marrok.amriirad.controller.login.LoginController.class) 
             return new org.marrok.amriirad.controller.login.LoginController(authService, concurrencyManager);

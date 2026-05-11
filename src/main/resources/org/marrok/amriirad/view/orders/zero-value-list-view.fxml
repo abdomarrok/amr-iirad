@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.marrok.amriirad.controller.orders.ZeroValueListController">
+    <top>
+        <fx:include source="../shared/top-bar.fxml"/>
+    </top>
+    <center>
+        <VBox spacing="20" styleClass="content-pane">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20"/>
+            </padding>
+
+            <!-- Header Section -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label styleClass="text-heading" text="مقررات القيم المنعدمة | Décisions de Valeurs en Non-Valeur"/>
+                    <Label styleClass="text-small, text-muted" text="إدارة كشوف الديون المتعثرة والمقبولة كقيم منعدمة (الملحق رقم 06)"/>
+                </VBox>
+                <Button fx:id="newDecisionBtn" onAction="#handleNewDecision" styleClass="btn-primary" text="مقرر جديد">
+                    <graphic><FontIcon iconLiteral="fas-plus-circle" styleClass="icon-white"/></graphic>
+                </Button>
+            </HBox>
+
+            <!-- Table Section -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="card">
+                <TableView fx:id="decisionTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idCol" prefWidth="60" text="ID" visible="false"/>
+                        <TableColumn fx:id="numberCol" prefWidth="150" text="رقم المقرر / N° Décision"/>
+                        <TableColumn fx:id="dateCol" prefWidth="120" text="التاريخ / Date"/>
+                        <TableColumn fx:id="amountCol" prefWidth="150" text="المبلغ الإجمالي / Total"/>
+                        <TableColumn fx:id="actionsCol" prefWidth="120" text="إجراءات / Actions"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+
+    <stylesheets>
+        <URL value="@../../css/master.css" />
+    </stylesheets>
+</BorderPane>

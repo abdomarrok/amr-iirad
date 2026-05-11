@@ -37,10 +37,19 @@ public class ReportParamBuilder {
         return builder;
     }
 
+    private void populateDecreeReference() {
+        if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
+            params.put("DECREE_REFERENCE", "Décret exécutif n° 24-358 du 7 novembre 2024");
+        } else {
+            params.put("DECREE_REFERENCE", "المرسوم التنفيذي رقم 24-358 المؤرخ في 7 نوفمبر 2024");
+        }
+    }
+
     public ReportParamBuilder withLanguage(org.marrok.amriirad.model.PrintLanguage lang) {
         this.language = lang;
-        params.put("REPORT_LOCALE", lang == org.marrok.amriirad.model.PrintLanguage.ARABIC ? new java.util.Locale("ar") : java.util.Locale.FRENCH);
+        params.put("REPORT_LOCALE", lang == org.marrok.amriirad.model.PrintLanguage.ARABIC ? java.util.Locale.forLanguageTag("ar") : java.util.Locale.FRENCH);
         params.put("PRINT_LANGUAGE", lang.getCode());
+        populateDecreeReference();
         return this;
     }
 
@@ -50,7 +59,7 @@ public class ReportParamBuilder {
         params.put("ORDER_NUMBER", order.getOrderNumber() != null ? order.getOrderNumber() : "");
         params.put("FISCAL_YEAR", order.getFiscalYear() != null ? order.getFiscalYear().getYearLabel() : "");
         params.put("ISSUE_DATE", order.getIssueDate() != null ? order.getIssueDate().toString() : "");
-        params.put("AMOUNT", order.getAmount() != null ? String.format("%,.2f", order.getAmount()) : "0.00");
+        params.put("AMOUNT", order.getAmount() != null ? String.format(java.util.Locale.US, "%,.2f", order.getAmount()) : "0.00");
         params.put("AMOUNT_RAW", order.getAmount() != null ? order.getAmount().toString() : "0.00");
         
         if (tafqeet != null && order.getAmount() != null) {
@@ -163,10 +172,30 @@ public class ReportParamBuilder {
             if (order.getDebtor() != null) withDebtor(order.getDebtor());
         }
         
-        java.math.BigDecimal amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : 
-                    (cancel.getOriginalOrder() != null ? cancel.getOriginalOrder().getAmount() : java.math.BigDecimal.ZERO);
+        java.math.BigDecimal amount;
+        org.marrok.amriirad.model.CancellationType type = cancel.getCancellationType();
         
-        params.put("AMOUNT", String.format("%,.2f", amount));
+        // Self-healing: if type is default (FULL_CANCEL) but order status suggests otherwise
+        if (type == org.marrok.amriirad.model.CancellationType.FULL_CANCEL && cancel.getOriginalOrder() != null) {
+            if (cancel.getOriginalOrder().getStatus() == org.marrok.amriirad.model.OrderStatus.INCREASED) {
+                type = org.marrok.amriirad.model.CancellationType.INCREASE;
+            } else if (cancel.getOriginalOrder().getStatus() == org.marrok.amriirad.model.OrderStatus.REDUCED) {
+                type = org.marrok.amriirad.model.CancellationType.REDUCTION;
+            }
+        }
+
+        if (type == org.marrok.amriirad.model.CancellationType.INCREASE) {
+            amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : java.math.BigDecimal.ZERO;
+            params.put("ADJUSTMENT_TITLE", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? "AUGMENTATION" : "زيادة");
+        } else if (type == org.marrok.amriirad.model.CancellationType.REDUCTION) {
+            amount = cancel.getReducedAmount() != null ? cancel.getReducedAmount() : java.math.BigDecimal.ZERO;
+            params.put("ADJUSTMENT_TITLE", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? "RÉDUCTION" : "تخفيض");
+        } else {
+            amount = cancel.getOriginalOrder() != null ? cancel.getOriginalOrder().getAmount() : java.math.BigDecimal.ZERO;
+            params.put("ADJUSTMENT_TITLE", language == org.marrok.amriirad.model.PrintLanguage.FRENCH ? "ANNULATION" : "إلغاء");
+        }
+        
+        params.put("AMOUNT", String.format(java.util.Locale.US, "%,.2f", amount));
         if (tafqeet != null) {
             if (language == org.marrok.amriirad.model.PrintLanguage.FRENCH) {
                 params.put("AMOUNT_WORDS", tafqeet.toFrenchWords(amount));
@@ -178,12 +207,24 @@ public class ReportParamBuilder {
         return this;
     }
 
+    public ReportParamBuilder withZeroValueDecision(org.marrok.amriirad.model.ZeroValueDecision decision) {
+        if (decision == null) return this;
+        params.put("DECISION_NUMBER", decision.getDecisionNumber() != null ? decision.getDecisionNumber() : "");
+        params.put("DECISION_DATE", decision.getDecisionDate() != null ? decision.getDecisionDate().toString() : "");
+        params.put("TOTAL_AMOUNT", String.format(java.util.Locale.US, "%,.2f", decision.getTotalAmount()));
+        params.put("FISCAL_YEAR", decision.getFiscalYear() != null ? decision.getFiscalYear().getYearLabel() : "");
+        return this;
+    }
+
     public ReportParamBuilder put(String key, Object value) {
         params.put(key, value);
         return this;
     }
 
     public Map<String, Object> build() {
+        if (!params.containsKey("DECREE_REFERENCE")) {
+            populateDecreeReference();
+        }
         // Auto-include institution info if missing
         if (!params.containsKey("INSTITUTION_NAME")) {
             try {

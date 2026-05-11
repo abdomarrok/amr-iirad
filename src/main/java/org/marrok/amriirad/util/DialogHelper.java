@@ -98,8 +98,7 @@ public class DialogHelper {
         try {
             Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initStyle(javafx.stage.StageStyle.UTILITY);
-            dialog.setTitle("لغة الطباعة / Langue d'impression");
+            dialog.initStyle(javafx.stage.StageStyle.TRANSPARENT);
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(DialogHelper.class.getResource("/org/marrok/amriirad/view/shared/language-selection-view.fxml"));
             javafx.scene.Parent root = loader.load();
@@ -107,6 +106,7 @@ public class DialogHelper {
             javafx.scene.control.Button arabicBtn = (javafx.scene.control.Button) root.lookup("#arabicBtn");
             javafx.scene.control.Button frenchBtn = (javafx.scene.control.Button) root.lookup("#frenchBtn");
             javafx.scene.control.Button cancelBtn = (javafx.scene.control.Button) root.lookup("#cancelBtn");
+            javafx.scene.control.Button closeIconBtn = (javafx.scene.control.Button) root.lookup("#closeIconBtn");
 
             if (arabicBtn != null) arabicBtn.setOnAction(e -> {
                 onSelect.accept(org.marrok.amriirad.model.PrintLanguage.ARABIC);
@@ -117,8 +117,22 @@ public class DialogHelper {
                 dialog.close();
             });
             if (cancelBtn != null) cancelBtn.setOnAction(e -> dialog.close());
+            if (closeIconBtn != null) closeIconBtn.setOnAction(e -> dialog.close());
+
+            // Make dialog draggable
+            final double[] xOffset = {0};
+            final double[] yOffset = {0};
+            root.setOnMousePressed(event -> {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            });
+            root.setOnMouseDragged(event -> {
+                dialog.setX(event.getScreenX() - xOffset[0]);
+                dialog.setY(event.getScreenY() - yOffset[0]);
+            });
 
             Scene scene = new Scene(root);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             SceneManager.applyStylesAndTheme(scene);
             dialog.setScene(scene);
             dialog.showAndWait();

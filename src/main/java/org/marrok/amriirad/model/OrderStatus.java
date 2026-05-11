@@ -5,13 +5,17 @@ package org.marrok.amriirad.model;
  * Transitions: DRAFT → ISSUED → DISPATCHED
  *              ISSUED → CANCELLED (full cancel)
  *              ISSUED → REDUCED   (partial reduction)
+ *              ISSUED → INCREASED (partial increase)
+ *              ISSUED → ZERO_VALUE (accepted as non-valeur)
  */
 public enum OrderStatus {
     DRAFT("مسودة"),
     ISSUED("مُصدر"),
     DISPATCHED("مُرسل"),
     CANCELLED("مُلغى"),
-    REDUCED("مُخفض");
+    REDUCED("مُخفض"),
+    INCREASED("مُزاد"),
+    ZERO_VALUE("قيمة منعدمة");
 
     private final String arabicLabel;
 

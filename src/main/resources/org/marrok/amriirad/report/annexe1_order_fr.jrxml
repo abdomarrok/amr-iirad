@@ -22,6 +22,7 @@
 	<parameter name="WILAYA" class="java.lang.String"/>
 	<parameter name="TREASURY_REF" class="java.lang.String"/>
 	<parameter name="TREASURY_NAME" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
 	<parameter name="BUDGET_CODE" class="java.lang.String"/>
 	<parameter name="BUDGET_LABEL" class="java.lang.String"/>
 
@@ -94,7 +95,7 @@
 
 			<!-- Body Text -->
 			<element kind="textField" x="0" y="240" width="555" height="60" fontSize="10.0" hTextAlign="Left">
-				<expression><![CDATA["M/Mme " + $P{DEBTOR_NAME} + " est tenu(e) de verser à la caisse de " + ($P{TREASURY_NAME} != null ? $P{TREASURY_NAME} : "Monsieur le Trésorier") + ", qui est habilité, conformément aux dispositions du décret exécutif n° : 46-93 du 06.02.1993 d'en faire recette au compte n° : " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + ", Ligne (" + ($P{BUDGET_CODE} != null ? $P{BUDGET_CODE} : "") + ") intitulée : " + ($P{BUDGET_LABEL} != null ? $P{BUDGET_LABEL} : "")]]></expression>
+				<expression><![CDATA["M/Mme " + $P{DEBTOR_NAME} + " est tenu(e) de verser à la caisse de " + ($P{TREASURY_NAME} != null ? $P{TREASURY_NAME} : "Monsieur le Trésorier") + ", qui est habilité, conformément aux dispositions du " + $P{DECREE_REFERENCE} + " d'en faire recette au compte n° : " + ($P{TREASURY_REF} != null ? $P{TREASURY_REF} : "") + ", Ligne (" + ($P{BUDGET_CODE} != null ? $P{BUDGET_CODE} : "") + ") intitulée : " + ($P{BUDGET_LABEL} != null ? $P{BUDGET_LABEL} : "")]]></expression>
 			</element>
 			
 			<element kind="staticText" x="0" y="300" width="555" height="20" fontSize="10.0" hTextAlign="Center">

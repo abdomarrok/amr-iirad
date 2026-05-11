@@ -27,17 +27,21 @@
                 </VBox>
                 
                 <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                    <TextField fx:id="searchField" promptText="بحث عن أمر..." prefWidth="250.0" styleClass="text-field-search" />
-                    <ComboBox fx:id="statusFilterCombo" promptText="تصفية بالحالة" prefWidth="150.0" />
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <TextField fx:id="searchField" prefWidth="250.0" promptText="بحث عن أمر..." styleClass="text-field-search" />
+                    <ComboBox fx:id="statusFilterCombo" prefWidth="150.0" promptText="تصفية بالحالة" />
                     <Button onAction="#handleExport" styleClass="btn-secondary" text="تصدير">
                         <graphic><FontIcon iconLiteral="fas-download" iconSize="16" styleClass="icon-primary"/></graphic>
                     </Button>
                     <Button fx:id="addOrderBtn" onAction="#handleNewOrder" styleClass="btn-primary" text="أمر جديد">
                         <graphic><FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="icon-white"/></graphic>
                     </Button>
+                    <Button onAction="#handleZeroValues" styleClass="btn-outline" text="القيم المنعدمة">
+                        <graphic><FontIcon iconLiteral="fas-file-invoice-dollar" /></graphic>
+                    </Button>
                 </HBox>
             </HBox>
-
+            </HBox>
             <!-- Table Section -->
             <StackPane VBox.vgrow="ALWAYS">
                 <TableView fx:id="tableView" nodeOrientation="RIGHT_TO_LEFT">

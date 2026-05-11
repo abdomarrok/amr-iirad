@@ -12,6 +12,7 @@
 	<parameter name="AMOUNT" class="java.lang.String"/>
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
 	<parameter name="REASON" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
 	
 	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
 	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
@@ -90,7 +91,7 @@
 
 			<!-- Body Text -->
 			<element kind="textField" x="0" y="240" width="555" height="100" fontSize="11.0" hTextAlign="Left">
-				<expression><![CDATA["L'ordre de recette n° " + $P{ORDER_NUMBER} + " émis le " + $P{DATE} + " à l'encontre de Mr/Mme " + $P{DEBTOR_NAME} + " pour un montant de " + $P{AMOUNT} + " DA est annulé pour le motif ci-après :"]]></expression>
+				<expression><![CDATA["Conformément aux dispositions du " + $P{DECREE_REFERENCE} + ", l'ordre de recette n° " + $P{ORDER_NUMBER} + " émis le " + $P{DATE} + " à l'encontre de Mr/Mme " + $P{DEBTOR_NAME} + " pour un montant de " + $P{AMOUNT} + " DA est annulé pour le motif ci-après :"]]></expression>
 			</element>
 			
 			<element kind="textField" x="20" y="350" width="515" height="100" fontSize="11.0" hTextAlign="Center">

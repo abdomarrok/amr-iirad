@@ -211,7 +211,15 @@ public class RevenueOrderRepository {
         ro.setAmount(rs.getBigDecimal("amount"));
         ro.setAmountInWordsAr(rs.getString("amount_in_words_ar"));
         ro.setAmountInWordsFr(rs.getString("amount_in_words_fr"));
-        ro.setStatus(OrderStatus.valueOf(rs.getString("status")));
+        
+        String statusStr = rs.getString("status");
+        try {
+            ro.setStatus(statusStr != null && !statusStr.isEmpty() ? OrderStatus.valueOf(statusStr) : OrderStatus.DRAFT);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid status found in DB: '{}' for order ID: {}. Defaulting to DRAFT.", statusStr, ro.getId());
+            ro.setStatus(OrderStatus.DRAFT);
+        }
+        
         ro.setCreatedBy(rs.getString("created_by"));
 
         Timestamp tsC = rs.getTimestamp("created_at");

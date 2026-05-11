@@ -16,6 +16,10 @@ public abstract class BaseFormController {
     protected final ConcurrencyManager concurrencyManager;
     protected Runnable onSuccess;
 
+    public void setOnSuccess(Runnable onSuccess) {
+        this.onSuccess = onSuccess;
+    }
+
     @FXML protected Label titleLabel;
     @FXML protected Label errorLabel;
     @FXML protected Button saveBtn;

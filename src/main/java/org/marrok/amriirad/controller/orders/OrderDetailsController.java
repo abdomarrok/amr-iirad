@@ -55,8 +55,10 @@ public class OrderDetailsController extends BaseFormController implements Initia
     @FXML private Button printDebtorBtn;
     @FXML private Button printCancelBtn;
     @FXML private Button printReduceBtn;
+    @FXML private Button printIncreaseBtn;
     @FXML private Button cancelActionBtn;
     @FXML private Button reduceActionBtn;
+    @FXML private Button increaseActionBtn;
 
     private final ReportService reportService;
     private final TafqeetService tafqeetService;
@@ -154,20 +156,24 @@ public class OrderDetailsController extends BaseFormController implements Initia
         boolean isIssued = currentOrder.getStatus() == OrderStatus.ISSUED;
         boolean isCancelled = currentOrder.getStatus() == OrderStatus.CANCELLED;
         boolean isReduced = currentOrder.getStatus() == OrderStatus.REDUCED;
+        boolean isIncreased = currentOrder.getStatus() == OrderStatus.INCREASED;
+        boolean isZeroValue = currentOrder.getStatus() == OrderStatus.ZERO_VALUE;
         boolean isDispatched = currentOrder.getStatus() == OrderStatus.DISPATCHED;
 
         // Common print buttons (Annex 1 & 2) shown for anything but draft
         setBtnVisible(printAdminBtn, !isDraft);
         setBtnVisible(printDebtorBtn, !isDraft);
 
-        // Cancellation/Reduction specific buttons
+        // Cancellation/Reduction/Increase specific buttons
         setBtnVisible(printCancelBtn, isCancelled);
         setBtnVisible(printReduceBtn, isReduced);
+        setBtnVisible(printIncreaseBtn, isIncreased);
 
-        // Actions: can cancel/reduce if ISSUED (and not dispatched)
+        // Actions: can cancel/reduce/increase if ISSUED (and not dispatched)
         boolean canManage = authService.canDo("orders.edit");
         setBtnVisible(cancelActionBtn, isIssued && canManage);
         setBtnVisible(reduceActionBtn, isIssued && canManage);
+        setBtnVisible(increaseActionBtn, isIssued && canManage);
     }
 
     private void setBtnVisible(Button btn, boolean visible) {
@@ -206,6 +212,16 @@ public class OrderDetailsController extends BaseFormController implements Initia
         if (currentOrder.getStatus() == OrderStatus.REDUCED) {
             addTimelineItem("مُختزل (REDUCED)", currentOrder.getUpdatedAt(), "تم تخفيض مبلغ الأمر (ملحق 4)", true, "fas-minus-circle");
         }
+
+        // INCREASED status (if applicable)
+        if (currentOrder.getStatus() == OrderStatus.INCREASED) {
+            addTimelineItem("مرفوع (INCREASED)", currentOrder.getUpdatedAt(), "تم رفع مبلغ الأمر (ملحق 2)", true, "fas-plus-circle");
+        }
+
+        // ZERO_VALUE status (if applicable)
+        if (currentOrder.getStatus() == OrderStatus.ZERO_VALUE) {
+            addTimelineItem("قيمة منعدمة (ZERO_VALUE)", currentOrder.getUpdatedAt(), "تم تحويل الأمر لقيمة منعدمة (ملحق 6)", true, "fas-file-invoice-dollar");
+        }
     }
 
     private boolean isCancelledOrReduced() {
@@ -243,6 +259,8 @@ public class OrderDetailsController extends BaseFormController implements Initia
             case DISPATCHED -> "مُرسل";
             case CANCELLED -> "ملغى";
             case REDUCED -> "مُختزل";
+            case INCREASED -> "مرفوع";
+            case ZERO_VALUE -> "قيمة منعدمة";
             default -> status.name();
         };
     }
@@ -254,6 +272,8 @@ public class OrderDetailsController extends BaseFormController implements Initia
             case DISPATCHED -> "-fx-text-fill: -fx-theme-info;";
             case CANCELLED -> "-fx-text-fill: -fx-theme-danger;";
             case REDUCED -> "-fx-text-fill: -fx-theme-purple;";
+            case INCREASED -> "-fx-text-fill: #2980b9;";
+            case ZERO_VALUE -> "-fx-text-fill: #7f8c8d;";
         };
     }
 
@@ -275,6 +295,11 @@ public class OrderDetailsController extends BaseFormController implements Initia
     @FXML
     private void handlePrintReduce() {
         org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction", lang));
+    }
+
+    @FXML
+    private void handlePrintIncrease() {
+        org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> fetchCancellationAndPrint("/org/marrok/amriirad/report/annexe4_reduction", lang)); 
     }
 
     private void fetchCancellationAndPrint(String baseReportPath, org.marrok.amriirad.model.PrintLanguage lang) {
@@ -328,6 +353,11 @@ public class OrderDetailsController extends BaseFormController implements Initia
     @FXML
     private void handleReduceAction() {
         openCancellationForm(CancellationType.REDUCTION);
+    }
+
+    @FXML
+    private void handleIncreaseAction() {
+        openCancellationForm(CancellationType.INCREASE);
     }
 
     private void openCancellationForm(CancellationType defaultType) {

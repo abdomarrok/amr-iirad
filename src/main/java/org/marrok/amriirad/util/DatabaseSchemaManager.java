@@ -153,7 +153,7 @@ public class DatabaseSchemaManager {
                                     object_ar           TEXT COMMENT 'موضوع الإيراد',
                                     amount              DECIMAL(18,2) NOT NULL,
                                     amount_in_words_ar  TEXT,
-                                    status              ENUM('DRAFT','ISSUED','DISPATCHED','CANCELLED','REDUCED') NOT NULL DEFAULT 'DRAFT',
+                                    status              ENUM('DRAFT','ISSUED','DISPATCHED','CANCELLED','REDUCED','INCREASED','ZERO_VALUE') NOT NULL DEFAULT 'DRAFT',
                                     created_by          VARCHAR(100),
                                     created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
                                     updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -179,7 +179,7 @@ public class DatabaseSchemaManager {
                         CREATE TABLE IF NOT EXISTS revenue_order_cancellation (
                             id                  INT AUTO_INCREMENT PRIMARY KEY,
                             original_order_id   INT NOT NULL,
-                            cancellation_type   ENUM('FULL_CANCEL', 'REDUCTION') NOT NULL,
+                            cancellation_type   ENUM('FULL_CANCEL', 'REDUCTION', 'INCREASE') NOT NULL,
                             cancellation_number VARCHAR(20),
                             cancellation_date   DATE NOT NULL,
                             reason_ar           TEXT NOT NULL,
@@ -191,11 +191,53 @@ public class DatabaseSchemaManager {
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                     """);
 
-            // Migration: Add French fields to cancellation
+            // Migration: Update cancellation_type ENUM to include INCREASE
+            try {
+                stmt.execute("ALTER TABLE revenue_order_cancellation MODIFY COLUMN cancellation_type ENUM('FULL_CANCEL', 'REDUCTION', 'INCREASE') NOT NULL");
+            } catch (SQLException e) {
+                logger.warn("Cancellation type enum migration notice: {}", e.getMessage());
+            }
+
+            // -- zero_value_decision (Annex 6) --
+            stmt.execute("""
+                        CREATE TABLE IF NOT EXISTS zero_value_decision (
+                            id                  INT AUTO_INCREMENT PRIMARY KEY,
+                            decision_number     VARCHAR(50) NOT NULL UNIQUE,
+                            decision_date       DATE NOT NULL,
+                            fiscal_year_id      INT NOT NULL,
+                            total_amount        DECIMAL(18,2) DEFAULT 0,
+                            created_by          VARCHAR(100),
+                            created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            FOREIGN KEY (fiscal_year_id) REFERENCES fiscal_year(id) ON DELETE RESTRICT
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                    """);
+
+            // -- zero_value_order_details (Annex 6 lines) --
+            stmt.execute("""
+                        CREATE TABLE IF NOT EXISTS zero_value_order_details (
+                            id                      INT AUTO_INCREMENT PRIMARY KEY,
+                            decision_id             INT NOT NULL,
+                            revenue_order_id        INT NOT NULL,
+                            non_collection_reasons  TEXT,
+                            enforcement_actions     TEXT,
+                            deliberative_opinion    TEXT,
+                            accountant_observations TEXT,
+                            FOREIGN KEY (decision_id)      REFERENCES zero_value_decision(id) ON DELETE CASCADE,
+                            FOREIGN KEY (revenue_order_id) REFERENCES revenue_order(id)      ON DELETE RESTRICT
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                    """);
+
             try {
                 stmt.execute("ALTER TABLE revenue_order_cancellation ADD COLUMN IF NOT EXISTS reason_fr TEXT");
             } catch (SQLException e) {
                 logger.warn("Cancellation column migration skip: {}", e.getMessage());
+            }
+
+            // Migration: Update status ENUM for Decree 24-358
+            try {
+                stmt.execute("ALTER TABLE revenue_order MODIFY COLUMN status ENUM('DRAFT','ISSUED','DISPATCHED','CANCELLED','REDUCED','INCREASED','ZERO_VALUE') NOT NULL DEFAULT 'DRAFT'");
+            } catch (SQLException e) {
+                logger.warn("Status enum migration notice: {}", e.getMessage());
             }
 
             // -- dispatch_slip (بوردرو الإرسال - Annexe 5) --

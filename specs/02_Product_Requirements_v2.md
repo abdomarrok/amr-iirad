@@ -14,9 +14,11 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - **Enterprise Identity:** Centralized enterprise settings with smart redirect logic.
 
 ### 2.2 Revenue Order Lifecycle
-- **Dynamic Creation:** Auto-generated order numbers (YYYY-NNN) and automated "Tafqeet" (Amount to Arabic Words).
-- **State Management:** Tracking orders through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`.
+- **Dynamic Creation:** Auto-generated order numbers (YYYY-NNN) and automated "Tafqeet" (Amount to Arabic/French Words).
+- **State Management:** Tracking orders through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`/`INCREASED`.
 - **Relational Integrity:** Seamless linking between Fiscal Years, Debtors, and Budget Chapters.
+- **Adjustment Compliance (Decree 24-358):** Native support for `REDUCTION` and `INCREASE` operations with dynamic title generation in reports.
+- **Zero Value Decisions (Annex 6):** Collective management of irrécouvrable debts with dynamic multi-order decision templates.
 
 ### 2.3 Debtor & Dispatch Management
 - **Comprehensive Profiles:** Detailed debtor tracking including CNAS, NIF, NIS, and Bank Accounts.
@@ -47,4 +49,5 @@ The Amr-Iirad system has evolved from a simple digitizer into a robust, secure, 
 - [x] Phase 5.2: **Extended CRUD** — Implement "Edit Debtor" functionality and direct "Budget Chapter" creation from the order form.
 - [x] Phase 5.3: **Security & QA** — Full RBAC integration, Dispatch Slips activation, and unit test coverage.
 - [x] Phase 6.1: **Bilingual Reporting** — Implement French documentation support and 2-JRXML printing strategy.
-- [ ] Phase 6.2: **Data Export** — CSV/Excel export for financial auditing.
+- [x] Phase 6.2: **Administrative Compliance** — Implement "Increase Revenue" and "Zero Value Decisions" (Decree 24-358).
+- [ ] Phase 7.1: **Data Export** — CSV/Excel export for financial auditing.

@@ -64,11 +64,21 @@ public class CancellationFormController extends BaseFormController implements In
         typeCombo.setValue(CancellationType.FULL_CANCEL);
 
         typeCombo.valueProperty().addListener((obs, oldV, newV) -> {
-            boolean isReduction = (newV == CancellationType.REDUCTION);
-            reducedAmountLabel.setVisible(isReduction);
-            reducedAmountLabel.setManaged(isReduction);
-            reducedAmountField.setVisible(isReduction);
-            reducedAmountField.setManaged(isReduction);
+            boolean showAmount = (newV == CancellationType.REDUCTION || newV == CancellationType.INCREASE);
+            reducedAmountLabel.setVisible(showAmount);
+            reducedAmountLabel.setManaged(showAmount);
+            reducedAmountField.setVisible(showAmount);
+            reducedAmountField.setManaged(showAmount);
+            
+            if (newV == CancellationType.INCREASE) {
+                reducedAmountLabel.setText("مبلغ الزيادة / Augmenté :");
+                titleLabel.setText("زيادة أمر إيراد | Augmentation");
+            } else if (newV == CancellationType.REDUCTION) {
+                reducedAmountLabel.setText("المبلغ المخفض / Réduit :");
+                titleLabel.setText("تخفيض أمر إيراد | Réduction");
+            } else {
+                titleLabel.setText("إلغاء أمر إيراد | Annulation");
+            }
         });
     }
 
@@ -99,7 +109,7 @@ public class CancellationFormController extends BaseFormController implements In
             cancellation.setCancellationNumber(providedNum);
         }
 
-        if (typeCombo.getValue() == CancellationType.REDUCTION) {
+        if (typeCombo.getValue() == CancellationType.REDUCTION || typeCombo.getValue() == CancellationType.INCREASE) {
             cancellation.setReducedAmount(new BigDecimal(reducedAmountField.getText().trim()));
         }
 
@@ -107,6 +117,8 @@ public class CancellationFormController extends BaseFormController implements In
             () -> {
                 if (cancellation.getCancellationType() == CancellationType.REDUCTION) {
                     cancellationService.reduceOrder(cancellation);
+                } else if (cancellation.getCancellationType() == CancellationType.INCREASE) {
+                    cancellationService.increaseOrder(cancellation);
                 } else {
                     cancellationService.cancelOrder(cancellation);
                 }
@@ -127,7 +139,8 @@ public class CancellationFormController extends BaseFormController implements In
             .withCancellation(cancellation)
             .build();
         
-        String reportBasePath = cancellation.getCancellationType() == CancellationType.REDUCTION ? 
+        String reportBasePath = (cancellation.getCancellationType() == CancellationType.REDUCTION || 
+                                 cancellation.getCancellationType() == CancellationType.INCREASE) ? 
             "/org/marrok/amriirad/report/annexe4_reduction" : 
             "/org/marrok/amriirad/report/annexe3_full_cancel";
         
@@ -147,19 +160,19 @@ public class CancellationFormController extends BaseFormController implements In
             showError("يجب إدخال سبب الإلغاء/التخفيض.");
             return false;
         }
-        if (typeCombo.getValue() == CancellationType.REDUCTION) {
+        if (typeCombo.getValue() == CancellationType.REDUCTION || typeCombo.getValue() == CancellationType.INCREASE) {
             try {
-                BigDecimal reduced = new BigDecimal(reducedAmountField.getText().trim());
-                if (reduced.compareTo(BigDecimal.ZERO) <= 0) {
-                    showError("المبلغ المخفض يجب أن يكون أكبر من صفر.");
+                BigDecimal amount = new BigDecimal(reducedAmountField.getText().trim());
+                if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                    showError("المبلغ يجب أن يكون أكبر من صفر.");
                     return false;
                 }
-                if (reduced.compareTo(targetOrder.getAmount()) >= 0) {
+                if (typeCombo.getValue() == CancellationType.REDUCTION && amount.compareTo(targetOrder.getAmount()) >= 0) {
                     showError("المبلغ المخفض يجب أن يكون أقل من المبلغ الأصلي (" + targetOrder.getAmount() + ").");
                     return false;
                 }
             } catch (Exception e) {
-                showError("قيمة المبلغ المخفض غير صالحة.");
+                showError("قيمة المبلغ غير صالحة.");
                 return false;
             }
         }

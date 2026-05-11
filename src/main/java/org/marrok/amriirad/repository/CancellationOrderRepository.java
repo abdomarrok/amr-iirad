@@ -68,7 +68,13 @@ public class CancellationOrderRepository {
         RevenueOrderCancellation roc = new RevenueOrderCancellation();
         roc.setId(rs.getInt("id"));
         roc.setOriginalOrder(orderRepo.findById(rs.getInt("original_order_id")).orElse(null));
-        roc.setCancellationType(CancellationType.valueOf(rs.getString("cancellation_type")));
+        String typeStr = rs.getString("cancellation_type");
+        try {
+            roc.setCancellationType(typeStr != null ? CancellationType.valueOf(typeStr) : CancellationType.FULL_CANCEL);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid cancellation type in DB: {}. Defaulting to FULL_CANCEL.", typeStr);
+            roc.setCancellationType(CancellationType.FULL_CANCEL);
+        }
         roc.setCancellationNumber(rs.getString("cancellation_number"));
         roc.setCancellationDate(rs.getDate("cancellation_date").toLocalDate());
         roc.setReasonAr(rs.getString("reason_ar"));

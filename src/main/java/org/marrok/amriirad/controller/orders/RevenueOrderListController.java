@@ -266,4 +266,9 @@ public class RevenueOrderListController implements Initializable {
             }
         }
     }
+
+    @FXML
+    private void handleZeroValues() {
+        SceneManager.loadScene((Stage) tableView.getScene().getWindow(), "/org/marrok/amriirad/view/orders/zero-value-list-view.fxml");
+    }
 }

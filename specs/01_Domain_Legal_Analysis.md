@@ -290,6 +290,31 @@ While the primary administrative language is Arabic, the Algerian financial admi
 
 ---
 
-*Ce document est une extraction et analyse fidèle de l'Instruction n° 08 du 09 avril 2023.*
-*Il sert de référence légale permanente pour le projet amr-iirad.*
 *Toute règle métier doit être tracée vers une règle INS-xx de ce document.*
+
+---
+
+## 10. Mise à jour : Décret Exécutif n° 24-358 (07 Novembre 2024)
+
+Ce décret constitue la nouvelle référence réglementaire remplaçant ou complétant les dispositions de l'Instruction 08/2023. Il introduit des changements majeurs dans la gestion des recettes publiques.
+
+### 10.1. Nouveaux Concepts Implémentés
+- **Augmentation de Recette (زيادة الإيراد) :** Désormais gérée comme un type d'ajustement spécifique. L'augmentation génère un titre de perception additionnel lié à l'ordre original.
+- **Valeurs en Non-Valeur (القيم المنعدمة) :** Procédure de constatation des créances irrécouvrables regroupées dans un "Moukarrar" (Décision).
+
+### 10.2. Révision des Annexes (Modèles 2024 - Implémentés)
+
+#### Annexe 2 Révisée (via Annexe 3 & 4 dans le système)
+Un modèle dynamique couvre les trois types d'ajustements :
+1. **Annulation (إلغاء)** : Suppression totale du titre.
+2. **Augmentation (زيادة)** : Augmentation du montant à recouvrer.
+3. **Réduction (تخفيض)** : Diminution partielle du montant.
+
+#### Annexe 6 — Liste des Dettes en Non-Valeur (Implémentée)
+**Rôle :** Décision regroupant des ordres irrécouvrables.
+- **Données capturées :** Raisons de non-recouvrement, poursuites engagées, avis délibératif, observations du comptable.
+
+### 10.3. Référence Légale Dynamique
+Tous les documents citent désormais le **Décret n° 24-358 du 07.11.2024** via le paramètre dynamique `DECREE_REFERENCE`, assurant une conformité immédiate.
+
+---

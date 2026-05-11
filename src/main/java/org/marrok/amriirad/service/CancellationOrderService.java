@@ -113,6 +113,39 @@ public class CancellationOrderService {
     }
 
     /**
+     * Creates an increase (زيادة الإيراد) for an existing revenue order.
+     * New feature as per Decree 24-358.
+     */
+    public RevenueOrderCancellation increaseOrder(RevenueOrderCancellation adjustment) throws SQLException {
+        RevenueOrder original = resolveOriginalOrder(adjustment);
+
+        // Only ISSUED or previously INCREASED orders can be increased
+        if (original.getStatus() != OrderStatus.ISSUED && original.getStatus() != OrderStatus.INCREASED) {
+            throw new IllegalStateException("لا يمكن زيادة أمر في حالة: " + original.getStatus());
+        }
+
+        validateReason(adjustment.getReasonAr());
+
+        BigDecimal increaseAmount = adjustment.getReducedAmount(); // Using same field for amount
+        if (increaseAmount == null || increaseAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("مبلغ الزيادة يجب أن يكون أكبر من صفر");
+        }
+
+        adjustment.setCancellationType(CancellationType.INCREASE);
+
+        cancelRepo.save(adjustment);
+
+        orderRepo.updateStatus(original.getId(), OrderStatus.INCREASED);
+
+        audit.log("revenue_order_cancellation", adjustment.getId(),
+                  AuditService.Action.INSERT, adjustment.getCreatedBy(),
+                  "زيادة الإيراد للأمر رقم: " + original.getOrderNumber() + " بمبلغ " + increaseAmount);
+
+        logger.info("Increase of {} created for order {}", increaseAmount, original.getOrderNumber());
+        return adjustment;
+    }
+
+    /**
      * Finds a cancellation record by the original order ID.
      */
     public Optional<RevenueOrderCancellation> findByOrderId(int orderId) throws SQLException {

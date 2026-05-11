@@ -86,6 +86,19 @@ public class SceneManager {
         }
     }
 
+    /**
+     * Convenience method to open a modal and set a success callback on a BaseFormController.
+     */
+    public static void showModal(Stage owner, String fxmlPath, String title, Runnable onSuccess) {
+        FXMLLoader loader = openModal(owner, fxmlPath, title);
+        if (loader != null) {
+            Object controller = loader.getController();
+            if (controller instanceof org.marrok.amriirad.controller.BaseFormController baseForm) {
+                baseForm.setOnSuccess(onSuccess);
+            }
+        }
+    }
+
     public static void refresh(Stage stage) {
         if (lastLoadedFxml != null) {
             loadScene(stage, lastLoadedFxml);

@@ -13,6 +13,8 @@
 	<parameter name="AMOUNT" class="java.lang.String"/>
 	<parameter name="AMOUNT_WORDS" class="java.lang.String"/>
 	<parameter name="REASON" class="java.lang.String"/>
+	<parameter name="ADJUSTMENT_TITLE" class="java.lang.String"/>
+	<parameter name="DECREE_REFERENCE" class="java.lang.String"/>
 	
 	<parameter name="MINISTRY_NAME" class="java.lang.String"/>
 	<parameter name="INSTITUTION_NAME" class="java.lang.String"/>
@@ -31,7 +33,7 @@
 
 	<pageHeader height="100">
 		<element kind="staticText" x="400" y="0" width="100" height="20" fontName="Traditional Arabic" fontSize="11.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[الملحق رقم 03]]></text>
+			<text><![CDATA[الملحق رقم 02 (معدل)]]></text>
 		</element>
 		<element kind="staticText" x="0" y="20" width="555" height="20" fontName="Traditional Arabic" fontSize="12.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[الجمهورية الجزائرية الديمقراطية الشعبية]]></text>
@@ -49,8 +51,8 @@
 
 	<detail>
 		<band height="650">
-			<element kind="staticText" x="0" y="0" width="555" height="40" fontName="Traditional Arabic" fontSize="22.0" bold="true" hTextAlign="Center">
-				<text><![CDATA[أمر بإلغاء أو تخفيض الإيراد]]></text>
+			<element kind="textField" x="0" y="0" width="555" height="40" fontName="Traditional Arabic" fontSize="22.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["أمر بـ " + $P{ADJUSTMENT_TITLE} + " الإيراد"]]></expression>
 			</element>
 
 			<!-- Metadata Box (Right) -->
@@ -80,7 +82,7 @@
 
 			<!-- Body Text -->
 			<element kind="textField" x="0" y="240" width="555" height="100" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Right">
-				<expression><![CDATA["الأمر بالإيراد رقم " + $P{ORDER_NUMBER} + " الصادر بتاريخ " + $P{DATE} + " ضد " + $P{DEBTOR_NAME} + " بمبلغ " + $P{AMOUNT} + " د.ج الملغى أو المخفض بمبلغ " + $P{AMOUNT} + " د.ج للسبب التالي :"]]></expression>
+				<expression><![CDATA["وفقاً لأحكام " + $P{DECREE_REFERENCE} + "، فإن الأمر بالإيراد رقم " + $P{ORDER_NUMBER} + " الصادر بتاريخ " + $P{DATE} + " ضد " + $P{DEBTOR_NAME} + " بمبلغ " + $P{AMOUNT} + " د.ج " + ($P{ADJUSTMENT_TITLE} != null ? $P{ADJUSTMENT_TITLE} : "المعدل") + " بمبلغ " + $P{AMOUNT} + " د.ج للسبب التالي :"]]></expression>
 			</element>
 			
 			<element kind="textField" x="20" y="350" width="515" height="100" fontName="Traditional Arabic" fontSize="11.0" hTextAlign="Center">
