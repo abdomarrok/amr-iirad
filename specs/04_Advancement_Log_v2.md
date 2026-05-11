@@ -1,6 +1,6 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
-> **Latest Update:** 2026-05-11 (Morning)  
-> **Current Focus:** Phase 6 — Maintenance & Feature Expansion
+> **Latest Update:** 2026-05-11 (Late Morning)  
+> **Current Focus:** Phase 6 — Maintenance & Production Hardening
 
 ---
 
@@ -19,6 +19,12 @@
 ---
 
 ## 🔧 Recent Achievements (Stabilization Phase)
+
+### 📅 2026-05-11 (Late Morning): Maintenance & Architectural Hardening
+- ✅ **Critical Bug Fix (Debtor Update)**: Resolved a `Parameter at position 10 is not set` exception in `DebtorRepository.java` by correcting a parameter indexing overlap in the update method.
+- ✅ **Database Schema Hardening (Budget Chapters)**: Implemented a self-healing migration in `DatabaseSchemaManager.java` to resolve duplicate code conflicts across fiscal years. Standardized the unique constraint to `(code, fiscal_year_id)`.
+- ✅ **User Experience (Duplicate Prevention)**: Enhanced `BudgetChapterFormController.java` to gracefully handle duplicate code violations with localized Arabic error messages.
+- ✅ **Enterprise UI Standardization**: Finalized the refactoring of `EnterpriseInfoController` and its FXML view, aligning with the `BaseFormController` lifecycle and premium sectioned layout.
 
 ### 📅 2026-05-11 (Morning): Decree 24-358 Compliance & Annex 6 (Zero Value) System
 - ✅ **Legal Framework Migration**: Successfully transitioned the entire system from the previous 2023 Instruction to **Decree 24-358 (November 7, 2024)**. This establishes a new legal authority for all financial adjustments and write-offs.

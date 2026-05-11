@@ -63,7 +63,7 @@ public class DebtorRepository {
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
              bind(ps, d);
-            ps.setInt(9, d.getId());
+            ps.setInt(10, d.getId());
             ps.executeUpdate();
         }
         logger.info("Updated debtor id={}", d.getId());

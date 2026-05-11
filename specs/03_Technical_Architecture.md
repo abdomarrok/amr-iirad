@@ -60,6 +60,7 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 - **Tafqeet (Multi-lang)**: Numeric amounts are automatically converted to words in both Arabic and French via `TafqeetService`, depending on the selected print language.
 - **Status Matrix**: Orders transition through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`/`INCREASED`/`ZERO_VALUE`.
 - **Safe Enum Mapping**: Repositories implement robust mapping with safe fallbacks and logging to handle legacy or inconsistent database records during enum transitions.
+- **Self-Healing Migrations**: `DatabaseSchemaManager` uses idempotent DDL and `ALTER TABLE ... IF NOT EXISTS` patterns, including logic to drop legacy conflicting indexes (e.g., transition from global `code` uniqueness to year-scoped `uq_code_year`).
 - **Soft Deletion**: Records are never permanently deleted from the DB; they are marked `is_deleted = 1`.
 
 ---

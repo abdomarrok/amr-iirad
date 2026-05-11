@@ -170,7 +170,14 @@ public class BudgetChapterFormController extends BaseFormController implements I
                     closeWindow();
                     runOnSuccess();
                 },
-                err -> showError("خطأ في حفظ البند: " + err.getMessage()));
+                err -> {
+                    String msg = err.getMessage();
+                    if (msg.contains("Duplicate entry")) {
+                        showError("هذا الرمز موجود بالفعل في هذه السنة المالية.");
+                    } else {
+                        showError("خطأ في حفظ البند: " + msg);
+                    }
+                });
     }
 
     @Override

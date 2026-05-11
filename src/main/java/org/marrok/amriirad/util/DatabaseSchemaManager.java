@@ -127,6 +127,18 @@ public class DatabaseSchemaManager {
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                     """);
 
+            // Migration: Fix budget_chapter unique constraint (drop old 'code' if exists)
+            try {
+                // First, ensure we have the composite key
+                stmt.execute("ALTER TABLE budget_chapter ADD UNIQUE KEY IF NOT EXISTS uq_code_year (code, fiscal_year_id)");
+                
+                // Then, drop the old legacy key if it exists (which causes 'Duplicate entry' across years)
+                // We check if it's a simple unique on 'code' only
+                stmt.execute("DROP INDEX IF EXISTS code ON budget_chapter");
+            } catch (SQLException e) {
+                logger.warn("Budget chapter constraint migration notice: {}", e.getMessage());
+            }
+
             // Migration: Add fiscal_year_id if missing and link to latest year
             try {
                 stmt.execute("ALTER TABLE budget_chapter ADD COLUMN IF NOT EXISTS fiscal_year_id INT");
@@ -137,7 +149,7 @@ public class DatabaseSchemaManager {
                             WHERE bc.fiscal_year_id IS NULL OR bc.fiscal_year_id = 0
                         """);
             } catch (Exception e) {
-                logger.warn("Budget chapter migration notice: {}", e.getMessage());
+                logger.warn("Budget chapter column migration notice: {}", e.getMessage());
             }
 
             // -- revenue_order (أمر الإيراد - Annexe 1 & 2) --
