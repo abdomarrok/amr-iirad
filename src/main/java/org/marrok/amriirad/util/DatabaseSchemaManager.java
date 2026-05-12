@@ -426,6 +426,7 @@ public class DatabaseSchemaManager {
         insertPermission(stmt, "debtor.view", "view", "debtor", "عرض الملتزمين بالدفع");
         insertPermission(stmt, "debtor.create", "action", "debtor", "إضافة ملتزم");
         insertPermission(stmt, "debtor.edit", "action", "debtor", "تعديل ملتزم");
+        insertPermission(stmt, "debtor.delete", "action", "debtor", "حذف ملتزم");
 
         // Settings & Users
         insertPermission(stmt, "settings.view", "view", "settings", "عرض الإعدادات");

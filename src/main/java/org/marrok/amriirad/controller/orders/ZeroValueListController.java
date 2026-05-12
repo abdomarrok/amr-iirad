@@ -35,6 +35,7 @@ public class ZeroValueListController extends BaseController implements Initializ
     @FXML private TableColumn<ZeroValueDecision, BigDecimal> amountCol;
     @FXML private TableColumn<ZeroValueDecision, Void> actionsCol;
     @FXML private Button exportBtn;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
 
     private final ZeroValueService zeroService;
     private final FiscalYearRepository fiscalRepo;
@@ -53,7 +54,19 @@ public class ZeroValueListController extends BaseController implements Initializ
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupTable();
+        setupEmptyState();
         loadData();
+    }
+
+    private void setupEmptyState() {
+        if (emptyStateController != null) {
+            emptyStateController.init(
+                "لا توجد مقررات",
+                "لم يتم العثور على أي مقررات قيم منعدمة لهذه السنة المالية.",
+                "fas-file-invoice-dollar",
+                this::handleNewDecision
+            );
+        }
     }
 
     private void setupTable() {
@@ -147,7 +160,13 @@ public class ZeroValueListController extends BaseController implements Initializ
                 int activeYear = fiscalRepo.findActive().map(org.marrok.amriirad.model.FiscalYear::getId).orElse(0);
                 return zeroService.listByYear(activeYear);
             },
-            res -> decisionTable.setItems(FXCollections.observableArrayList(res)),
+            res -> {
+                decisionTable.setItems(FXCollections.observableArrayList(res));
+                if (emptyStateController != null) {
+                    emptyStateController.show(res.isEmpty());
+                }
+                decisionTable.setVisible(!res.isEmpty());
+            },
             err -> logger.error("Failed to load zero value decisions", err)
         );
     }

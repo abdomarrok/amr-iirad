@@ -26,10 +26,12 @@ import org.marrok.amriirad.repository.FiscalYearRepository;
 import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.service.RevenueOrderService;
 import org.marrok.amriirad.service.ExportService;
+import org.marrok.amriirad.util.ReportParamBuilder;
 import org.marrok.amriirad.util.SceneManager;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import org.marrok.amriirad.ui.AsyncTableLoader;
@@ -63,6 +65,9 @@ public class RevenueOrderListController implements Initializable {
     private final FiscalYearRepository fyRepo;
     private final org.marrok.amriirad.service.AuthService authService;
     private final org.marrok.amriirad.service.ExportService exportService;
+    private final org.marrok.amriirad.service.ReportService reportService;
+    private final org.marrok.amriirad.service.TafqeetService tafqeetService;
+    private final org.marrok.amriirad.service.InstitutionService institutionService;
     private final ConcurrencyManager concurrencyManager;
 
     public RevenueOrderListController(RevenueOrderService orderService,
@@ -70,12 +75,18 @@ public class RevenueOrderListController implements Initializable {
                                      FiscalYearRepository fyRepo,
                                      org.marrok.amriirad.service.AuthService authService,
                                      org.marrok.amriirad.service.ExportService exportService,
+                                     org.marrok.amriirad.service.ReportService reportService,
+                                     org.marrok.amriirad.service.TafqeetService tafqeetService,
+                                     org.marrok.amriirad.service.InstitutionService institutionService,
                                      ConcurrencyManager concurrencyManager) {
         this.orderService = orderService;
         this.orderRepo = orderRepo;
         this.fyRepo = fyRepo;
         this.authService = authService;
         this.exportService = exportService;
+        this.reportService = reportService;
+        this.tafqeetService = tafqeetService;
+        this.institutionService = institutionService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -104,14 +115,15 @@ public class RevenueOrderListController implements Initializable {
             this::handleEditOrder,
             this::handleDeleteOrder,
             this::loadDataAsync,
+            this::handlePrint,
             this::handleExport
         );
         actionToolbarController.setAddText("أمر جديد");
         
         // Apply permission-based visibility
-        actionToolbarController.setAddVisible(authService.canDo("orders.create"));
-        actionToolbarController.setEditVisible(authService.canDo("orders.edit"));
-        actionToolbarController.setDeleteVisible(authService.canDo("orders.delete"));
+        actionToolbarController.setAddVisible(authService.canDo("revenue_order.create"));
+        actionToolbarController.setEditVisible(authService.canDo("revenue_order.edit"));
+        actionToolbarController.setDeleteVisible(authService.canDo("revenue_order.delete"));
     }
 
     private void setupEmptyState() {
@@ -279,6 +291,49 @@ public class RevenueOrderListController implements Initializable {
     @FXML
     private void handleNewOrder() {
         openFormModal(null);
+    }
+
+    private void handlePrint() {
+        RevenueOrder selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            org.marrok.amriirad.util.DialogHelper.showWarning("تنبيه", "يرجى اختيار أمر إيراد للطباعة.");
+            return;
+        }
+
+        if (selected.getStatus() == OrderStatus.DRAFT) {
+            org.marrok.amriirad.util.DialogHelper.showWarning("تنبيه", "لا يمكن طباعة مسودة. يرجى إصدار الأمر أولاً.");
+            return;
+        }
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("ملحق 1: أمر الإيراد", 
+            "ملحق 1: أمر الإيراد", "ملحق 2: نسخة المدين");
+        dialog.setTitle("خيارات الطباعة");
+        dialog.setHeaderText("اختر نوع المستند المطلوب:");
+        dialog.setContentText("المستند:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(choice -> {
+            String baseReport = choice.contains("1") ? "/org/marrok/amriirad/report/annexe1_order" : "/org/marrok/amriirad/report/annexe2_debtor_copy";
+            org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe(baseReport, lang, selected));
+        });
+    }
+
+    private void printAnnexe(String baseReportPath, org.marrok.amriirad.model.PrintLanguage lang, RevenueOrder order) {
+        String fullPath = baseReportPath + "_" + lang.getCode() + ".jrxml";
+        concurrencyManager.runAsync(
+            () -> {
+                Map<String, Object> params = ReportParamBuilder.create(tafqeetService)
+                    .withLanguage(lang)
+                    .withInstitution(institutionService.getInfo())
+                    .withOrder(order)
+                    .build();
+                
+                reportService.showReportWithParamsOnly(fullPath, params);
+                return true;
+            },
+            res -> logger.info("Print triggered for {} in {}", fullPath, lang),
+            err -> org.marrok.amriirad.util.DialogHelper.showError("خطأ في الطباعة", err.getMessage())
+        );
     }
 
     @FXML

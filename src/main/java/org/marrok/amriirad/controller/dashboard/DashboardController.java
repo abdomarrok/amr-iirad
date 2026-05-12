@@ -92,10 +92,10 @@ public class DashboardController implements Initializable {
     }
 
     private void checkPermissions() {
-        setBtnVisible(newOrderBtn, authService.canView("orders"));
-        setBtnVisible(orderListBtn, authService.canView("orders"));
-        setBtnVisible(debtorsBtn, authService.canView("debtors"));
-        setBtnVisible(dispatchBtn, authService.canView("orders"));
+        setBtnVisible(newOrderBtn, authService.canDo("revenue_order.create"));
+        setBtnVisible(orderListBtn, authService.canView("revenue_order.view"));
+        setBtnVisible(debtorsBtn, authService.canView("debtor.view"));
+        setBtnVisible(dispatchBtn, authService.canView("dispatch.view"));
         setBtnVisible(budgetChaptersBtn, authService.canDo("budget_chapter.manage"));
     }
 
@@ -127,9 +127,10 @@ public class DashboardController implements Initializable {
             dispatchedOrdersLabel.setText(String.valueOf(dispatchedCount));
             totalAmountLabel.setText(String.format("%,.2f", totalAmount));
 
-            // 2. Recent Orders Table
+            // 2. Recent Orders Table (Latest 8)
             if (recentOrdersTable != null) {
                 List<RevenueOrder> recent = allOrders.stream()
+                        .sorted((a, b) -> Integer.compare(b.getId(), a.getId())) // Descending
                         .limit(8)
                         .collect(Collectors.toList());
                 recentOrdersTable.setItems(FXCollections.observableArrayList(recent));

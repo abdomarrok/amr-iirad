@@ -28,6 +28,11 @@
         <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
         <tooltip><Tooltip text="تحديث"/></tooltip>
     </Button>
+
+    <Button fx:id="printBtn" onAction="#onPrint" styleClass="btn-icon, btn-outline">
+        <graphic><FontIcon iconLiteral="fas-print" styleClass="icon-primary"/></graphic>
+        <tooltip><Tooltip text="طباعة"/></tooltip>
+    </Button>
     
     <Button fx:id="exportBtn" onAction="#onExport" styleClass="btn-icon, btn-outline">
         <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>

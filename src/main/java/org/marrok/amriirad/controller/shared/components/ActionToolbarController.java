@@ -12,19 +12,22 @@ public class ActionToolbarController {
     @FXML private Button editBtn;
     @FXML private Button deleteBtn;
     @FXML private Button refreshBtn;
+    @FXML private Button printBtn;
     @FXML private Button exportBtn;
 
     private Runnable onAddAction;
     private Runnable onEditAction;
     private Runnable onDeleteAction;
     private Runnable onRefreshAction;
+    private Runnable onPrintAction;
     private Runnable onExportAction;
 
-    public void init(Runnable add, Runnable edit, Runnable delete, Runnable refresh, Runnable export) {
+    public void init(Runnable add, Runnable edit, Runnable delete, Runnable refresh, Runnable print, Runnable export) {
         this.onAddAction = add;
         this.onEditAction = edit;
         this.onDeleteAction = delete;
         this.onRefreshAction = refresh;
+        this.onPrintAction = print;
         this.onExportAction = export;
         
         updateVisibility();
@@ -42,11 +45,16 @@ public class ActionToolbarController {
         setVisible(deleteBtn, visible);
     }
 
+    public void setPrintVisible(boolean visible) {
+        setVisible(printBtn, visible);
+    }
+
     private void updateVisibility() {
         setVisible(addBtn, onAddAction != null);
         setVisible(editBtn, onEditAction != null);
         setVisible(deleteBtn, onDeleteAction != null);
         setVisible(refreshBtn, onRefreshAction != null);
+        setVisible(printBtn, onPrintAction != null);
         setVisible(exportBtn, onExportAction != null);
     }
 
@@ -85,6 +93,11 @@ public class ActionToolbarController {
     @FXML
     private void onRefresh() {
         if (onRefreshAction != null) onRefreshAction.run();
+    }
+
+    @FXML
+    private void onPrint() {
+        if (onPrintAction != null) onPrintAction.run();
     }
 
     @FXML

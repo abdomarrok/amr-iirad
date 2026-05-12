@@ -82,6 +82,7 @@ public class UserManagementController implements Initializable {
             this::handleEditUser,
             this::handleDeleteUser,
             this::loadDataAsync,
+            null, // No print for users
             this::handleExport
         );
         actionToolbarController.setAddText("إضافة مستخدم");

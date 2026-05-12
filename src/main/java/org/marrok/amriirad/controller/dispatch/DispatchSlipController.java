@@ -51,6 +51,7 @@ public class DispatchSlipController implements Initializable {
     @FXML private TableColumn<RevenueOrder, String> colOrderNum;
     @FXML private TableColumn<RevenueOrder, String> colOrderDebtor;
     @FXML private TableColumn<RevenueOrder, String> colOrderAmount;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
 
     private AsyncTableLoader<DispatchSlip> tableLoader;
 
@@ -86,9 +87,33 @@ public class DispatchSlipController implements Initializable {
         tableLoader = new AsyncTableLoader<>(concurrencyManager, slipsTable, loadingIndicator);
         initSlipsTable();
         initOrdersTable();
-        setupSearchFilter();
+        setupFilters();
         setupSlipsSelection();
+        setupEmptyState();
         loadSlipsAsync();
+    }
+
+    private void setupEmptyState() {
+        if (emptyStateController != null) {
+            emptyStateController.init(
+                "لا توجد بوردروات",
+                "لم يتم العثور على أي بوردروات إرسال مسجلة لهذه السنة المالية.",
+                "fas-truck-loading",
+                this::handleNewSlip
+            );
+        }
+    }
+
+    private void setupFilters() {
+        searchField.textProperty().addListener((obs, old, newVal) -> {
+            FilteredList<DispatchSlip> filteredSlipsList = tableLoader.getFilteredList();
+            if (filteredSlipsList == null) return;
+            String search = newVal == null ? "" : newVal.toLowerCase();
+            filteredSlipsList.setPredicate(slip -> {
+                if (search.isEmpty()) return true;
+                return slip.getSlipNumber().toLowerCase().contains(search);
+            });
+        });
     }
 
     private void initSlipsTable() {
@@ -163,6 +188,11 @@ public class DispatchSlipController implements Initializable {
                 return slipRepo.findAll(fy.get().getId());
             }
             return java.util.List.<DispatchSlip>of();
+        }, slips -> {
+            if (emptyStateController != null) {
+                emptyStateController.show(slips.isEmpty());
+            }
+            slipsTable.setVisible(!slips.isEmpty());
         });
     }
 

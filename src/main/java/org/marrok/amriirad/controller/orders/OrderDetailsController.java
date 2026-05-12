@@ -170,7 +170,7 @@ public class OrderDetailsController extends BaseFormController implements Initia
         setBtnVisible(printIncreaseBtn, isIncreased);
 
         // Actions: can cancel/reduce/increase if ISSUED (and not dispatched)
-        boolean canManage = authService.canDo("orders.edit");
+        boolean canManage = authService.canDo("revenue_order.edit");
         setBtnVisible(cancelActionBtn, isIssued && canManage);
         setBtnVisible(reduceActionBtn, isIssued && canManage);
         setBtnVisible(increaseActionBtn, isIssued && canManage);

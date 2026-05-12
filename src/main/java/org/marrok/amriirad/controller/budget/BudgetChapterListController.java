@@ -102,6 +102,7 @@ public class BudgetChapterListController implements Initializable {
             this::handleEditChapter,
             this::handleDeleteChapter,
             this::loadDataAsync,
+            null, // No print for chapters
             this::handleExport
         );
         actionToolbarController.setAddText("بند جديد");

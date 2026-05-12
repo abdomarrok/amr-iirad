@@ -97,13 +97,14 @@ public class DebtorListController implements Initializable {
             this::handleEditDebtor,
             this::handleDeleteDebtor,
             this::loadDataAsync,
+            null, // No print for debtors
             this::handleExport
         );
         actionToolbarController.setAddText("مدين جديد");
         
-        actionToolbarController.setAddVisible(authService.canDo("debtors.create"));
-        actionToolbarController.setEditVisible(authService.canDo("debtors.edit"));
-        actionToolbarController.setDeleteVisible(authService.canDo("debtors.delete"));
+        actionToolbarController.setAddVisible(authService.canDo("debtor.create"));
+        actionToolbarController.setEditVisible(authService.canDo("debtor.edit"));
+        actionToolbarController.setDeleteVisible(authService.canDo("debtor.delete"));
     }
 
     private void setupEmptyState() {
