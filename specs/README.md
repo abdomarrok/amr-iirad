@@ -1,35 +1,53 @@
-# Amr-Iirad Specifications Directory
-This folder contains the complete documentation, architectural blueprints, and legal analysis for the Revenue Order Management System (أمر بالإيراد), organized chronologically for easy onboarding.
+# Amr-Iirad Specifications & Design Docs
+> **Status:** Production-Ready Core / Hardened & Optimized
+> **Institution:** School of Magistracy (Algeria)
+> **Regulation:** Decree 24-358 (November 2024)
 
-## 📂 Active Specifications (Chronological Order)
+This directory contains the authoritative documentation for the Amr-Iirad enterprise application. Any development or architectural changes must be reflected here.
 
-1.  **[01_Domain_Legal_Analysis.md](./01_Domain_Legal_Analysis.md)**  
-    *The Legal Foundation.* Full extraction and field-by-field analysis of **Instruction n° 08 (09 April 2023)**. Read this first to understand the mandatory regulatory requirements.
+## 📂 Directory Index
 
-2.  **[02_Product_Requirements_v2.md](./02_Product_Requirements_v2.md)**  
-    *The Product Vision (Current).* Updated PRD reflecting the stabilized, multi-user, and premium state of the application.
+### 1. [01_Legal_Reference.md](01_Legal_Reference.md)
+*Legal foundation and field-level requirements derived from Decree 24-358.*
+- Summary of the 6 mandatory Annexes.
+- Business rules for adjustments (Cancellation, Reduction, Increase).
+- Zero-Value Decision workflow.
 
-3.  **[03_Technical_Architecture.md](./03_Technical_Architecture.md)**  
-    *The Engineering Fingerprint.* **CRITICAL FOR DEVELOPERS.** Summarizes the current architectural state, modular patterns, design system principles (GstockDz look), and non-negotiable coding standards.
+### 2. [02_Product_Requirements.md](02_Product_Requirements.md)
+*The high-level PRD (Product Requirements Document).*
+- Core Functional Pillars (RBAC, Lifecycle, Reporting).
+- Design System & UX goals.
+- Implementation Roadmap.
 
-4.  **[04_Advancement_Log_v2.md](./04_Advancement_Log_v2.md)**  
-    *The Progress Log (Current).* A clean record of development milestones starting from the major stabilization and refactoring phase.
+### 3. [03_Technical_Architecture.md](03_Technical_Architecture.md)
+*The system "Fingerprint" for developers and AI agents.*
+- Feature-Based Modular Architecture.
+- Strict Dependency Injection (AppContext).
+- Application Startup Flow (Mermaid diagram).
+- Reporting Engine (2-JRXML Strategy).
 
-5.  **[05_AI_Agent_Guidelines.md](./05_AI_Agent_Guidelines.md)**  
-    *Agent Context.* Project-specific guidelines and "fingerprints" for AI coding assistants.
+### 4. [04_Advancement_Log.md](04_Advancement_Log.md)
+*Chronological history of features, bug fixes, and refactoring milestones.*
+- Track record of stabilization phases.
+- Current project status and next objectives.
 
-6.  **[AGENTS_GUIDE.md](./AGENTS_GUIDE.md)**  
-    *The Developer's Handbook.* **MANDATORY READING.** Codifies core coding patterns, DI architecture, UI orchestration, and business rules for next-phase development.
+### 5. [05_Coding_Standards.md](05_Coding_Standards.md)
+*Mandatory development rules and patterns.*
+- **Project File Tree**.
+- FXML-First Architectural Pattern.
+- Design System Tokens & Geometry.
+- Concurrency & Non-blocking UI rules.
+- Report Parameter Standards (Null-safety).
 
 ---
 
-## 📁 Supplemental Reference
-- **Instruction-n°-08-du-09-avril-2023-FR.pdf**: The original regulatory source document.
+## 🏛️ Legal Assets
+- **[legal/Decree_24-358.pdf](legal/Decree_24-358.pdf)**: The primary regulatory authority for the current version.
+- **[legal/Instruction_08-2023_AR.pdf](legal/Instruction_08-2023_AR.pdf)**: Historical reference for base models (Arabic).
+- **[legal/Instruction_08-2023_FR.pdf](legal/Instruction_08-2023_FR.pdf)**: Historical reference for base models (French).
 
-## 🕰️ Legacy Documentation
-*Historical planning and analysis documents stored in `./legacy/` for context.*
-- **amr_iirad_miniapp_plan.md**: Initial refactoring and database planning.
-- **gap_analysis.md**: Early comparison with legacy system requirements.
-- **rules.md**: Initial business and validation rules extraction.
-- **02_Product_Requirements_v1.md**: Original PRD (Phase 1-4).
-- **04_Advancement_Log_v1.md**: Original progress log (Phase 1-4).
+---
+
+## 🕰️ Archive & Audits
+- **[PRODUCT_POLISH_AUDIT.md](PRODUCT_POLISH_AUDIT.md)**: Detailed checklist of UI/UX improvements.
+- **[legacy/](legacy/)**: Outdated versions of PRDs, logs, and initial planning documents.

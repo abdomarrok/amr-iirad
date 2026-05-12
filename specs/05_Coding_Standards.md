@@ -2,7 +2,30 @@
 
 This document captures the architectural patterns and development standards established during the stabilization of the Amr-Iirad application.
 
-## 🎨 Design System & CSS Architecture
+## 1. Project File Tree
+```text
+src/main/java/org/marrok/amriirad/
+├── controller/            # Feature-based modular controllers
+│   ├── dashboard/
+│   ├── orders/
+│   ├── debtors/
+│   ├── dispatch/
+│   ├── budget/
+│   ├── shared/            # Shared components (TopBar, Footer, Toolbar)
+│   └── BaseFormController.java
+├── core/                  # Engine layer (AppContext, ConcurrencyManager)
+├── model/                 # Entity POJOs & Enums
+├── repository/            # JDBC Repositories
+├── service/               # Business logic & Reporting
+└── util/                  # Utilities (SceneManager, DialogHelper, etc.)
+
+src/main/resources/org/marrok/amriirad/
+├── css/                   # Design system tokens & component styles
+├── view/                  # FXML templates (Mirrors controller structure)
+└── report/                # JasperReport (.jrxml) templates (Bilingual)
+```
+
+## 2. 🎨 Design System & CSS Architecture
 
 ### 1. Centralized Design Tokens
 Avoid hardcoding colors (Hex/RGBA) in specific components. Always use `theme.css` to define tokens.
@@ -22,7 +45,7 @@ To create a "premium" feel while maintaining consistency:
 - **Depth**: Use `dropshadow` with low opacity (e.g., `rgba(0,0,0,0.05)`) for cards and subtle glows for buttons.
 - **Interaction**: Use `linear-gradient` for primary actions and apply `translate-y` transitions on hover for a tactile response.
 
-##  ikonli Icon Implementation
+## 3. Ikonli Icon Implementation
 
 ### 1. Rendering Consistency
 When creating icons dynamically in Java (instead of FXML), follow the **Dashboard Pattern**:
@@ -38,7 +61,7 @@ icon.getStyleClass().add("icon-primary"); // Defined in app.css
 ### 2. Compatibility
 Stick to standard literals (e.g., `fas-edit`, `fas-check`, `fas-trash`) from FontAwesome Solid to ensure 100% compatibility across different OS rendering engines.
 
-## 💾 Data Modeling & Persistence
+## 4. 💾 Data Modeling & Persistence
 
 ### 1. Fiscal Year Scoping
 For financial applications, data must be isolated by fiscal period to prevent cross-year pollution.
@@ -53,7 +76,7 @@ When updating schemas, use patterns that allow the code to run multiple times wi
 - Use `IF NOT EXISTS` for columns.
 - Use `SELECT COUNT(*)` checks before adding keys or constraints in `DatabaseSchemaManager`.
 
-## ⚡ Concurrency & UX
+## 5. ⚡ Concurrency & UX
 
 ### 1. Non-Blocking UI
 Never perform I/O (Database or Network) on the JavaFX Application Thread.
@@ -66,7 +89,7 @@ Use the `BaseFormController` pattern to standardize:
 - Validation (`validateForm`).
 - Error reporting (`showError`).
 
-## 🏗️ FXML-First Architectural Pattern
+## 6. 🏗️ FXML-First Architectural Pattern
 
 ### 1. Declarative UI Enforcement
 Strictly avoid programmatic UI construction (e.g., `new VBox()`, `new Label()`, `new Button()`). All UI structure must reside in `.fxml` files.
@@ -83,7 +106,7 @@ Never instantiate controllers manually. Always retrieve them from `AppContext` o
 - **Strict Rule**: Use constructor-based injection for services and repositories within controllers.
 - **Pattern**: Register every new controller in `AppContext.createInstance()` to maintain a single source of truth for dependencies.
 
-## 📋 Report Parameter Standard
+## 7. 📋 Report Parameter Standard
 To prevent "null" placeholders and broken layouts in JasperReports:
 - **Fallback to Empty**: Always use `val != null ? val : ""` for all report parameters.
 - **Unified Naming**: Use the standardized parameter dictionary (e.g., `REASON_AR`, `LIQUIDATION_BASIS`, `ORDONNATEUR_CODE`) defined in `ReportParamBuilder`.

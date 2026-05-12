@@ -15,6 +15,22 @@ The application has transitioned from a flat structure to a **Feature-Based Modu
 - `org.marrok.amriirad.repository`: Data access layer.
 - `org.marrok.amriirad.util`: Cross-cutting concerns (`SceneManager`, `DialogHelper`, `AppSettings`).
 - `org.marrok.amriirad.Main`: The non-Application entry point for Fat JAR execution.
+- `org.marrok.amriirad.MainApp`: The JavaFX Application lifecycle manager.
+
+### 1.4 Application Startup Flow
+```mermaid
+graph TD
+    A[Main.main] --> B[MainApp.launch]
+    B --> C{AppSettings.isModeConfigured?}
+    C -- NO --> D[Show mode-selection-view.fxml]
+    D --> E[User picks LOCAL or SERVER]
+    E --> F[Save to AppSettings]
+    F --> G[DatabaseConnection.initialize]
+    C -- YES --> G
+    G --> H[EmbeddedDatabase.start IF LOCAL]
+    H --> I[DatabaseSchemaManager.runMigrations]
+    I --> J[Show login-view.fxml]
+```
 
 ### 1.2 Dependency Injection (DI)
 We use a **Strict Constructor Injection** pattern managed by `AppContext`.
