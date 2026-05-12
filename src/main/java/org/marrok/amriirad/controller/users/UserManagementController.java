@@ -16,6 +16,9 @@ import org.marrok.amriirad.repository.UserRepository;
 import org.marrok.amriirad.util.DialogHelper;
 import org.marrok.amriirad.util.SceneManager;
 import javafx.beans.property.SimpleStringProperty;
+import org.marrok.amriirad.core.ConcurrencyManager;
+import org.marrok.amriirad.ui.AsyncTableLoader;
+import org.marrok.amriirad.service.ExportService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,15 +42,22 @@ public class UserManagementController implements Initializable {
     @FXML private TableColumn<User, String> roleCol;
     @FXML private TableColumn<User, String> statusCol;
 
+    @FXML private ProgressIndicator loadingIndicator;
     @FXML private Button addUserBtn;
     @FXML private Button editUserBtn;
     @FXML private Button deleteUserBtn;
 
+    private AsyncTableLoader<User> tableLoader;
+
     private final UserRepository userRepository;
+    private final ExportService exportService;
+    private final ConcurrencyManager concurrencyManager;
     private final ObservableList<User> userList = FXCollections.observableArrayList();
 
-    public UserManagementController(UserRepository userRepository) {
+    public UserManagementController(UserRepository userRepository, ExportService exportService, ConcurrencyManager concurrencyManager) {
         this.userRepository = userRepository;
+        this.exportService = exportService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -55,9 +65,10 @@ public class UserManagementController implements Initializable {
         if (topBarController != null) {
             topBarController.setBackVisible(true);
         }
-        setupTable();
-        loadUsers();
         checkPermissions();
+        tableLoader = new AsyncTableLoader<>(concurrencyManager, userTable, loadingIndicator);
+        setupTable();
+        loadDataAsync();
     }
 
     private void checkPermissions() {
@@ -84,9 +95,8 @@ public class UserManagementController implements Initializable {
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().isActive() ? "نشط" : "مجمد"));
     }
 
-    private void loadUsers() {
-        userList.setAll(userRepository.findAll());
-        userTable.setItems(userList);
+    private void loadDataAsync() {
+        tableLoader.load(() -> userRepository.findAll());
     }
 
     @FXML
@@ -95,7 +105,7 @@ public class UserManagementController implements Initializable {
         FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/users/user-form-view.fxml", "إضافة مستخدم جديد");
         if (loader != null) {
             UserFormController controller = loader.getController();
-            controller.initForCreate(this::loadUsers);
+            controller.initForCreate(this::loadDataAsync);
         }
     }
 
@@ -111,7 +121,7 @@ public class UserManagementController implements Initializable {
         FXMLLoader loader = SceneManager.openModal(stage, "/org/marrok/amriirad/view/users/user-form-view.fxml", "تعديل مستخدم");
         if (loader != null) {
             UserFormController controller = loader.getController();
-            controller.initForUpdate(selected, this::loadUsers);
+            controller.initForUpdate(selected, this::loadDataAsync);
         }
     }
 
@@ -130,7 +140,7 @@ public class UserManagementController implements Initializable {
 
         if (DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف المستخدم " + selected.getUsername() + "؟")) {
             if (userRepository.delete(selected.getId())) {
-                loadUsers();
+                loadDataAsync();
                 DialogHelper.showInfo("نجاح", "تم حذف المستخدم بنجاح.");
             } else {
                 DialogHelper.showError("خطأ", "فشل حذف المستخدم.");
@@ -140,6 +150,34 @@ public class UserManagementController implements Initializable {
 
     @FXML
     private void handleRefresh() {
-        loadUsers();
+        loadDataAsync();
+    }
+
+    @FXML
+    private void handleExport() {
+        if (userTable.getItems().isEmpty()) {
+            DialogHelper.showError("تنبيه", "لا توجد بيانات لتصديرها.");
+            return;
+        }
+
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("users_" + java.time.LocalDate.now() + ".csv");
+
+        java.io.File file = fileChooser.showSaveDialog(userTable.getScene().getWindow());
+        if (file != null) {
+            concurrencyManager.runAsync(
+                () -> {
+                    exportService.exportUsersToCSV(userTable.getItems(), file);
+                    return true;
+                },
+                res -> DialogHelper.showInfo("نجاح", "تم تصدير البيانات بنجاح إلى:\n" + file.getName()),
+                err -> {
+                    logger.error("Export failed", err);
+                    DialogHelper.showError("خطأ", "فشل تصدير البيانات: " + err.getMessage());
+                }
+            );
+        }
     }
 }

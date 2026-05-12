@@ -14,6 +14,7 @@ import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.Debtor;
 import org.marrok.amriirad.model.DebtorType;
 import org.marrok.amriirad.repository.DebtorRepository;
+import org.marrok.amriirad.util.DialogHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -110,6 +111,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
                 return true;
             },
             res -> {
+                DialogHelper.showInfo("نجاح", "تم حفظ بيانات المدين بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },

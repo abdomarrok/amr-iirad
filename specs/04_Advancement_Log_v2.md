@@ -20,6 +20,15 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-12 (Morning): Startup Stability & DI Resolution
+- ✅ **AppContext DI Startup Fix**: Removed hard-coded controller type registrations from `AppContext.createInstance()`, letting constructor injection resolve controllers like `BudgetChapterFormController`, `CancellationFormController`, `DispatchSlipFormController`, and `ZeroValueFormController` naturally.
+- ✅ **Runtime Controller Resolution Hardened**: Eliminated stale type-resolution failures during JavaFX startup caused by explicit controller class literals.
+
+### 📅 2026-05-11 (Afternoon): Enterprise Audit & Roadmap Alignment
+- ✅ **Principal Architectural Audit**: Conducted a brutally honest assessment of the codebase. Identified critical risks in DI management and static coupling.
+- ✅ **Product Audit (UX/UI)**: Evaluated enterprise readiness, RTL consistency, and premium aesthetics.
+- ✅ **Refactoring Roadmap**: Established a 3-phase plan for production scaling (Critical Stabilization, Architecture Cleanup, UX Modernization).
+
 ### 📅 2026-05-11 (Late Morning): Maintenance & Architectural Hardening
 - ✅ **Critical Bug Fix (Debtor Update)**: Resolved a `Parameter at position 10 is not set` exception in `DebtorRepository.java` by correcting a parameter indexing overlap in the update method.
 - ✅ **Database Schema Hardening (Budget Chapters)**: Implemented a self-healing migration in `DatabaseSchemaManager.java` to resolve duplicate code conflicts across fiscal years. Standardized the unique constraint to `(code, fiscal_year_id)`.
@@ -146,4 +155,6 @@
 9. ✅ **UI Refresh Stabilization**: Guaranteed real-time consistency across modals and lists.
 10. 🚧 **Copy to Next Year**: Planned feature to clone budget hierarchies across fiscal years.
 11. 🚧 **Data Export**: Implement CSV/Excel export for financial audits.
+12. 🚧 **Architecture Cleanup**: Kill the static "God" classes and migrate to a modern DI framework (Phase 2 Roadmap).
+13. 🚧 **State Management**: Transition to a reactive, property-based state store for large-scale enterprise sessions.
 

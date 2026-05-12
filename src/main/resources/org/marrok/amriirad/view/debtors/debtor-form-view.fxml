@@ -72,9 +72,12 @@
 
     <!-- Buttons -->
     <HBox alignment="CENTER_RIGHT" spacing="12">
-        <Button fx:id="cancelBtn" onAction="#handleCancel" styleClass="btn-outline" text="إلغاء" />
+        <Button fx:id="cancelBtn" onAction="#handleCancel" styleClass="btn-outline" text="إلغاء">
+            <tooltip><Tooltip text="إلغاء التعديلات والعودة" /></tooltip>
+        </Button>
         <Button fx:id="saveBtn" onAction="#handleSave" styleClass="btn-primary" text="حفظ البيانات">
             <graphic><FontIcon iconLiteral="fas-save" styleClass="icon-white" /></graphic>
+            <tooltip><Tooltip text="حفظ بيانات المدين" /></tooltip>
         </Button>
     </HBox>
     <stylesheets>

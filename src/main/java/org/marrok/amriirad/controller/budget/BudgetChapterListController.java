@@ -19,6 +19,7 @@ import org.marrok.amriirad.model.BudgetChapter;
 import org.marrok.amriirad.repository.BudgetChapterRepository;
 import org.marrok.amriirad.service.AuthService;
 import org.marrok.amriirad.ui.AsyncTableLoader;
+import org.marrok.amriirad.service.ExportService;
 import org.marrok.amriirad.util.DialogHelper;
 import org.marrok.amriirad.util.SceneManager;
 
@@ -60,13 +61,16 @@ public class BudgetChapterListController implements Initializable {
 
     private final BudgetChapterRepository chapterRepo;
     private final AuthService authService;
+    private final ExportService exportService;
     private final ConcurrencyManager concurrencyManager;
 
     public BudgetChapterListController(BudgetChapterRepository chapterRepo,
             AuthService authService,
+            ExportService exportService,
             ConcurrencyManager concurrencyManager) {
         this.chapterRepo = chapterRepo;
         this.authService = authService;
+        this.exportService = exportService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -213,6 +217,39 @@ public class BudgetChapterListController implements Initializable {
         var selectedYear = topBarController.getFiscalYearCombo().getValue();
         if (selectedYear != null) {
             tableLoader.load(() -> chapterRepo.findAll(selectedYear.getId()));
+        }
+    }
+
+    @FXML
+    private void handleRefresh() {
+        loadDataAsync();
+    }
+
+    @FXML
+    private void handleExport() {
+        if (tableView.getItems().isEmpty()) {
+            DialogHelper.showError("تنبيه", "لا توجد بيانات لتصديرها.");
+            return;
+        }
+
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("budget_chapters_" + java.time.LocalDate.now() + ".csv");
+
+        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file != null) {
+            concurrencyManager.runAsync(
+                () -> {
+                    exportService.exportBudgetChaptersToCSV(tableView.getItems(), file);
+                    return true;
+                },
+                res -> DialogHelper.showInfo("نجاح", "تم تصدير البيانات بنجاح إلى:\n" + file.getName()),
+                err -> {
+                    logger.error("Export failed", err);
+                    DialogHelper.showError("خطأ", "فشل تصدير البيانات: " + err.getMessage());
+                }
+            );
         }
     }
 }

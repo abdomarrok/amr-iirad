@@ -29,7 +29,16 @@
                 <HBox spacing="10.0" alignment="CENTER_RIGHT">
                     <TextField fx:id="searchField" promptText="بحث عن مدين..." prefWidth="250.0" styleClass="text-field-search" />
                     <ComboBox fx:id="typeFilterCombo" promptText="نوع المدين" prefWidth="150.0" />
+                    <Button onAction="#handleRefresh" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تحديث قائمة المدينين"/></tooltip>
+                    </Button>
+                    <Button onAction="#handleExport" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تصدير إلى CSV"/></tooltip>
+                    </Button>
                     <Button fx:id="addDebtorBtn" onAction="#handleAddDebtor" styleClass="btn-primary" text="مدين جديد">
+                        <tooltip><Tooltip text="إضافة مدين جديد" /></tooltip>
                         <graphic><FontIcon iconLiteral="fas-user-plus" iconSize="16" styleClass="icon-white"/></graphic>
                     </Button>
                 </HBox>

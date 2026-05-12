@@ -14,7 +14,7 @@
 
     <!-- App Title & Back Button -->
     <HBox alignment="CENTER_LEFT" spacing="15" HBox.hgrow="ALWAYS">
-        <Button fx:id="backBtn" onAction="#handleBack" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="backBtn" onAction="#handleBack" styleClass="btn-icon, btn-outline">
             <tooltip><Tooltip text="الرجوع" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-arrow-right" iconSize="16" styleClass="icon-primary" />
@@ -28,7 +28,7 @@
         <HBox alignment="CENTER_LEFT" spacing="8" fx:id="fiscalYearBox">
             <Label styleClass="text-small" text="السنة المالية:" />
             <ComboBox fx:id="fiscalYearCombo" prefWidth="120" promptText="اختر السنة" />
-            <Button fx:id="addFiscalYearBtn" onAction="#handleAddFiscalYear" styleClass="btn-outline" prefWidth="32" prefHeight="32">
+            <Button fx:id="addFiscalYearBtn" onAction="#handleAddFiscalYear" styleClass="btn-icon, btn-outline">
                 <tooltip><Tooltip text="إضافة سنة مالية" /></tooltip>
                 <graphic>
                     <FontIcon iconLiteral="fas-plus" iconSize="12" styleClass="icon-primary" />
@@ -38,28 +38,28 @@
         
         <Separator orientation="VERTICAL" prefHeight="25" />
         
-        <Button fx:id="viewUsersBtn" onAction="#handleViewUsers" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="viewUsersBtn" onAction="#handleViewUsers" styleClass="btn-icon, btn-outline">
             <tooltip><Tooltip text="إدارة المستخدمين" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-user-shield" iconSize="18" styleClass="icon-primary" />
             </graphic>
         </Button>
         
-        <Button fx:id="managePermissionsBtn" onAction="#handleManagePermissions" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="managePermissionsBtn" onAction="#handleManagePermissions" styleClass="btn-icon, btn-outline">
             <tooltip><Tooltip text="إدارة الصلاحيات" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-key" iconSize="18" styleClass="icon-primary" />
             </graphic>
         </Button>
         
-        <Button fx:id="enterpriseSettingsBtn" onAction="#handleEnterpriseSettings" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="enterpriseSettingsBtn" onAction="#handleEnterpriseSettings" styleClass="btn-icon, btn-outline">
             <tooltip><Tooltip text="إعدادات المؤسسة" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-cog" iconSize="18" styleClass="icon-primary" />
             </graphic>
         </Button>
 
-        <Button fx:id="viewAuditLogBtn" onAction="#handleViewAuditLog" styleClass="btn-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="viewAuditLogBtn" onAction="#handleViewAuditLog" styleClass="btn-icon, btn-outline">
             <tooltip><Tooltip text="سجل العمليات" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-history" iconSize="18" styleClass="icon-primary" />
@@ -68,7 +68,7 @@
         
         <Separator orientation="VERTICAL" prefHeight="25" />
         
-        <Button fx:id="logoutBtn" onAction="#handleLogout" styleClass="btn-danger-outline" prefWidth="36" prefHeight="36">
+        <Button fx:id="logoutBtn" onAction="#handleLogout" styleClass="btn-icon, btn-danger-outline">
             <tooltip><Tooltip text="تسجيل الخروج" /></tooltip>
             <graphic>
                 <FontIcon iconLiteral="fas-sign-out-alt" iconSize="18" styleClass="icon-danger" />

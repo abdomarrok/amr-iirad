@@ -126,6 +126,7 @@ public class CancellationFormController extends BaseFormController implements In
             },
             res -> {
                 org.marrok.amriirad.util.DialogHelper.showLanguageDialog(lang -> printAnnexe(cancellation, lang));
+                org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ الإلغاء بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },

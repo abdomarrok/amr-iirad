@@ -29,7 +29,16 @@
                 <HBox spacing="10.0" alignment="CENTER_RIGHT">
                     <TextField fx:id="searchField" promptText="بحث عن بند..." prefWidth="250.0" styleClass="text-field-search" />
                     <ComboBox fx:id="levelFilterCombo" promptText="المستوى" prefWidth="150.0" />
+                    <Button onAction="#handleRefresh" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تحديث القائمة"/></tooltip>
+                    </Button>
+                    <Button onAction="#handleExport" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تصدير إلى CSV"/></tooltip>
+                    </Button>
                     <Button fx:id="addChapterBtn" onAction="#handleAddChapter" styleClass="btn-primary" text="بند جديد">
+                        <tooltip><Tooltip text="إضافة بند ميزانية جديد" /></tooltip>
                         <graphic><FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="icon-white"/></graphic>
                     </Button>
                 </HBox>

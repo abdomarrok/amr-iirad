@@ -28,12 +28,21 @@
                 <HBox spacing="10.0">
                     <Button onAction="#handleRefresh" styleClass="btn-outline">
                         <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
-                        <tooltip><Tooltip text="تحديث القائمة"/></tooltip>
+                        <tooltip><Tooltip text="تحديث قائمة المستخدمين"/></tooltip>
+                    </Button>
+                    <Button onAction="#handleExport" styleClass="btn-outline">
+                        <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>
+                        <tooltip><Tooltip text="تصدير إلى CSV"/></tooltip>
                     </Button>
                     <Button fx:id="addUserBtn" onAction="#handleAddUser" styleClass="btn-primary" text="إضافة مستخدم">
                         <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-white"/></graphic>
+                        <tooltip><Tooltip text="إضافة مستخدم جديد"/></tooltip>
                     </Button>
                 </HBox>
+            </HBox>
+
+            <HBox alignment="CENTER" spacing="0.0">
+                <ProgressIndicator fx:id="loadingIndicator" prefHeight="50.0" prefWidth="50.0" visible="false" managed="false" />
             </HBox>
 
             <TableView fx:id="userTable" VBox.vgrow="ALWAYS" nodeOrientation="RIGHT_TO_LEFT">

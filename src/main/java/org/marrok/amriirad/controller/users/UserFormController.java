@@ -3,6 +3,9 @@ package org.marrok.amriirad.controller.users;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.marrok.amriirad.model.Role;
@@ -21,12 +24,16 @@ import java.util.ResourceBundle;
  */
 public class UserFormController implements Initializable {
 
+    @FXML private VBox root;
     @FXML private Label titleLabel;
+    @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField fullNameField;
     @FXML private PasswordField passwordField;
     @FXML private ComboBox<Role> roleCombo;
     @FXML private CheckBox activeCheck;
+    @FXML private Button saveBtn;
+    @FXML private Button cancelBtn;
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -43,6 +50,22 @@ public class UserFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupRoleCombo();
+        setupKeyboardShortcuts();
+        clearError();
+    }
+
+    private void setupKeyboardShortcuts() {
+        if (root != null) {
+            root.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    handleCancel();
+                    event.consume();
+                } else if (event.getCode() == KeyCode.ENTER && saveBtn != null && saveBtn.isDisable() == false) {
+                    handleSave();
+                    event.consume();
+                }
+            });
+        }
     }
 
     private void setupRoleCombo() {
@@ -62,6 +85,10 @@ public class UserFormController implements Initializable {
         this.onSaveCallback = onSaveCallback;
         this.titleLabel.setText("إضافة مستخدم جديد");
         this.activeCheck.setSelected(true);
+        if (passwordField != null) {
+            passwordField.setPromptText("أدخل كلمة المرور للمستخدم الجديد");
+        }
+        clearError();
     }
 
     public void initForUpdate(User user, Runnable onSaveCallback) {
@@ -74,6 +101,10 @@ public class UserFormController implements Initializable {
         this.fullNameField.setText(user.getFullName());
         this.activeCheck.setSelected(user.isActive());
         
+        if (passwordField != null) {
+            passwordField.setPromptText("اتركه فارغاً للحفاظ على الكلمة الحالية");
+        }
+
         // Disable username change for admin
         if ("admin".equals(user.getUsername())) {
             usernameField.setEditable(false);
@@ -85,10 +116,13 @@ public class UserFormController implements Initializable {
                 .filter(r -> r.getId() == user.getRoleId())
                 .findFirst()
                 .ifPresent(r -> roleCombo.getSelectionModel().select(r));
+
+        clearError();
     }
 
     @FXML
     private void handleSave() {
+        clearError();
         if (!validateInput()) return;
 
         String username = usernameField.getText().trim();
@@ -109,13 +143,14 @@ public class UserFormController implements Initializable {
             }
 
             if (userRepository.update(targetUser)) {
+                DialogHelper.showInfo("نجاح", "تم تحديث المستخدم بنجاح.");
                 finish();
             } else {
-                DialogHelper.showError("خطأ", "فشل تحديث بيانات المستخدم.");
+                setError("فشل تحديث بيانات المستخدم.");
             }
         } else {
             if (userRepository.existsByUsername(username)) {
-                DialogHelper.showError("خطأ", "اسم المستخدم موجود مسبقاً.");
+                setError("اسم المستخدم موجود مسبقاً.");
                 return;
             }
 
@@ -127,27 +162,42 @@ public class UserFormController implements Initializable {
             newUser.setActive(isActive);
 
             if (userRepository.create(newUser) > 0) {
+                DialogHelper.showInfo("نجاح", "تم إنشاء المستخدم بنجاح.");
                 finish();
             } else {
-                DialogHelper.showError("خطأ", "فشل إنشاء المستخدم.");
+                setError("فشل إنشاء المستخدم.");
             }
         }
     }
 
     private boolean validateInput() {
         if (usernameField.getText().trim().isEmpty()) {
-            DialogHelper.showWarning("تنبيه", "اسم المستخدم مطلوب.");
+            setError("اسم المستخدم مطلوب.");
             return false;
         }
-        if (!isEditMode && passwordField.getText().isEmpty()) {
-            DialogHelper.showWarning("تنبيه", "كلمة المرور مطلوبة للمستخدم الجديد.");
+        if (!isEditMode && (passwordField.getText() == null || passwordField.getText().isEmpty())) {
+            setError("كلمة المرور مطلوبة للمستخدم الجديد.");
             return false;
         }
         if (roleCombo.getValue() == null) {
-            DialogHelper.showWarning("تنبيه", "يرجى اختيار دور للمستخدم.");
+            setError("يرجى اختيار دور للمستخدم.");
             return false;
         }
         return true;
+    }
+
+    private void setError(String message) {
+        if (errorLabel != null) {
+            errorLabel.setText(message);
+        } else {
+            DialogHelper.showError("خطأ", message);
+        }
+    }
+
+    private void clearError() {
+        if (errorLabel != null) {
+            errorLabel.setText("");
+        }
     }
 
     private void finish() {

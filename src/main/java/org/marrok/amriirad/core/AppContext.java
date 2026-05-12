@@ -146,69 +146,7 @@ public class AppContext implements Disposable {
         if (clazz == CancellationOrderRepository.class) return cancellationOrderRepository;
         if (clazz == DispatchSlipRepository.class) return dispatchSlipRepository;
         // Controllers (Explicit registrations for complex ones or sub-packages)
-        if (clazz == org.marrok.amriirad.controller.dashboard.DashboardController.class) 
-            return new org.marrok.amriirad.controller.dashboard.DashboardController(fiscalYearRepository, revenueOrderRepository, authService);
-        
-        if (clazz == org.marrok.amriirad.controller.users.UserManagementController.class) 
-            return new org.marrok.amriirad.controller.users.UserManagementController(userRepository);
-        
-        if (clazz == org.marrok.amriirad.controller.users.PermissionManagementController.class) 
-            return new org.marrok.amriirad.controller.users.PermissionManagementController(roleRepository, permissionRepository);
-        
-        if (clazz == org.marrok.amriirad.controller.users.UserFormController.class) 
-            return new org.marrok.amriirad.controller.users.UserFormController(userRepository, roleRepository);
-        
-        if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderListController.class) 
-            return new org.marrok.amriirad.controller.orders.RevenueOrderListController(revenueOrderService, revenueOrderRepository, fiscalYearRepository, authService, exportService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.orders.RevenueOrderFormController.class) 
-            return new org.marrok.amriirad.controller.orders.RevenueOrderFormController(fiscalYearRepository, debtorRepository, budgetChapterRepository, revenueOrderService, reportService, tafqeetService, institutionService, authService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.orders.OrderDetailsController.class) 
-            return new org.marrok.amriirad.controller.orders.OrderDetailsController(reportService, tafqeetService, institutionService, cancellationOrderService, authService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.orders.BudgetChapterFormController.class) 
-            return new org.marrok.amriirad.controller.orders.BudgetChapterFormController(budgetChapterRepository, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.budget.BudgetChapterListController.class) 
-            return new org.marrok.amriirad.controller.budget.BudgetChapterListController(budgetChapterRepository, authService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.orders.CancellationFormController.class) 
-            return new org.marrok.amriirad.controller.orders.CancellationFormController(cancellationOrderService, reportService, tafqeetService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.debtors.DebtorListController.class) 
-            return new org.marrok.amriirad.controller.debtors.DebtorListController(debtorRepository, authService, concurrencyManager);
-        
-        if (clazz == org.marrok.amriirad.controller.debtors.DebtorFormController.class) 
-            return new org.marrok.amriirad.controller.debtors.DebtorFormController(debtorRepository, concurrencyManager);
-            
-        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipController.class) 
-            return new org.marrok.amriirad.controller.dispatch.DispatchSlipController(dispatchSlipRepository, fiscalYearRepository, reportService, tafqeetService, institutionService, authService, concurrencyManager);
-            
-        if (clazz == org.marrok.amriirad.controller.dispatch.DispatchSlipFormController.class) 
-            return new org.marrok.amriirad.controller.dispatch.DispatchSlipFormController(fiscalYearRepository, revenueOrderRepository, dispatchSlipService, reportService, tafqeetService, authService, concurrencyManager);
-            
-        if (clazz == org.marrok.amriirad.controller.settings.EnterpriseInfoController.class) 
-            return new org.marrok.amriirad.controller.settings.EnterpriseInfoController(institutionService);
-            
-        if (clazz == org.marrok.amriirad.controller.settings.ModeSelectionController.class) 
-            return new org.marrok.amriirad.controller.settings.ModeSelectionController();
-            
-        if (clazz == org.marrok.amriirad.controller.settings.ServerConfigController.class) 
-            return new org.marrok.amriirad.controller.settings.ServerConfigController();
-            
-        if (clazz == org.marrok.amriirad.controller.settings.AuditLogController.class)
-            return new org.marrok.amriirad.controller.settings.AuditLogController(auditLogService, concurrencyManager);
-
-        if (clazz == org.marrok.amriirad.controller.orders.ZeroValueListController.class)
-            return new org.marrok.amriirad.controller.orders.ZeroValueListController(zeroValueService, fiscalYearRepository, concurrencyManager);
-
-        if (clazz == org.marrok.amriirad.controller.orders.ZeroValueFormController.class)
-            return new org.marrok.amriirad.controller.orders.ZeroValueFormController(zeroValueService, revenueOrderService, fiscalYearRepository, concurrencyManager);
-
-        if (clazz == org.marrok.amriirad.controller.login.LoginController.class) 
-            return new org.marrok.amriirad.controller.login.LoginController(authService, concurrencyManager);
-
+        // Controllers with default constructor injection should be resolved by the constructor inspection below.
         if (clazz == TopBarController.class) return new TopBarController(fiscalYearRepository, authService);
         if (clazz == FooterController.class) return new FooterController(authService);
         

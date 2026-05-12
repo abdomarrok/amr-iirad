@@ -27,6 +27,7 @@ import org.marrok.amriirad.repository.DebtorRepository;
 import java.net.URL;
 import java.util.ResourceBundle;
 import org.marrok.amriirad.ui.AsyncTableLoader;
+import org.marrok.amriirad.service.ExportService;
 import org.marrok.amriirad.util.SceneManager;
 
 public class DebtorListController implements Initializable {
@@ -53,13 +54,16 @@ public class DebtorListController implements Initializable {
 
     private final DebtorRepository debtorRepo;
     private final org.marrok.amriirad.service.AuthService authService;
+    private final ExportService exportService;
     private final ConcurrencyManager concurrencyManager;
 
     public DebtorListController(DebtorRepository debtorRepo, 
                                 org.marrok.amriirad.service.AuthService authService,
+                                ExportService exportService,
                                 ConcurrencyManager concurrencyManager) {
         this.debtorRepo = debtorRepo;
         this.authService = authService;
+        this.exportService = exportService;
         this.concurrencyManager = concurrencyManager;
     }
 
@@ -178,5 +182,38 @@ public class DebtorListController implements Initializable {
 
     private void loadDataAsync() {
         tableLoader.load(() -> debtorRepo.findAll());
+    }
+
+    @FXML
+    private void handleRefresh() {
+        loadDataAsync();
+    }
+
+    @FXML
+    private void handleExport() {
+        if (tableView.getItems().isEmpty()) {
+            org.marrok.amriirad.util.DialogHelper.showError("تنبيه", "لا توجد بيانات لتصديرها.");
+            return;
+        }
+
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("debtors_" + java.time.LocalDate.now() + ".csv");
+
+        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        if (file != null) {
+            concurrencyManager.runAsync(
+                () -> {
+                    exportService.exportDebtorsToCSV(tableView.getItems(), file);
+                    return true;
+                },
+                res -> org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم تصدير البيانات بنجاح إلى:\n" + file.getName()),
+                err -> {
+                    logger.error("Export failed", err);
+                    org.marrok.amriirad.util.DialogHelper.showError("خطأ", "فشل تصدير البيانات: " + err.getMessage());
+                }
+            );
+        }
     }
 }

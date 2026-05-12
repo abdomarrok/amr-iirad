@@ -167,6 +167,7 @@ public class BudgetChapterFormController extends BaseFormController implements I
                 () -> chapterRepo.save(currentChapter),
                 result -> {
                     logger.info("Saved budget chapter: {}", result.getCode());
+                    org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ بند الميزانية بنجاح.");
                     closeWindow();
                     runOnSuccess();
                 },

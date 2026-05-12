@@ -212,6 +212,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
+                org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ أمر الإيراد بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },
@@ -232,6 +233,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
+                org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم إصدار أمر الإيراد بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },

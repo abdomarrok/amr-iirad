@@ -163,6 +163,7 @@ public class ZeroValueFormController extends BaseFormController implements Initi
                 return zeroService.createDecision(decision);
             },
             res -> {
+                org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ قرار التسوية بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },

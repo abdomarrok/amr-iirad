@@ -358,6 +358,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
                     return slip;
                 },
                 createdSlip -> {
+                    org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ البوردرو بنجاح.");
                     printAnnexe5(createdSlip);
                     closeWindow();
                     runOnSuccess();

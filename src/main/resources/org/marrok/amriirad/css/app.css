@@ -71,11 +71,15 @@
 .btn-primary {
     -fx-background-color: -fx-theme-primary;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-padding: 10 24;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
     -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 .btn-primary:hover {
     -fx-background-color: -fx-theme-primary-hover;
@@ -84,20 +88,43 @@
 .btn-success {
     -fx-background-color: -fx-theme-success;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-padding: 10 24;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
     -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 .btn-success:hover {
     -fx-background-color: -fx-theme-success-hover;
 }
 
+.btn-secondary {
+    -fx-background-color: -fx-theme-secondary;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
+}
+.btn-secondary:hover {
+    -fx-background-color: -fx-theme-secondary-hover;
+}
+
 .btn-danger {
     -fx-background-color: -fx-theme-danger;
     -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-padding: 10 24;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
     -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 .btn-danger:hover {
     -fx-background-color: -fx-theme-danger-hover;
@@ -108,10 +135,14 @@
     -fx-text-fill: -fx-theme-primary;
     -fx-border-color: -fx-theme-primary;
     -fx-border-width: 1.5;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 8 20;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
     -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 .btn-outline:hover {
     -fx-background-color: -fx-theme-primary-light;
@@ -122,12 +153,65 @@
     -fx-text-fill: -fx-theme-danger;
     -fx-border-color: -fx-theme-danger;
     -fx-border-width: 1.5;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 8 20;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
     -fx-cursor: hand;
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 .btn-danger-outline:hover {
+    -fx-background-color: #fdf2f2;
+}
+
+/* Required field indicator */
+.required-indicator {
+    -fx-text-fill: -fx-theme-danger;
+    -fx-font-weight: bold;
+}
+
+/* Icon buttons (square, for toolbar actions) */
+.btn-icon {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
+    -fx-max-width: -fx-pref-width;
+    -fx-max-height: -fx-pref-height;
+    -fx-background-radius: 6;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+}
+
+.btn-icon.btn-primary {
+    -fx-background-color: -fx-theme-primary;
+    -fx-text-fill: white;
+}
+.btn-icon.btn-primary:hover {
+    -fx-background-color: -fx-theme-primary-hover;
+}
+
+.btn-icon.btn-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-theme-primary;
+    -fx-border-color: -fx-theme-primary;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+.btn-icon.btn-outline:hover {
+    -fx-background-color: -fx-theme-primary-light;
+}
+
+.btn-icon.btn-danger-outline {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-theme-danger;
+    -fx-border-color: -fx-theme-danger;
+    -fx-border-width: 1.5;
+}
+.btn-icon.btn-danger-outline:hover {
     -fx-background-color: #fdf2f2;
 }
 
