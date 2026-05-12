@@ -21,6 +21,11 @@
     -fx-effect: dropshadow(three-pass-box, -fx-theme-shadow-light, 10, 0, 0, 4);
 }
 
+.empty-state-container {
+    -fx-padding: 60px;
+    -fx-alignment: center;
+}
+
 /* Typography */
 .text-heading {
     -fx-font-size: 24px;

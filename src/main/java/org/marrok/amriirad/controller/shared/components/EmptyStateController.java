@@ -10,6 +10,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
  */
 public class EmptyStateController {
 
+    @FXML private javafx.scene.layout.VBox emptyStateRoot;
     @FXML private FontIcon icon;
     @FXML private Label titleLabel;
     @FXML private Label messageLabel;
@@ -30,11 +31,9 @@ public class EmptyStateController {
     }
 
     public void show(boolean visible) {
-        javafx.scene.Parent root = titleLabel.getParent().getParent() instanceof javafx.scene.Parent ? 
-                (javafx.scene.Parent)titleLabel.getParent().getParent() : null;
-        if (root != null) {
-            root.setVisible(visible);
-            root.setManaged(visible);
+        if (emptyStateRoot != null) {
+            emptyStateRoot.setVisible(visible);
+            emptyStateRoot.setManaged(visible);
         }
     }
 

@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox fx:id="emptyStateRoot" alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.shared.components.EmptyStateController"
-      visible="false" managed="false" style="-fx-padding: 50;">
+      visible="false" managed="false" styleClass="empty-state-container">
 
     <FontIcon fx:id="icon" iconLiteral="fas-folder-open" iconSize="64" styleClass="icon-muted" />
     
