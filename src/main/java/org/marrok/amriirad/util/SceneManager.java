@@ -75,6 +75,15 @@ public class SceneManager {
             applyStylesAndTheme(scene, dialog);
             dialog.sizeToScene();
             dialog.centerOnScreen();
+
+            // Premium fade-in animation
+            root.setOpacity(0);
+            javafx.animation.FadeTransition fadeIn = new javafx.animation.FadeTransition(javafx.util.Duration.millis(350), root);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+            fadeIn.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
+            fadeIn.play();
+
             dialog.show();
             return loader;
         } catch (IOException e) {

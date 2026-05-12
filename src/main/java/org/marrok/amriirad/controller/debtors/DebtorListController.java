@@ -89,15 +89,16 @@ public class DebtorListController implements Initializable {
     private void setupToolbar() {
         actionToolbarController.init(
             this::handleAddDebtor,
-            null, // Edit handled by double click
-            null, // Delete not implemented yet
+            this::handleEditDebtor,
+            this::handleDeleteDebtor,
             this::loadDataAsync,
             this::handleExport
         );
         actionToolbarController.setAddText("مدين جديد");
         
-        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        actionToolbarController.setAddVisible(auth.canDo("debtors.create"));
+        actionToolbarController.setAddVisible(authService.canDo("debtors.create"));
+        actionToolbarController.setEditVisible(authService.canDo("debtors.edit"));
+        actionToolbarController.setDeleteVisible(authService.canDo("debtors.delete"));
     }
 
     private void setupEmptyState() {
@@ -172,12 +173,37 @@ public class DebtorListController implements Initializable {
     }
 
     private void setupTableInteraction() {
-        tableView.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
-                Debtor selected = tableView.getSelectionModel().getSelectedItem();
-                handleEditDebtor(selected);
-            }
-        });
+        org.marrok.amriirad.util.TableHelper.setupActionContextMenu(tableView, 
+            this::handleEditDebtor, 
+            this::handleDeleteDebtor
+        );
+    }
+
+    private void handleDeleteDebtor() {
+        Debtor selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        if (!authService.canDo("debtors.delete")) {
+            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "ليس لديك صلاحية حذف المدينين.");
+            return;
+        }
+
+        if (org.marrok.amriirad.util.DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف المدين: " + selected.getFullName() + "؟\nملاحظة: لا يمكن حذف مدين له أوامر إيراد مسجلة.")) {
+            concurrencyManager.runAsync(
+                () -> {
+                    debtorRepo.delete(selected.getId());
+                    return true;
+                },
+                res -> {
+                    org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حذف المدين بنجاح.");
+                    loadDataAsync();
+                },
+                err -> {
+                    logger.error("Failed to delete debtor", err);
+                    org.marrok.amriirad.util.DialogHelper.showError("خطأ", "تعذر حذف المدين. قد يكون مرتبطاً ببيانات أخرى.");
+                }
+            );
+        }
     }
 
     @FXML
@@ -194,7 +220,13 @@ public class DebtorListController implements Initializable {
         }
     }
 
-    private void handleEditDebtor(Debtor debtor) {
+    private void handleEditDebtor() {
+        Debtor selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            org.marrok.amriirad.util.DialogHelper.showWarning("تنبيه", "يرجى اختيار مدين للتعديل.");
+            return;
+        }
+
         if (!authService.canDo("debtor.edit")) {
             org.marrok.amriirad.util.DialogHelper.showError("خطأ", "ليس لديك صلاحية تعديل بيانات المدين.");
             return;
@@ -203,7 +235,7 @@ public class DebtorListController implements Initializable {
         javafx.fxml.FXMLLoader loader = SceneManager.openModal(owner, "/org/marrok/amriirad/view/debtors/debtor-form-view.fxml", "تعديل بيانات المدين");
         if (loader != null) {
             org.marrok.amriirad.controller.debtors.DebtorFormController controller = loader.getController();
-            controller.initForEdit(debtor, () -> loadDataAsync());
+            controller.initForEdit(selected, () -> loadDataAsync());
         }
     }
 

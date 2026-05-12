@@ -86,8 +86,11 @@ public class UserManagementController implements Initializable {
         );
         actionToolbarController.setAddText("إضافة مستخدم");
         
+        // Apply permission-based visibility
         var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
         actionToolbarController.setAddVisible(auth.canDo("users.manage"));
+        actionToolbarController.setEditVisible(auth.canDo("users.manage"));
+        actionToolbarController.setDeleteVisible(auth.canDo("users.manage"));
     }
 
     private void setupFilters() {
@@ -128,6 +131,11 @@ public class UserManagementController implements Initializable {
         fullNameCol.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         roleCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getRoleName()));
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().isActive() ? "نشط" : "مجمد"));
+
+        org.marrok.amriirad.util.TableHelper.setupActionContextMenu(userTable, 
+            this::handleEditUser, 
+            this::handleDeleteUser
+        );
     }
 
     private void loadDataAsync() {

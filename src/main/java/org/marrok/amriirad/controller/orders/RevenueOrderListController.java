@@ -101,16 +101,17 @@ public class RevenueOrderListController implements Initializable {
     private void setupToolbar() {
         actionToolbarController.init(
             this::handleNewOrder,
-            null, // Edit handled by double click for now
-            null, // Delete handled inside form/details
+            this::handleEditOrder,
+            this::handleDeleteOrder,
             this::loadDataAsync,
             this::handleExport
         );
         actionToolbarController.setAddText("أمر جديد");
         
-        // Permission check for Add button
-        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        actionToolbarController.setAddVisible(auth.canDo("orders.create"));
+        // Apply permission-based visibility
+        actionToolbarController.setAddVisible(authService.canDo("orders.create"));
+        actionToolbarController.setEditVisible(authService.canDo("orders.edit"));
+        actionToolbarController.setDeleteVisible(authService.canDo("orders.delete"));
     }
 
     private void setupEmptyState() {
@@ -205,17 +206,50 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void setupTableInteraction() {
-        tableView.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
-                RevenueOrder selected = tableView.getSelectionModel().getSelectedItem();
-                // If DRAFT, allow editing; otherwise, show details view
-                if (selected.getStatus() == org.marrok.amriirad.model.OrderStatus.DRAFT) {
-                    openFormModal(selected);
-                } else {
-                    openDetailsModal(selected, this::loadDataAsync);
-                }
+        org.marrok.amriirad.util.TableHelper.setupActionContextMenu(tableView, 
+            this::handleEditOrder, 
+            this::handleDeleteOrder
+        );
+    }
+
+    private void handleEditOrder() {
+        RevenueOrder selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            if (selected.getStatus() == org.marrok.amriirad.model.OrderStatus.DRAFT) {
+                openFormModal(selected);
+            } else {
+                openDetailsModal(selected, this::loadDataAsync);
             }
-        });
+        }
+    }
+
+    private void handleDeleteOrder() {
+        RevenueOrder selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+        
+        if (!authService.canDo("orders.delete")) {
+            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "ليس لديك صلاحية حذف أوامر الإيرادات.");
+            return;
+        }
+
+        if (selected.getStatus() != OrderStatus.DRAFT) {
+            org.marrok.amriirad.util.DialogHelper.showError("تنبيه", "لا يمكن حذف أمر إيراد تم إصداره بالفعل.");
+            return;
+        }
+
+        if (org.marrok.amriirad.util.DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف أمر الإيراد رقم: " + selected.getOrderNumber() + "؟")) {
+            concurrencyManager.runAsync(
+                () -> {
+                    orderRepo.delete(selected.getId(), authService.getCurrentUser().getUsername());
+                    return true;
+                },
+                res -> {
+                    org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حذف أمر الإيراد بنجاح.");
+                    loadDataAsync();
+                },
+                err -> org.marrok.amriirad.util.DialogHelper.showError("خطأ", "فشل في حذف أمر الإيراد: " + err.getMessage())
+            );
+        }
     }
 
     private void openDetailsModal(RevenueOrder order, Runnable onRefresh) {

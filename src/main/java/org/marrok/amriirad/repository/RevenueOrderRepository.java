@@ -66,6 +66,18 @@ public class RevenueOrderRepository {
         });
     }
 
+    public boolean isChapterInUse(int chapterId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM revenue_order WHERE budget_chapter_id = ? AND is_deleted = 0";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, chapterId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
     // -------------------------------------------------------------------------
     // WRITE
     // -------------------------------------------------------------------------

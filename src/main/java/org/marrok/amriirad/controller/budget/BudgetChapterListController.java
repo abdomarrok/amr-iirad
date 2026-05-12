@@ -17,6 +17,7 @@ import org.marrok.amriirad.controller.shared.FooterController;
 import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.BudgetChapter;
 import org.marrok.amriirad.repository.BudgetChapterRepository;
+import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.service.AuthService;
 import org.marrok.amriirad.ui.AsyncTableLoader;
 import org.marrok.amriirad.service.ExportService;
@@ -58,15 +59,18 @@ public class BudgetChapterListController implements Initializable {
     private AsyncTableLoader<BudgetChapter> tableLoader;
 
     private final BudgetChapterRepository chapterRepo;
+    private final RevenueOrderRepository revenueOrderRepo;
     private final AuthService authService;
     private final ExportService exportService;
     private final ConcurrencyManager concurrencyManager;
 
     public BudgetChapterListController(BudgetChapterRepository chapterRepo,
+            RevenueOrderRepository revenueOrderRepo,
             AuthService authService,
             ExportService exportService,
             ConcurrencyManager concurrencyManager) {
         this.chapterRepo = chapterRepo;
+        this.revenueOrderRepo = revenueOrderRepo;
         this.authService = authService;
         this.exportService = exportService;
         this.concurrencyManager = concurrencyManager;
@@ -95,14 +99,17 @@ public class BudgetChapterListController implements Initializable {
     private void setupToolbar() {
         actionToolbarController.init(
             this::handleAddChapter,
-            null, // Edit by double click
-            null, // Delete not implemented
+            this::handleEditChapter,
+            this::handleDeleteChapter,
             this::loadDataAsync,
             this::handleExport
         );
         actionToolbarController.setAddText("بند جديد");
         
+        // Apply permission-based visibility
         actionToolbarController.setAddVisible(authService.canDo("budget_chapter.manage"));
+        actionToolbarController.setEditVisible(authService.canDo("budget_chapter.manage"));
+        actionToolbarController.setDeleteVisible(authService.canDo("budget_chapter.manage"));
     }
 
     private void setupEmptyState() {
@@ -192,12 +199,50 @@ public class BudgetChapterListController implements Initializable {
     }
 
     private void setupTableInteraction() {
-        tableView.setOnMouseClicked((MouseEvent event) -> {
-            if (event.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != null) {
-                BudgetChapter selected = tableView.getSelectionModel().getSelectedItem();
-                handleEditChapter(selected);
-            }
-        });
+        org.marrok.amriirad.util.TableHelper.setupActionContextMenu(tableView, 
+            this::handleEditChapter, 
+            this::handleDeleteChapter
+        );
+    }
+
+    private void handleDeleteChapter() {
+        BudgetChapter selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        if (!authService.canDo("budget_chapter.manage")) {
+            DialogHelper.showError("خطأ", "ليس لديك صلاحية حذف بنود الميزانية.");
+            return;
+        }
+
+        if (DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف البند: " + selected.getCode() + "؟")) {
+            concurrencyManager.runAsync(
+                () -> {
+                    // Pre-check: Is it used by any orders?
+                    if (revenueOrderRepo.isChapterInUse(selected.getId())) {
+                        throw new RuntimeException("ChapterInUse");
+                    }
+                    chapterRepo.delete(selected.getId());
+                    return true;
+                },
+                res -> {
+                    DialogHelper.showInfo("نجاح", "تم حذف البند بنجاح.");
+                    loadDataAsync();
+                },
+                err -> {
+                    if ("ChapterInUse".equals(err.getMessage())) {
+                        DialogHelper.showError("خطأ", "لا يمكن حذف هذا البند لأنه مرتبط بأوامر إيراد مسجلة.");
+                    } else {
+                        logger.error("Failed to delete chapter", err);
+                        String msg = err.getMessage();
+                        if (msg != null && msg.contains("foreign key")) {
+                            DialogHelper.showError("خطأ", "لا يمكن حذف هذا البند لأنه مرتبط ببيانات أخرى.");
+                        } else {
+                            DialogHelper.showError("خطأ", "تعذر حذف البند: " + msg);
+                        }
+                    }
+                }
+            );
+        }
     }
 
     @FXML
@@ -221,7 +266,13 @@ public class BudgetChapterListController implements Initializable {
         }
     }
 
-    private void handleEditChapter(BudgetChapter bc) {
+    private void handleEditChapter() {
+        BudgetChapter selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            DialogHelper.showWarning("تنبيه", "يرجى اختيار بند للتعديل.");
+            return;
+        }
+
         if (!authService.canDo("budget_chapter.manage")) {
             DialogHelper.showError("خطأ", "ليس لديك صلاحية إدارة بنود الميزانية.");
             return;
@@ -231,7 +282,7 @@ public class BudgetChapterListController implements Initializable {
                 "/org/marrok/amriirad/view/orders/budget-chapter-form-view.fxml", "تعديل بند ميزانية");
         if (loader != null) {
             BudgetChapterFormController controller = loader.getController();
-            controller.initForEdit(bc, this::loadDataAsync);
+            controller.initForEdit(selected, this::loadDataAsync);
         }
     }
 

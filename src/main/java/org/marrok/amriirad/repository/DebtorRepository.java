@@ -69,6 +69,16 @@ public class DebtorRepository {
         logger.info("Updated debtor id={}", d.getId());
     }
 
+    public void delete(int id) throws SQLException {
+        String sql = "DELETE FROM debtor WHERE id = ?";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+        logger.info("Deleted debtor id={}", id);
+    }
+
     // -------------------------------------------------------------------------
     // HELPERS
     // -------------------------------------------------------------------------
