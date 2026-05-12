@@ -3,6 +3,7 @@ package org.marrok.amriirad.controller.orders;
 import org.marrok.amriirad.controller.BaseFormController;
 import org.marrok.amriirad.controller.shared.TopBarController;
 import org.marrok.amriirad.controller.shared.FooterController;
+import org.marrok.amriirad.core.AppContext;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -102,7 +103,7 @@ public class CancellationFormController extends BaseFormController implements In
         cancellation.setCancellationDate(cancellationDatePicker.getValue());
         cancellation.setReasonAr(reasonField.getText().trim());
         cancellation.setReasonFr(reasonFrField.getText().trim());
-        cancellation.setCreatedBy("admin"); // TODO: Use real user
+        cancellation.setCreatedBy(AppContext.getInstance().getCurrentUser());
         
         String providedNum = cancellationNumField.getText().trim();
         if (!providedNum.isEmpty()) {

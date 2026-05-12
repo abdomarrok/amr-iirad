@@ -149,33 +149,53 @@
 }
 
 .dashboard-actions-panel {
-    -fx-padding: 20 20 24 20;
-    -fx-background-color: rgba(255, 255, 255, 0.85);
-    -fx-background-radius: 22;
-    -fx-border-color: rgba(14, 124, 123, 0.18);
-    -fx-border-width: 1;
-    -fx-border-radius: 22;
-    -fx-effect: dropshadow(three-pass-box, rgba(16, 24, 32, 0.08), 16, 0, 0, 8);
+    -fx-padding: 8 0 0 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
 }
 
 .dashboard-action-btn {
     -fx-background-radius: 18;
     -fx-background-insets: 0;
-    -fx-padding: 14 16;
+    -fx-padding: 16 18;
     -fx-border-radius: 18;
-    -fx-background-radius: 18;
-    -fx-effect: dropshadow(three-pass-box, rgba(16, 24, 32, 0.04), 12, 0, 0, 4);
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-border-color: -fx-theme-border-light;
+    -fx-border-width: 1;
+    -fx-effect: none;
+    -fx-pref-width: 240px;
+    -fx-pref-height: 100px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
 }
 
 .dashboard-action-btn:hover {
-    -fx-background-color: rgba(14, 124, 123, 0.08);
+    -fx-background-color: -fx-theme-bg-hover;
 }
 
 .btn-primary.dashboard-action-btn {
-    -fx-pref-width: 240px;
-    -fx-pref-height: 88px;
-    -fx-background-radius: 18;
+    -fx-pref-width: 280px;
+    -fx-pref-height: 100px;
+    -fx-background-color: -fx-theme-primary;
+    -fx-text-fill: white;
     -fx-border-width: 0;
+}
+
+.dashboard-action-label {
+    -fx-text-fill: -fx-theme-primary;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
+.btn-outline.dashboard-action-btn {
+    -fx-border-color: -fx-theme-border-light;
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-text-fill: -fx-theme-primary;
+}
+
+.btn-outline.dashboard-action-btn:hover {
+    -fx-background-color: -fx-theme-bg-hover;
 }
 
 .dashboard-action-label {
@@ -184,21 +204,14 @@
     -fx-font-weight: bold;
 }
 
-.btn-outline.dashboard-action-btn {
-    -fx-border-color: rgba(14, 124, 123, 0.75);
-    -fx-background-color: rgba(255, 255, 255, 0.92);
-}
-
-.btn-outline.dashboard-action-btn:hover {
-    -fx-background-color: rgba(14, 124, 123, 0.12);
+.dashboard-action-label-light {
+    -fx-text-fill: -fx-theme-text-light;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
 }
 
 .btn-outline.dashboard-action-btn .label {
     -fx-text-fill: -fx-theme-primary;
-}
-
-.btn-primary.dashboard-action-btn .label {
-    -fx-text-fill: white;
 }
 
 .btn-primary.dashboard-action-btn .icon-light {
@@ -283,6 +296,42 @@
 }
 .btn-icon.btn-danger-outline:hover {
     -fx-background-color: #fdf2f2;
+}
+
+/* ========== LANGUAGE SELECTION MODAL ========== */
+
+.language-card {
+    -fx-background-radius: 16;
+    -fx-background-insets: 0;
+    -fx-padding: 18 16;
+    -fx-border-radius: 16;
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-border-color: -fx-theme-border-light;
+    -fx-border-width: 1;
+    -fx-effect: none;
+    -fx-text-fill: -fx-theme-primary;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 140px;
+    -fx-min-width: -fx-pref-width;
+    -fx-min-height: -fx-pref-height;
+    -fx-cursor: hand;
+}
+
+.language-card:hover {
+    -fx-background-color: -fx-theme-bg-hover;
+    -fx-border-color: -fx-theme-primary;
+}
+
+.language-card-title {
+    -fx-text-fill: -fx-theme-primary;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.language-card-subtitle {
+    -fx-text-fill: -fx-theme-text-secondary;
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
 }
 
 /* ========== MODE SELECTION CARDS (from GstockDz) ========== */

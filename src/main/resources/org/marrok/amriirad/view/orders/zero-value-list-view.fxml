@@ -23,6 +23,10 @@
                     <Label styleClass="text-heading" text="مقررات القيم المنعدمة | Décisions de Valeurs en Non-Valeur"/>
                     <Label styleClass="text-small, text-muted" text="إدارة كشوف الديون المتعثرة والمقبولة كقيم منعدمة (الملحق رقم 06)"/>
                 </VBox>
+                <Button fx:id="exportBtn" onAction="#handleExport" styleClass="btn-outline" text="تصدير">
+                    <graphic><FontIcon iconLiteral="fas-file-export" styleClass="icon-default"/></graphic>
+                    <tooltip><Tooltip text="تصدير إلى CSV"/></tooltip>
+                </Button>
                 <Button fx:id="newDecisionBtn" onAction="#handleNewDecision" styleClass="btn-primary" text="مقرر جديد">
                     <graphic><FontIcon iconLiteral="fas-plus-circle" styleClass="icon-white"/></graphic>
                 </Button>

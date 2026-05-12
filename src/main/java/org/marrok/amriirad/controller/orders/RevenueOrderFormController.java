@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.marrok.amriirad.core.AppContext;
 import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.BudgetChapter;
 import org.marrok.amriirad.model.Debtor;
@@ -204,7 +205,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         concurrencyManager.runAsync(
             () -> {
                 if (currentOrder.getId() == 0) {
-                    currentOrder.setCreatedBy("admin"); // TODO: Use real user
+                    currentOrder.setCreatedBy(AppContext.getInstance().getCurrentUser());
                     orderService.createOrder(currentOrder);
                 } else {
                     orderService.updateOrder(currentOrder);
@@ -229,7 +230,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         concurrencyManager.runAsync(
             () -> {
                 orderService.updateOrder(currentOrder); // Save changes first
-                orderService.issueOrder(currentOrder.getId(), "admin"); // Then issue
+                orderService.issueOrder(currentOrder.getId(), AppContext.getInstance().getCurrentUser()); // Then issue
                 return true;
             },
             res -> {

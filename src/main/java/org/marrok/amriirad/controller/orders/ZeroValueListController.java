@@ -6,6 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.marrok.amriirad.service.ExportService;
+
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.controller.BaseController;
@@ -31,16 +34,20 @@ public class ZeroValueListController extends BaseController implements Initializ
     @FXML private TableColumn<ZeroValueDecision, LocalDate> dateCol;
     @FXML private TableColumn<ZeroValueDecision, BigDecimal> amountCol;
     @FXML private TableColumn<ZeroValueDecision, Void> actionsCol;
+    @FXML private Button exportBtn;
 
     private final ZeroValueService zeroService;
     private final FiscalYearRepository fiscalRepo;
+    private final ExportService exportService;
 
     public ZeroValueListController(ZeroValueService zeroService, 
                                  FiscalYearRepository fiscalRepo,
+                                 ExportService exportService,
                                  ConcurrencyManager concurrencyManager) {
         super(concurrencyManager);
         this.zeroService = zeroService;
         this.fiscalRepo = fiscalRepo;
+        this.exportService = exportService;
     }
 
     @Override
@@ -79,6 +86,34 @@ public class ZeroValueListController extends BaseController implements Initializ
                 else setGraphic(printBtn);
             }
         });
+    }
+
+    @FXML
+    private void handleExport() {
+        if (decisionTable.getItems().isEmpty()) {
+            org.marrok.amriirad.util.DialogHelper.showError("تنبيه", "لا توجد بيانات لتصديرها.");
+            return;
+        }
+
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("zero_value_decisions_" + java.time.LocalDate.now() + ".csv");
+
+        File file = fileChooser.showSaveDialog(decisionTable.getScene().getWindow());
+        if (file != null) {
+            concurrencyManager.runAsync(
+                () -> {
+                    exportService.exportZeroValueDecisionsToCSV(decisionTable.getItems(), file);
+                    return true;
+                },
+                res -> org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم تصدير البيانات بنجاح إلى:\n" + file.getName()),
+                err -> {
+                    logger.error("Export failed", err);
+                    org.marrok.amriirad.util.DialogHelper.showError("خطأ", "فشل تصدير البيانات: " + err.getMessage());
+                }
+            );
+        }
     }
 
     private void handlePrint(ZeroValueDecision decision) {

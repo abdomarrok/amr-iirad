@@ -20,6 +20,20 @@
 
 ## 🔧 Recent Achievements (Stabilization Phase)
 
+### 📅 2026-05-12 (Afternoon): UI Redesign & Modern Dashboard Aesthetic
+- ✅ **Dashboard Action Cards Refactored**: Redesigned the quick-action button row on the dashboard to match a modern card-based layout:
+  - Four outline cards with pale backgrounds for Budget, Bordereau, Débiteurs, and Liste
+  - One prominent teal primary card for "Nouveau / أمر إيراد جديد" positioned at the end
+  - Unified card styling with consistent borders, shadows (removed), and hover effects
+- ✅ **Language Selection Modal Modernized**: Completely redesigned the language selection dialog to align with the new dashboard aesthetic:
+  - Removed hardcoded inline styles in favor of CSS class-based theming
+  - Restructured language buttons as card-style selections with improved visual hierarchy
+  - Added `.language-card`, `.language-card-title`, and `.language-card-subtitle` CSS classes for consistency
+  - Enhanced spacing and typography following the design system guidelines
+- ✅ **CSS Theme Consolidation**: Updated `app.css` to streamline dashboard action button and language card styling, ensuring all cards follow the same visual language (pale backgrounds with teal accents for inactive states, solid teal for primary actions).
+- ✅ **FXML Markup Cleanup**: Simplified FXML templates by removing inline style attributes and relying on CSS class definitions, improving maintainability per `specs/coding_skills.md` guidelines.
+- ✅ **Verified Accessibility**: Ensured all interactive elements maintain proper focus states and color contrast ratios.
+
 ### 📅 2026-05-12 (Morning): Startup Stability & DI Resolution
 - ✅ **AppContext DI Startup Fix**: Removed hard-coded controller type registrations from `AppContext.createInstance()`, letting constructor injection resolve controllers like `BudgetChapterFormController`, `CancellationFormController`, `DispatchSlipFormController`, and `ZeroValueFormController` naturally.
 - ✅ **Runtime Controller Resolution Hardened**: Eliminated stale type-resolution failures during JavaFX startup caused by explicit controller class literals.

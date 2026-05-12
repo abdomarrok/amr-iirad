@@ -52,4 +52,11 @@
     -fx-theme-shadow-danger-hover: rgba(231, 76, 60, 0.5);
     -fx-theme-shadow-purple: rgba(156, 39, 176, 0.3);
     -fx-theme-shadow-purple-hover: rgba(156, 39, 176, 0.5);
+    -fx-theme-panel-bg: rgba(255, 255, 255, 0.85);
+    -fx-theme-border-muted: rgba(14, 124, 123, 0.18);
+    -fx-theme-border-strong: rgba(14, 124, 123, 0.75);
+    -fx-theme-overlay-primary: rgba(14, 124, 123, 0.12);
+    -fx-theme-shadow-strong: rgba(16, 24, 32, 0.08);
+    -fx-theme-shadow-soft: rgba(16, 24, 32, 0.04);
+    -fx-theme-shadow-stronger: rgba(16, 24, 32, 0.14);
 }

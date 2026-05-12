@@ -12,6 +12,7 @@ import javafx.stage.Stage; // Unused import, will be removed by IDE
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.marrok.amriirad.controller.BaseFormController;
+import org.marrok.amriirad.core.AppContext;
 import org.marrok.amriirad.core.ConcurrencyManager; // Unused import, will be removed by IDE
 import org.marrok.amriirad.model.DispatchSlip;
 import org.marrok.amriirad.model.OrderStatus;
@@ -336,7 +337,7 @@ public class DispatchSlipFormController extends BaseFormController implements ja
         slip.setDispatchDate(dispatchDatePicker.getValue());
         slip.setTreasuryRef(treasuryRefField.getText().trim());
         slip.setOrders(selectedOrders);
-        slip.setCreatedBy("admin"); // TODO: Use real user
+        slip.setCreatedBy(AppContext.getInstance().getCurrentUser());
         slip.recalculateTotal();
 
         // Get active fiscal year

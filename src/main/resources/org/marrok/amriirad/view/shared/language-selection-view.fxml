@@ -1,49 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<?import java.net.URL?>
-<VBox alignment="TOP_CENTER" spacing="0.0" prefWidth="480.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: -fx-theme-border-light; -fx-border-width: 1;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" spacing="0.0" styleClass="card" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <!-- Custom Header with Close Button -->
-        <HBox alignment="CENTER_RIGHT" prefHeight="40.0" style="-fx-padding: 10 15 0 0;">
+        <HBox alignment="CENTER_RIGHT" prefHeight="50.0" style="-fx-padding: 12 16 0 0;">
             <Button fx:id="closeIconBtn" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;">
                 <graphic>
-                    <FontIcon iconLiteral="fas-times" iconSize="18" styleClass="icon-secondary"/>
+                    <FontIcon iconLiteral="fas-times" iconSize="20" styleClass="icon-secondary" />
                 </graphic>
             </Button>
         </HBox>
 
-        <VBox alignment="CENTER" spacing="25.0" style="-fx-padding: 0 40 40 40;">
+        <VBox alignment="CENTER" spacing="32.0" style="-fx-padding: 0 48 48 48;">
             <children>
-                <VBox alignment="CENTER" spacing="8.0">
+                <!-- Title Section -->
+                <VBox alignment="CENTER" spacing="10.0">
                     <children>
-                        <Label style="-fx-font-size: 24; -fx-font-weight: 800; -fx-text-fill: -fx-theme-primary;" text="لغة الطباعة / Langue d'impression" />
-                        <Label style="-fx-font-size: 15; -fx-text-fill: -fx-theme-text-muted;" text="اختر لغة طباعة الوثيقة / Choisir la langue" />
+                        <Label styleClass="text-heading" text="لغة الطباعة / Langue d'impression" />
+                        <Label style="-fx-text-fill: -fx-theme-text-secondary;" styleClass="text-small" text="اختر لغة طباعة الوثيقة / Choisir la langue" />
                     </children>
                 </VBox>
                 
-                <HBox alignment="CENTER" spacing="30.0">
+                <!-- Language Selection Cards -->
+                <HBox alignment="CENTER" spacing="24.0">
                     <children>
-                        <Button fx:id="arabicBtn" prefHeight="140.0" prefWidth="180.0" styleClass="mode-card-secondary" text="العربية (AR)" contentDisplay="TOP" style="-fx-font-size: 16; -fx-font-weight: bold;">
+                        <!-- Arabic Button -->
+                        <Button fx:id="arabicBtn" contentDisplay="TOP" prefHeight="140.0" prefWidth="180.0" styleClass="language-card">
                             <graphic>
-                                <FontIcon iconLiteral="fas-language" iconSize="54" styleClass="icon-primary" />
+                                <VBox alignment="CENTER" spacing="12">
+                                    <FontIcon iconLiteral="fas-language" iconSize="48" styleClass="icon-primary" />
+                                    <Label styleClass="language-card-title" text="العربية" />
+                                    <Label styleClass="language-card-subtitle" text="(AR)" />
+                                </VBox>
                             </graphic>
                         </Button>
-                        <Button fx:id="frenchBtn" prefHeight="140.0" prefWidth="180.0" styleClass="mode-card-secondary" text="Français (FR)" contentDisplay="TOP" style="-fx-font-size: 16; -fx-font-weight: bold;">
+
+                        <!-- French Button -->
+                        <Button fx:id="frenchBtn" contentDisplay="TOP" prefHeight="140.0" prefWidth="180.0" styleClass="language-card">
                             <graphic>
-                                <FontIcon iconLiteral="fas-globe-africa" iconSize="54" styleClass="icon-primary" />
+                                <VBox alignment="CENTER" spacing="12">
+                                    <FontIcon iconLiteral="fas-globe-africa" iconSize="48" styleClass="icon-primary" />
+                                    <Label styleClass="language-card-title" text="Français" />
+                                    <Label styleClass="language-card-subtitle" text="(FR)" />
+                                </VBox>
                             </graphic>
                         </Button>
                     </children>
                 </HBox>
                 
-                <Region prefHeight="20"/>
-                
-                <Button fx:id="cancelBtn" mnemonicParsing="false" styleClass="btn-secondary" text="إلغاء / Annuler" prefWidth="180" style="-fx-padding: 12 20; -fx-font-size: 14; -fx-background-radius: 25;"/>
+                <!-- Cancel Button -->
+                <Button fx:id="cancelBtn" mnemonicParsing="false" style="-fx-padding: 12 24; -fx-font-size: 14; -fx-background-radius: 8;" text="إلغاء / Annuler" />
             </children>
         </VBox>
     </children>

@@ -133,7 +133,7 @@ public class SceneManager {
 
     public static void setAppIcon(Stage stage) {
         try {
-            String iconPath = "/org/marrok/amriirad/img/logo.png";
+            String iconPath = "/org/marrok/amriirad/img/logo.ico";
             var iconStream = SceneManager.class.getResourceAsStream(iconPath);
             if (iconStream != null) {
                 stage.getIcons().setAll(new javafx.scene.image.Image(iconStream));

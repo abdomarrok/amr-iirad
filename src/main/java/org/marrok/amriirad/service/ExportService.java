@@ -6,6 +6,7 @@ import org.marrok.amriirad.model.RevenueOrder;
 import org.marrok.amriirad.model.User;
 import org.marrok.amriirad.model.Debtor;
 import org.marrok.amriirad.model.BudgetChapter;
+import org.marrok.amriirad.model.ZeroValueDecision;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -157,6 +158,35 @@ public class ExportService {
                 row.add(escapeCsv(chapter.getCode()))
                    .add(escapeCsv(chapter.getLabelAr()))
                    .add(escapeCsv(chapter.getLabelFr()));
+                writer.write(row.toString() + "\n");
+            }
+        }
+    }
+
+    /**
+     * Export a list of zero value decisions to a CSV file.
+     */
+    public void exportZeroValueDecisionsToCSV(List<ZeroValueDecision> decisions, File file) throws IOException {
+        logger.info("Exporting {} zero value decisions to CSV: {}", decisions.size(), file.getAbsolutePath());
+
+        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+            writer.write('\ufeff');
+
+            StringJoiner header = new StringJoiner(",");
+            header.add("Decision Number")
+                  .add("Decision Date")
+                  .add("Total Amount")
+                  .add("Created By")
+                  .add("Details Count");
+            writer.write(header.toString() + "\n");
+
+            for (ZeroValueDecision decision : decisions) {
+                StringJoiner row = new StringJoiner(",");
+                row.add(escapeCsv(decision.getDecisionNumber()))
+                   .add(escapeCsv(decision.getDecisionDate() != null ? decision.getDecisionDate().toString() : ""))
+                   .add(decision.getTotalAmount() != null ? decision.getTotalAmount().toString() : "0.00")
+                   .add(escapeCsv(decision.getCreatedBy()))
+                   .add(String.valueOf(decision.getDetails() != null ? decision.getDetails().size() : 0));
                 writer.write(row.toString() + "\n");
             }
         }

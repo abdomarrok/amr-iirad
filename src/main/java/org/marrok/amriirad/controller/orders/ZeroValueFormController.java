@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.marrok.amriirad.controller.BaseFormController;
+import org.marrok.amriirad.core.AppContext;
 import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.*;
 import org.marrok.amriirad.service.ZeroValueService;
@@ -153,7 +154,7 @@ public class ZeroValueFormController extends BaseFormController implements Initi
             .map(d -> d.getRevenueOrder().getAmount())
             .reduce(BigDecimal.ZERO, BigDecimal::add));
         decision.setDetails(detailsList);
-        decision.setCreatedBy("admin"); // TODO
+        decision.setCreatedBy(AppContext.getInstance().getCurrentUser());
 
         concurrencyManager.runAsync(
             () -> {

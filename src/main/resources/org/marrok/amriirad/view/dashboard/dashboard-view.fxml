@@ -73,35 +73,13 @@
 
             <FlowPane hgap="16" vgap="16" alignment="CENTER" styleClass="dashboard-actions-panel" prefWrapLength="980">
 
-                <!-- New Revenue Order -->
-                <Button fx:id="newOrderBtn" styleClass="btn-primary dashboard-action-btn" onAction="#handleNewOrder" prefWidth="220" prefHeight="84"
+                <!-- Budget Chapters -->
+                <Button fx:id="budgetChaptersBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewChapters" prefWidth="220" prefHeight="84"
                         contentDisplay="TOP">
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-plus-circle" iconSize="26" styleClass="icon-light"/>
-                            <Label styleClass="dashboard-action-label" text="أمر إيراد جديد / Nouveau"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Revenue Orders List -->
-                <Button fx:id="orderListBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewOrders" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-list-alt" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="قائمة الأوامر / Liste"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Debtors -->
-                <Button fx:id="debtorsBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewDebtors" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-users" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="المدينين / Débiteurs"/>
+                            <FontIcon iconLiteral="fas-sitemap" iconSize="26" styleClass="icon-primary"/>
+                            <Label styleClass="dashboard-action-label" text="الميزانية / Budget"/>
                         </VBox>
                     </graphic>
                 </Button>
@@ -117,13 +95,35 @@
                     </graphic>
                 </Button>
 
-                <!-- Budget Chapters -->
-                <Button fx:id="budgetChaptersBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewChapters" prefWidth="220" prefHeight="84"
+                <!-- Debtors -->
+                <Button fx:id="debtorsBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewDebtors" prefWidth="220" prefHeight="84"
                         contentDisplay="TOP">
                     <graphic>
                         <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-sitemap" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="الميزانية / Budget"/>
+                            <FontIcon iconLiteral="fas-users" iconSize="26" styleClass="icon-primary"/>
+                            <Label styleClass="dashboard-action-label" text="المدينين / Débiteurs"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Revenue Orders List -->
+                <Button fx:id="orderListBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewOrders" prefWidth="220" prefHeight="84"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-list-alt" iconSize="26" styleClass="icon-primary"/>
+                            <Label styleClass="dashboard-action-label" text="قائمة الأوامر / Liste"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- New Revenue Order -->
+                <Button fx:id="newOrderBtn" styleClass="btn-primary dashboard-action-btn" onAction="#handleNewOrder" prefWidth="220" prefHeight="84"
+                        contentDisplay="TOP">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6">
+                            <FontIcon iconLiteral="fas-plus-circle" iconSize="26" styleClass="icon-light"/>
+                            <Label styleClass="dashboard-action-label-light" text="أمر إيراد جديد / Nouveau"/>
                         </VBox>
                     </graphic>
                 </Button>
