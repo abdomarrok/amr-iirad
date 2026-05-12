@@ -49,7 +49,7 @@
 
 .stat-card-icon-bg {
     -fx-background-color: -fx-theme-bg-tertiary;
-    -fx-background-radius: 6px;
+    -fx-background-radius: 8px;
     -fx-padding: 8px;
 }
 
@@ -61,8 +61,8 @@
 .dashboard-btn {
     -fx-background-color: -fx-theme-bg-secondary;
     -fx-border-color: -fx-theme-border-light;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
     -fx-padding: 12px;
     -fx-cursor: hand;
 }
@@ -95,4 +95,24 @@
 .table-view.table-compact {
     -fx-background-color: transparent;
     -fx-font-size: 12px;
+}
+
+.dashboard-info-box {
+    -fx-background-color: -fx-theme-primary-light;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+}
+
+.dashboard-info-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.dashboard-info-version {
+    -fx-font-size: 10px;
+}
+
+.dashboard-table-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-theme-text-muted;
 }

@@ -115,10 +115,10 @@
                         </Button>
                     </VBox>
                     <Region VBox.vgrow="ALWAYS"/>
-                    <VBox styleClass="stat-card-icon-bg" alignment="CENTER" spacing="8" style="-fx-background-color: -fx-theme-primary-light;">
+                    <VBox styleClass="dashboard-info-box" alignment="CENTER" spacing="8">
                         <FontIcon iconLiteral="fas-info-circle" iconSize="24" styleClass="icon-primary"/>
-                        <Label text="نظام إدارة أوامر الإيراد" style="-fx-font-weight: bold; -fx-font-size: 11px;"/>
-                        <Label text="V 1.0.0" style="-fx-font-size: 10px;"/>
+                        <Label text="نظام إدارة أوامر الإيراد" styleClass="dashboard-info-title"/>
+                        <Label text="V 1.0.0" styleClass="dashboard-info-version"/>
                     </VBox>
                 </VBox>
 
@@ -128,7 +128,7 @@
                     <HBox alignment="CENTER_LEFT">
                         <VBox spacing="4">
                             <Label styleClass="chart-title" text="آخر العمليات المسجلة"/>
-                            <Label text="عرض آخر 8 عمليات قمت بها مؤخراً" style="-fx-font-size: 11px; -fx-text-fill: -fx-theme-text-muted;"/>
+                            <Label text="عرض آخر 8 عمليات قمت بها مؤخراً" styleClass="dashboard-table-subtitle"/>
                         </VBox>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button styleClass="btn-text" text="عرض كافة السجلات" onAction="#handleViewOrders"/>
