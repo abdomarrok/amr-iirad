@@ -23,6 +23,7 @@
 ### 📅 2026-05-12 (Morning): Startup Stability & DI Resolution
 - ✅ **AppContext DI Startup Fix**: Removed hard-coded controller type registrations from `AppContext.createInstance()`, letting constructor injection resolve controllers like `BudgetChapterFormController`, `CancellationFormController`, `DispatchSlipFormController`, and `ZeroValueFormController` naturally.
 - ✅ **Runtime Controller Resolution Hardened**: Eliminated stale type-resolution failures during JavaFX startup caused by explicit controller class literals.
+- ✅ **Dashboard UI Polish**: Refined the quick-action panel on the dashboard with elevated action buttons, improved spacing, and a cleaner card-like container for faster user focus.
 
 ### 📅 2026-05-11 (Afternoon): Enterprise Audit & Roadmap Alignment
 - ✅ **Principal Architectural Audit**: Conducted a brutally honest assessment of the codebase. Identified critical risks in DI management and static coupling.
