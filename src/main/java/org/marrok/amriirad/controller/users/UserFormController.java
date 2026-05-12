@@ -6,14 +6,17 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import org.marrok.amriirad.controller.BaseFormController;
+import org.marrok.amriirad.core.ConcurrencyManager;
 import org.marrok.amriirad.model.Role;
 import org.marrok.amriirad.model.User;
 import org.marrok.amriirad.repository.RoleRepository;
 import org.marrok.amriirad.repository.UserRepository;
 import org.marrok.amriirad.util.DialogHelper;
 import org.marrok.amriirad.util.PasswordUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,50 +25,48 @@ import java.util.ResourceBundle;
  * Controller for the User add/edit form.
  * Reused pattern from GstockDz.
  */
-public class UserFormController implements Initializable {
+public class UserFormController extends BaseFormController implements Initializable {
+
+    private static final Logger logger = LogManager.getLogger(UserFormController.class);
 
     @FXML private VBox root;
-    @FXML private Label titleLabel;
-    @FXML private Label errorLabel;
     @FXML private TextField usernameField;
     @FXML private TextField fullNameField;
     @FXML private PasswordField passwordField;
     @FXML private ComboBox<Role> roleCombo;
     @FXML private CheckBox activeCheck;
-    @FXML private Button saveBtn;
-    @FXML private Button cancelBtn;
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     
     private User targetUser;
-    private Runnable onSaveCallback;
     private boolean isEditMode = false;
 
-    public UserFormController(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserFormController(UserRepository userRepository, RoleRepository roleRepository, ConcurrencyManager concurrencyManager) {
+        super(concurrencyManager);
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
 
     @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupRoleCombo();
-        setupKeyboardShortcuts();
+        setupDirtyTracking();
+        setupCommonShortcuts(root, this::handleSave);
         clearError();
     }
 
-    private void setupKeyboardShortcuts() {
-        if (root != null) {
-            root.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    handleCancel();
-                    event.consume();
-                } else if (event.getCode() == KeyCode.ENTER && saveBtn != null && saveBtn.isDisable() == false) {
-                    handleSave();
-                    event.consume();
-                }
-            });
-        }
+    private void setupDirtyTracking() {
+        usernameField.textProperty().addListener((o, ov, nv) -> markDirty());
+        fullNameField.textProperty().addListener((o, ov, nv) -> markDirty());
+        passwordField.textProperty().addListener((o, ov, nv) -> markDirty());
+        roleCombo.valueProperty().addListener((o, ov, nv) -> markDirty());
+        activeCheck.selectedProperty().addListener((o, ov, nv) -> markDirty());
     }
 
     private void setupRoleCombo() {
@@ -82,19 +83,20 @@ public class UserFormController implements Initializable {
 
     public void initForCreate(Runnable onSaveCallback) {
         this.isEditMode = false;
-        this.onSaveCallback = onSaveCallback;
+        this.onSuccess = onSaveCallback;
         this.titleLabel.setText("إضافة مستخدم جديد");
         this.activeCheck.setSelected(true);
         if (passwordField != null) {
             passwordField.setPromptText("أدخل كلمة المرور للمستخدم الجديد");
         }
         clearError();
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     public void initForUpdate(User user, Runnable onSaveCallback) {
         this.isEditMode = true;
         this.targetUser = user;
-        this.onSaveCallback = onSaveCallback;
+        this.onSuccess = onSaveCallback;
         
         this.titleLabel.setText("تعديل مستخدم: " + user.getUsername());
         this.usernameField.setText(user.getUsername());
@@ -118,12 +120,14 @@ public class UserFormController implements Initializable {
                 .ifPresent(r -> roleCombo.getSelectionModel().select(r));
 
         clearError();
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     @FXML
     private void handleSave() {
+        if (!validateForm()) return;
         clearError();
-        if (!validateInput()) return;
+        setLoading(true);
 
         String username = usernameField.getText().trim();
         String fullName = fullNameField.getText().trim();
@@ -131,82 +135,71 @@ public class UserFormController implements Initializable {
         Role role = roleCombo.getValue();
         boolean isActive = activeCheck.isSelected();
 
-        if (isEditMode) {
-            targetUser.setUsername(username);
-            targetUser.setFullName(fullName);
-            targetUser.setRoleId(role.getId());
-            targetUser.setActive(isActive);
-            
-            // Only update password if provided
-            if (password != null && !password.isEmpty()) {
-                targetUser.setPassword(PasswordUtil.hashPassword(password));
+        concurrencyManager.runAsync(
+            () -> {
+                if (isEditMode) {
+                    targetUser.setUsername(username);
+                    targetUser.setFullName(fullName);
+                    targetUser.setRoleId(role.getId());
+                    targetUser.setActive(isActive);
+                    
+                    if (password != null && !password.isEmpty()) {
+                        targetUser.setPassword(PasswordUtil.hashPassword(password));
+                    }
+                    return userRepository.update(targetUser);
+                } else {
+                    if (userRepository.existsByUsername(username)) {
+                        throw new RuntimeException("اسم المستخدم موجود مسبقاً.");
+                    }
+                    User newUser = new User();
+                    newUser.setUsername(username);
+                    newUser.setFullName(fullName);
+                    newUser.setPassword(PasswordUtil.hashPassword(password));
+                    newUser.setRoleId(role.getId());
+                    newUser.setActive(isActive);
+                    return userRepository.create(newUser) > 0;
+                }
+            },
+            success -> {
+                setLoading(false);
+                if (success) {
+                    clearDirty();
+                    DialogHelper.showInfo("نجاح", isEditMode ? "تم تحديث المستخدم بنجاح." : "تم إنشاء المستخدم بنجاح.");
+                    closeWindow();
+                    runOnSuccess();
+                } else {
+                    showError("فشل العملية.");
+                }
+            },
+            err -> {
+                setLoading(false);
+                showError(err.getMessage());
             }
-
-            if (userRepository.update(targetUser)) {
-                DialogHelper.showInfo("نجاح", "تم تحديث المستخدم بنجاح.");
-                finish();
-            } else {
-                setError("فشل تحديث بيانات المستخدم.");
-            }
-        } else {
-            if (userRepository.existsByUsername(username)) {
-                setError("اسم المستخدم موجود مسبقاً.");
-                return;
-            }
-
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setFullName(fullName);
-            newUser.setPassword(PasswordUtil.hashPassword(password));
-            newUser.setRoleId(role.getId());
-            newUser.setActive(isActive);
-
-            if (userRepository.create(newUser) > 0) {
-                DialogHelper.showInfo("نجاح", "تم إنشاء المستخدم بنجاح.");
-                finish();
-            } else {
-                setError("فشل إنشاء المستخدم.");
-            }
-        }
+        );
     }
 
-    private boolean validateInput() {
+    @Override
+    protected boolean validateForm() {
+        clearError();
+        setInvalid(usernameField, false);
+        setInvalid(passwordField, false);
+        setInvalid(roleCombo, false);
+
         if (usernameField.getText().trim().isEmpty()) {
-            setError("اسم المستخدم مطلوب.");
+            setInvalid(usernameField, true);
+            showError("اسم المستخدم مطلوب.");
             return false;
         }
         if (!isEditMode && (passwordField.getText() == null || passwordField.getText().isEmpty())) {
-            setError("كلمة المرور مطلوبة للمستخدم الجديد.");
+            setInvalid(passwordField, true);
+            showError("كلمة المرور مطلوبة للمستخدم الجديد.");
             return false;
         }
         if (roleCombo.getValue() == null) {
-            setError("يرجى اختيار دور للمستخدم.");
+            setInvalid(roleCombo, true);
+            showError("يرجى اختيار دور للمستخدم.");
             return false;
         }
         return true;
-    }
-
-    private void setError(String message) {
-        if (errorLabel != null) {
-            errorLabel.setText(message);
-        } else {
-            DialogHelper.showError("خطأ", message);
-        }
-    }
-
-    private void clearError() {
-        if (errorLabel != null) {
-            errorLabel.setText("");
-        }
-    }
-
-    private void finish() {
-        if (onSaveCallback != null) onSaveCallback.run();
-        handleCancel();
-    }
-
-    @FXML
-    private void handleCancel() {
-        ((Stage) usernameField.getScene().getWindow()).close();
     }
 }

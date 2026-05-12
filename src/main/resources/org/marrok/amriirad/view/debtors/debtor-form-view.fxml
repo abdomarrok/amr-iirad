@@ -6,7 +6,7 @@
 <?import org.kordamp.ikonli.javafx.*?>
 
 <?import java.net.URL?>
-<VBox spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.debtors.DebtorFormController">
+<VBox fx:id="root" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.debtors.DebtorFormController">
     <padding>
         <Insets bottom="25" left="25" right="25" top="25" />
     </padding>
@@ -29,10 +29,10 @@
                 <ColumnConstraints hgrow="ALWAYS" />
             </columnConstraints>
 
-            <Label styleClass="form-label" text="الاسم الكامل:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label styleClass="form-label, form-label-required" text="الاسم الكامل:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <TextField fx:id="fullNameField" promptText="أدخل الاسم الكامل..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-            <Label styleClass="form-label" text="نوع المدين:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label styleClass="form-label, form-label-required" text="نوع المدين:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <ComboBox fx:id="typeCombo" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label styleClass="form-label" text="رقم التعريف:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
@@ -41,7 +41,7 @@
             <Label styleClass="form-label" text="رقم الهاتف:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
             <TextField fx:id="phoneField" maxWidth="250" promptText="0XXXXXXXXX" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label styleClass="form-label" text="العنوان:" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+            <Label styleClass="form-label, form-label-required" text="العنوان:" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.valignment="TOP" />
             <TextArea fx:id="addressField" prefRowCount="3" promptText="أدخل العنوان التفصيلي..." GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
             <Label styleClass="form-label" text="الحساب البنكي:" GridPane.columnIndex="0" GridPane.rowIndex="5" />

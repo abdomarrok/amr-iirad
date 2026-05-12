@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<HBox alignment="CENTER_LEFT" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.marrok.amriirad.controller.shared.components.FilterBarController">
+
+    <StackPane alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="بحث..." prefWidth="300.0" styleClass="text-field-search" />
+        <FontIcon iconLiteral="fas-search" iconSize="14" styleClass="icon-muted" StackPane.alignment="CENTER_LEFT">
+            <StackPane.margin>
+                <javafx.geometry.Insets left="12.0" />
+            </StackPane.margin>
+        </FontIcon>
+    </StackPane>
+
+    <HBox fx:id="customFiltersBox" alignment="CENTER_LEFT" spacing="10.0" />
+
+</HBox>

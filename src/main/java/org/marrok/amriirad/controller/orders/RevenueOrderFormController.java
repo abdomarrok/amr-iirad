@@ -85,10 +85,23 @@ public class RevenueOrderFormController extends BaseFormController implements In
     private FiscalYear activeYear;
     private RevenueOrder currentOrder;
 
+    @FXML private javafx.scene.layout.VBox root;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         issueDatePicker.setValue(LocalDate.now());
+        setupDirtyTracking();
         loadDropdownData();
+        setupCommonShortcuts(root, this::handleSave);
+    }
+
+    private void setupDirtyTracking() {
+        issueDatePicker.valueProperty().addListener((o, ov, nv) -> markDirty());
+        debtorCombo.valueProperty().addListener((o, ov, nv) -> markDirty());
+        budgetChapterCombo.valueProperty().addListener((o, ov, nv) -> markDirty());
+        amountField.textProperty().addListener((o, ov, nv) -> markDirty());
+        objectField.textProperty().addListener((o, ov, nv) -> markDirty());
+        objectFrField.textProperty().addListener((o, ov, nv) -> markDirty());
     }
 
     public void initForCreate(Runnable onSuccessCallback) {
@@ -114,9 +127,9 @@ public class RevenueOrderFormController extends BaseFormController implements In
             // Lock fields if not draft
             saveBtn.setDisable(true);
             issueBtn.setDisable(true);
-            amountField.setDisable(true);
-            objectField.setDisable(true);
-            objectFrField.setDisable(true);
+            amountField.setEditable(false);
+            objectField.setEditable(false);
+            objectFrField.setEditable(false);
             debtorCombo.setDisable(true);
             budgetChapterCombo.setDisable(true);
             issueDatePicker.setDisable(true);
@@ -127,6 +140,9 @@ public class RevenueOrderFormController extends BaseFormController implements In
             printDebtorBtn.setVisible(true);
             printDebtorBtn.setManaged(true);
         }
+        
+        // After loading data, reset dirty flag
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     private void loadDropdownData() {
@@ -201,6 +217,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         if (!validateForm()) return;
         clearError();
         populateOrder();
+        setLoading(true);
 
         concurrencyManager.runAsync(
             () -> {
@@ -213,11 +230,16 @@ public class RevenueOrderFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
+                setLoading(false);
+                clearDirty();
                 org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ أمر الإيراد بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },
-            err -> showError(err.getMessage())
+            err -> {
+                setLoading(false);
+                showError(err.getMessage());
+            }
         );
     }
 
@@ -226,6 +248,7 @@ public class RevenueOrderFormController extends BaseFormController implements In
         if (!validateForm()) return;
         clearError();
         populateOrder();
+        setLoading(true);
 
         concurrencyManager.runAsync(
             () -> {
@@ -234,36 +257,51 @@ public class RevenueOrderFormController extends BaseFormController implements In
                 return true;
             },
             res -> {
+                setLoading(false);
+                clearDirty();
                 org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم إصدار أمر الإيراد بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },
-            err -> showError(err.getMessage())
+            err -> {
+                setLoading(false);
+                showError(err.getMessage());
+            }
         );
     }
 
     @Override
     protected boolean validateForm() {
         clearError();
+        setInvalid(debtorCombo, false);
+        setInvalid(budgetChapterCombo, false);
+        setInvalid(amountField, false);
+        setInvalid(objectField, false);
+
         if (debtorCombo.getValue() == null) {
+            setInvalid(debtorCombo, true);
             showError("يجب اختيار المدين");
             return false;
         }
         if (budgetChapterCombo.getValue() == null) {
+            setInvalid(budgetChapterCombo, true);
             showError("يجب اختيار محور الميزانية");
             return false;
         }
         try {
             BigDecimal amt = new BigDecimal(amountField.getText().trim());
             if (amt.compareTo(BigDecimal.ZERO) <= 0) {
+                setInvalid(amountField, true);
                 showError("المبلغ يجب أن يكون أكبر من صفر");
                 return false;
             }
         } catch (Exception e) {
+            setInvalid(amountField, true);
             showError("المبلغ غير صالح");
             return false;
         }
         if (objectField.getText() == null || objectField.getText().trim().isEmpty()) {
+            setInvalid(objectField, true);
             showError("يجب إدخال موضوع الإيراد (الأسباب)");
             return false;
         }

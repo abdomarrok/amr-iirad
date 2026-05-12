@@ -42,10 +42,10 @@ public class UserManagementController implements Initializable {
     @FXML private TableColumn<User, String> roleCol;
     @FXML private TableColumn<User, String> statusCol;
 
+    @FXML private org.marrok.amriirad.controller.shared.components.FilterBarController filterBarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.ActionToolbarController actionToolbarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
     @FXML private ProgressIndicator loadingIndicator;
-    @FXML private Button addUserBtn;
-    @FXML private Button editUserBtn;
-    @FXML private Button deleteUserBtn;
 
     private AsyncTableLoader<User> tableLoader;
 
@@ -65,27 +65,62 @@ public class UserManagementController implements Initializable {
         if (topBarController != null) {
             topBarController.setBackVisible(true);
         }
-        checkPermissions();
+        
         tableLoader = new AsyncTableLoader<>(concurrencyManager, userTable, loadingIndicator);
+        
         setupTable();
+        setupFilters();
+        setupToolbar();
+        setupEmptyState();
+        
         loadDataAsync();
     }
 
-    private void checkPermissions() {
-        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        boolean canManage = auth.canDo("users.manage");
+    private void setupToolbar() {
+        actionToolbarController.init(
+            this::handleAddUser,
+            this::handleEditUser,
+            this::handleDeleteUser,
+            this::loadDataAsync,
+            this::handleExport
+        );
+        actionToolbarController.setAddText("إضافة مستخدم");
         
-        setBtnVisible(addUserBtn, canManage);
-        setBtnVisible(editUserBtn, canManage);
-        setBtnVisible(deleteUserBtn, canManage);
+        var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
+        actionToolbarController.setAddVisible(auth.canDo("users.manage"));
     }
 
-    private void setBtnVisible(Button btn, boolean visible) {
-        if (btn != null) {
-            btn.setVisible(visible);
-            btn.setManaged(visible);
-        }
+    private void setupFilters() {
+        filterBarController.setSearchPrompt("بحث عن مستخدم...");
+        filterBarController.getSearchField().textProperty().addListener((obs, oldV, newV) -> updatePredicate());
     }
+
+    private void updatePredicate() {
+        var filteredList = tableLoader.getFilteredList();
+        if (filteredList == null) return;
+
+        String search = filterBarController.getSearchField().getText() == null ? "" : filterBarController.getSearchField().getText().toLowerCase();
+
+        filteredList.setPredicate(user -> {
+            if (search.isEmpty()) return true;
+
+            String username = user.getUsername() != null ? user.getUsername().toLowerCase() : "";
+            String fullName = user.getFullName() != null ? user.getFullName().toLowerCase() : "";
+            String role = user.getRoleName() != null ? user.getRoleName().toLowerCase() : "";
+
+            return username.contains(search) || fullName.contains(search) || role.contains(search);
+        });
+    }
+
+    private void setupEmptyState() {
+        emptyStateController.init(
+            "لا يوجد مستخدمون",
+            "لم يتم العثور على أي مستخدمين مسجلين في النظام.",
+            "fas-user-slash",
+            this::handleAddUser
+        );
+    }
+
 
     private void setupTable() {
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -96,7 +131,10 @@ public class UserManagementController implements Initializable {
     }
 
     private void loadDataAsync() {
-        tableLoader.load(() -> userRepository.findAll());
+        tableLoader.load(() -> userRepository.findAll(), users -> {
+            emptyStateController.show(users.isEmpty());
+            userTable.setVisible(!users.isEmpty());
+        });
     }
 
     @FXML
@@ -160,12 +198,7 @@ public class UserManagementController implements Initializable {
             return;
         }
 
-        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("تصدير البيانات");
-        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-        fileChooser.setInitialFileName("users_" + java.time.LocalDate.now() + ".csv");
-
-        java.io.File file = fileChooser.showSaveDialog(userTable.getScene().getWindow());
+        java.io.File file = exportService.chooseCSVFile(userTable.getScene().getWindow(), "users");
         if (file != null) {
             concurrencyManager.runAsync(
                 () -> {

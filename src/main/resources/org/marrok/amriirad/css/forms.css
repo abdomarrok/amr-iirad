@@ -1,0 +1,23 @@
+/* Form Component Styles */
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-theme-text-primary;
+}
+
+.form-label-required::after {
+    content: " *";
+    -fx-fill: -fx-theme-danger;
+    color: -fx-theme-danger;
+}
+
+.form-control-invalid {
+    -fx-border-color: -fx-theme-danger !important;
+    -fx-border-width: 2px !important;
+}
+
+.form-error-text {
+    -fx-text-fill: -fx-theme-danger;
+    -fx-font-size: 12px;
+}

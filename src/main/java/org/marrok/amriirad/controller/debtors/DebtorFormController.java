@@ -23,7 +23,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
 
     private static final Logger logger = LogManager.getLogger(DebtorFormController.class);
 
-    @FXML private Label titleLabel;
+    @FXML private javafx.scene.layout.VBox root;
     @FXML private ComboBox<DebtorType> typeCombo;
     @FXML private TextField fullNameField;
     @FXML private TextField idNumberField;
@@ -33,8 +33,7 @@ public class DebtorFormController extends BaseFormController implements Initiali
     @FXML private TextField cnasNumberField;
     @FXML private TextField nifNumberField;
     @FXML private TextField nisNumberField;
-    @FXML private Label errorLabel;
-    
+
     private final DebtorRepository debtorRepo;
     private Debtor currentDebtor;
 
@@ -62,6 +61,20 @@ public class DebtorFormController extends BaseFormController implements Initiali
         });
 
         typeCombo.setValue(DebtorType.INDIVIDUAL);
+        setupDirtyTracking();
+        setupCommonShortcuts(root, this::handleSave);
+    }
+
+    private void setupDirtyTracking() {
+        fullNameField.textProperty().addListener((o, ov, nv) -> markDirty());
+        typeCombo.valueProperty().addListener((o, ov, nv) -> markDirty());
+        idNumberField.textProperty().addListener((o, ov, nv) -> markDirty());
+        addressField.textProperty().addListener((o, ov, nv) -> markDirty());
+        phoneField.textProperty().addListener((o, ov, nv) -> markDirty());
+        if (bankAccountField != null) bankAccountField.textProperty().addListener((o, ov, nv) -> markDirty());
+        if (cnasNumberField != null) cnasNumberField.textProperty().addListener((o, ov, nv) -> markDirty());
+        if (nifNumberField != null) nifNumberField.textProperty().addListener((o, ov, nv) -> markDirty());
+        if (nisNumberField != null) nisNumberField.textProperty().addListener((o, ov, nv) -> markDirty());
     }
 
     public void initForCreate(Runnable onSuccess) {
@@ -84,12 +97,15 @@ public class DebtorFormController extends BaseFormController implements Initiali
         if (cnasNumberField != null) cnasNumberField.setText(debtor.getCnasNumber());
         if (nifNumberField != null) nifNumberField.setText(debtor.getNifNumber());
         if (nisNumberField != null) nisNumberField.setText(debtor.getNisNumber());
+
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     @FXML
     private void handleSave() {
         if (!validateForm()) return;
         clearError();
+        setLoading(true);
 
         currentDebtor.setDebtorType(typeCombo.getValue());
         currentDebtor.setFullName(fullNameField.getText() != null ? fullNameField.getText().trim() : "");
@@ -111,19 +127,33 @@ public class DebtorFormController extends BaseFormController implements Initiali
                 return true;
             },
             res -> {
+                setLoading(false);
+                clearDirty();
                 DialogHelper.showInfo("نجاح", "تم حفظ بيانات المدين بنجاح.");
                 closeWindow();
                 runOnSuccess();
             },
-            err -> showError(err.getMessage())
+            err -> {
+                setLoading(false);
+                showError(err.getMessage());
+            }
         );
     }
 
     @Override
     protected boolean validateForm() {
         clearError();
+        setInvalid(fullNameField, false);
+        setInvalid(addressField, false);
+
         if (fullNameField.getText() == null || fullNameField.getText().trim().isEmpty()) {
+            setInvalid(fullNameField, true);
             showError("الاسم الكامل مطلوب.");
+            return false;
+        }
+        if (addressField.getText() == null || addressField.getText().trim().isEmpty()) {
+            setInvalid(addressField, true);
+            showError("العنوان مطلوب.");
             return false;
         }
         return true;

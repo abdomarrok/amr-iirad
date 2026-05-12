@@ -1,6 +1,7 @@
 @import "theme.css";
 @import "tableview.css";
 @import "buttons.css";
+@import "forms.css";
 
 /* Base Styles */
 .root {

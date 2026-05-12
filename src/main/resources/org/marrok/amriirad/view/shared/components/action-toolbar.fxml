@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<HBox alignment="CENTER_LEFT" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="org.marrok.amriirad.controller.shared.components.ActionToolbarController">
+    
+    <Button fx:id="addBtn" onAction="#onAdd" styleClass="btn-primary">
+        <graphic><FontIcon iconLiteral="fas-plus" styleClass="icon-white"/></graphic>
+        <tooltip><Tooltip text="إضافة جديد"/></tooltip>
+    </Button>
+    
+    <Button fx:id="editBtn" onAction="#onEdit" styleClass="btn-outline">
+        <graphic><FontIcon iconLiteral="fas-edit" styleClass="icon-primary"/></graphic>
+        <tooltip><Tooltip text="تعديل"/></tooltip>
+    </Button>
+    
+    <Button fx:id="deleteBtn" onAction="#onDelete" styleClass="btn-danger-outline">
+        <graphic><FontIcon iconLiteral="fas-trash" styleClass="icon-danger"/></graphic>
+        <tooltip><Tooltip text="حذف"/></tooltip>
+    </Button>
+    
+    <Separator orientation="VERTICAL" prefHeight="20.0" />
+    
+    <Button fx:id="refreshBtn" onAction="#onRefresh" styleClass="btn-icon, btn-outline">
+        <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
+        <tooltip><Tooltip text="تحديث"/></tooltip>
+    </Button>
+    
+    <Button fx:id="exportBtn" onAction="#onExport" styleClass="btn-icon, btn-outline">
+        <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>
+        <tooltip><Tooltip text="تصدير"/></tooltip>
+    </Button>
+
+</HBox>

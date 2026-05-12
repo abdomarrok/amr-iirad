@@ -22,6 +22,17 @@ public class ExportService {
     private static final Logger logger = LogManager.getLogger(ExportService.class);
 
     /**
+     * Standardized file chooser for CSV exports.
+     */
+    public File chooseCSVFile(javafx.stage.Window owner, String baseName) {
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("تصدير البيانات / Export Data");
+        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName(baseName + "_" + java.time.LocalDate.now() + ".csv");
+        return fileChooser.showSaveDialog(owner);
+    }
+
+    /**
      * Export a list of revenue orders to a CSV file.
      * Includes BOM for correct Arabic rendering in Excel.
      */

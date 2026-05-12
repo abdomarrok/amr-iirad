@@ -26,21 +26,14 @@
                     <Label styleClass="text-muted" text="إدارة شجرة الحسابات وبنود الميزانية (عنوان، فصل، مادة، فقرة)" />
                 </VBox>
                 
-                <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                    <TextField fx:id="searchField" promptText="بحث عن بند..." prefWidth="250.0" styleClass="text-field-search" />
-                    <ComboBox fx:id="levelFilterCombo" promptText="المستوى" prefWidth="150.0" />
-                    <Button onAction="#handleRefresh" styleClass="btn-outline">
-                        <graphic><FontIcon iconLiteral="fas-sync" styleClass="icon-primary"/></graphic>
-                        <tooltip><Tooltip text="تحديث القائمة"/></tooltip>
-                    </Button>
-                    <Button onAction="#handleExport" styleClass="btn-outline">
-                        <graphic><FontIcon iconLiteral="fas-download" styleClass="icon-primary"/></graphic>
-                        <tooltip><Tooltip text="تصدير إلى CSV"/></tooltip>
-                    </Button>
-                    <Button fx:id="addChapterBtn" onAction="#handleAddChapter" styleClass="btn-primary" text="بند جديد">
-                        <tooltip><Tooltip text="إضافة بند ميزانية جديد" /></tooltip>
-                        <graphic><FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="icon-white"/></graphic>
-                    </Button>
+                <HBox spacing="15.0" alignment="CENTER_RIGHT">
+                    <!-- Filter Bar -->
+                    <fx:include fx:id="filterBar" source="../shared/components/filter-bar.fxml" />
+                    
+                    <Separator orientation="VERTICAL" prefHeight="30.0" />
+                    
+                    <!-- Action Toolbar -->
+                    <fx:include fx:id="actionToolbar" source="../shared/components/action-toolbar.fxml" />
                 </HBox>
             </HBox>
 
@@ -58,6 +51,8 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
+                
+                <fx:include fx:id="emptyState" source="../shared/components/empty-state.fxml" />
                 
                 <ProgressIndicator fx:id="loadingIndicator" visible="false" maxWidth="50" maxHeight="50" />
             </StackPane>

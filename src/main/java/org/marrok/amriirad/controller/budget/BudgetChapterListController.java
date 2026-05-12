@@ -48,14 +48,12 @@ public class BudgetChapterListController implements Initializable {
     @FXML
     private TableColumn<BudgetChapter, String> colParent;
 
-    @FXML
-    private TextField searchField;
-    @FXML
+    @FXML private org.marrok.amriirad.controller.shared.components.FilterBarController filterBarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.ActionToolbarController actionToolbarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
+    @FXML private ProgressIndicator loadingIndicator;
+
     private ComboBox<Integer> levelFilterCombo;
-    @FXML
-    private ProgressIndicator loadingIndicator;
-    @FXML
-    private Button addChapterBtn;
 
     private AsyncTableLoader<BudgetChapter> tableLoader;
 
@@ -78,26 +76,44 @@ public class BudgetChapterListController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (topBarController != null) {
             topBarController.setBackVisible(true);
-            // Reload data when fiscal year changes in the top bar
             topBarController.getFiscalYearCombo().valueProperty().addListener((obs, oldV, newV) -> {
                 if (newV != null) loadDataAsync();
             });
         }
-        checkPermissions();
+        
         tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
+        
         initColumns();
         setupFilters();
+        setupToolbar();
+        setupEmptyState();
         setupTableInteraction();
+        
         loadDataAsync();
     }
 
-    private void checkPermissions() {
-        if (addChapterBtn != null) {
-            boolean canAdd = authService.canDo("budget_chapter.manage");
-            addChapterBtn.setVisible(canAdd);
-            addChapterBtn.setManaged(canAdd);
-        }
+    private void setupToolbar() {
+        actionToolbarController.init(
+            this::handleAddChapter,
+            null, // Edit by double click
+            null, // Delete not implemented
+            this::loadDataAsync,
+            this::handleExport
+        );
+        actionToolbarController.setAddText("بند جديد");
+        
+        actionToolbarController.setAddVisible(authService.canDo("budget_chapter.manage"));
     }
+
+    private void setupEmptyState() {
+        emptyStateController.init(
+            "لا توجد محاور ميزانية",
+            "لم يتم العثور على أي محاور ميزانية مسجلة لهذه السنة المالية.",
+            "fas-folder-open",
+            this::handleAddChapter
+        );
+    }
+
 
     private void initColumns() {
         colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -122,6 +138,9 @@ public class BudgetChapterListController implements Initializable {
     }
 
     private void setupFilters() {
+        levelFilterCombo = new ComboBox<>();
+        levelFilterCombo.setPromptText("المستوى");
+        levelFilterCombo.setPrefWidth(150.0);
         levelFilterCombo.setItems(FXCollections.observableArrayList(null, 1, 2, 3, 4));
         levelFilterCombo.setConverter(new javafx.util.StringConverter<Integer>() {
             @Override
@@ -143,7 +162,10 @@ public class BudgetChapterListController implements Initializable {
             }
         });
 
-        searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
+        filterBarController.setSearchPrompt("بحث عن بند...");
+        filterBarController.addFilter(levelFilterCombo);
+
+        filterBarController.getSearchField().textProperty().addListener((obs, oldV, newV) -> updatePredicate());
         levelFilterCombo.valueProperty().addListener((obs, oldV, newV) -> updatePredicate());
     }
 
@@ -152,7 +174,7 @@ public class BudgetChapterListController implements Initializable {
         if (filteredList == null)
             return;
 
-        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String search = filterBarController.getSearchField().getText() == null ? "" : filterBarController.getSearchField().getText().toLowerCase();
         Integer level = levelFilterCombo.getValue();
 
         filteredList.setPredicate(bc -> {
@@ -216,7 +238,10 @@ public class BudgetChapterListController implements Initializable {
     private void loadDataAsync() {
         var selectedYear = topBarController.getFiscalYearCombo().getValue();
         if (selectedYear != null) {
-            tableLoader.load(() -> chapterRepo.findAll(selectedYear.getId()));
+            tableLoader.load(() -> chapterRepo.findAll(selectedYear.getId()), chapters -> {
+                emptyStateController.show(chapters.isEmpty());
+                tableView.setVisible(!chapters.isEmpty());
+            });
         }
     }
 
@@ -232,12 +257,7 @@ public class BudgetChapterListController implements Initializable {
             return;
         }
 
-        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("تصدير البيانات");
-        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-        fileChooser.setInitialFileName("budget_chapters_" + java.time.LocalDate.now() + ".csv");
-
-        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        java.io.File file = exportService.chooseCSVFile(tableView.getScene().getWindow(), "budget_chapters");
         if (file != null) {
             concurrencyManager.runAsync(
                 () -> {

@@ -45,10 +45,12 @@ public class DebtorListController implements Initializable {
     @FXML private TableColumn<Debtor, String> colPhone;
     @FXML private TableColumn<Debtor, String> colAddress;
 
-    @FXML private TextField searchField;
-    @FXML private ComboBox<DebtorType> typeFilterCombo;
+    @FXML private org.marrok.amriirad.controller.shared.components.FilterBarController filterBarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.ActionToolbarController actionToolbarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
     @FXML private ProgressIndicator loadingIndicator;
-    @FXML private Button addDebtorBtn;
+
+    private ComboBox<DebtorType> typeFilterCombo;
 
     private AsyncTableLoader<Debtor> tableLoader;
 
@@ -72,22 +74,41 @@ public class DebtorListController implements Initializable {
         if (topBarController != null) {
             topBarController.setBackVisible(true);
         }
-        checkPermissions();
+        
         tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
+        
         initColumns();
         setupFilters();
+        setupToolbar();
+        setupEmptyState();
         setupTableInteraction();
+        
         loadDataAsync();
     }
 
-    private void checkPermissions() {
+    private void setupToolbar() {
+        actionToolbarController.init(
+            this::handleAddDebtor,
+            null, // Edit handled by double click
+            null, // Delete not implemented yet
+            this::loadDataAsync,
+            this::handleExport
+        );
+        actionToolbarController.setAddText("مدين جديد");
+        
         var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        if (addDebtorBtn != null) {
-            boolean canAdd = auth.canDo("debtors.create");
-            addDebtorBtn.setVisible(canAdd);
-            addDebtorBtn.setManaged(canAdd);
-        }
+        actionToolbarController.setAddVisible(auth.canDo("debtors.create"));
     }
+
+    private void setupEmptyState() {
+        emptyStateController.init(
+            "لا يوجد مدينين",
+            "لم يتم العثور على أي مدينين مسجلين في النظام.",
+            "fas-users-slash",
+            this::handleAddDebtor
+        );
+    }
+
 
     private void initColumns() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -103,10 +124,12 @@ public class DebtorListController implements Initializable {
     }
 
     private void setupFilters() {
+        typeFilterCombo = new ComboBox<>();
+        typeFilterCombo.setPromptText("نوع المدين");
+        typeFilterCombo.setPrefWidth(150.0);
         typeFilterCombo.getItems().addAll(DebtorType.values());
         typeFilterCombo.getItems().add(0, null); // "All"
 
-        // Display Arabic labels in the filter combo
         typeFilterCombo.setConverter(new javafx.util.StringConverter<DebtorType>() {
             @Override
             public String toString(DebtorType type) {
@@ -119,7 +142,11 @@ public class DebtorListController implements Initializable {
             }
         });
 
-        searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
+        filterBarController.setSearchPrompt("بحث عن مدين...");
+        filterBarController.addFilter(typeFilterCombo);
+
+        // Bind filter to input changes
+        filterBarController.getSearchField().textProperty().addListener((obs, oldV, newV) -> updatePredicate());
         typeFilterCombo.valueProperty().addListener((obs, oldV, newV) -> updatePredicate());
     }
 
@@ -127,7 +154,7 @@ public class DebtorListController implements Initializable {
         FilteredList<Debtor> filteredList = tableLoader.getFilteredList();
         if (filteredList == null) return;
         
-        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String search = filterBarController.getSearchField().getText() == null ? "" : filterBarController.getSearchField().getText().toLowerCase();
         DebtorType type = typeFilterCombo.getValue();
 
         filteredList.setPredicate(debtor -> {
@@ -181,7 +208,10 @@ public class DebtorListController implements Initializable {
     }
 
     private void loadDataAsync() {
-        tableLoader.load(() -> debtorRepo.findAll());
+        tableLoader.load(() -> debtorRepo.findAll(), debtors -> {
+            emptyStateController.show(debtors.isEmpty());
+            tableView.setVisible(!debtors.isEmpty());
+        });
     }
 
     @FXML
@@ -196,12 +226,7 @@ public class DebtorListController implements Initializable {
             return;
         }
 
-        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("تصدير البيانات");
-        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-        fileChooser.setInitialFileName("debtors_" + java.time.LocalDate.now() + ".csv");
-
-        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        java.io.File file = exportService.chooseCSVFile(tableView.getScene().getWindow(), "debtors");
         if (file != null) {
             concurrencyManager.runAsync(
                 () -> {

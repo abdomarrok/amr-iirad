@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="root" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-background-radius: 12;" 
+           visible="false" managed="false" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    
+    <VBox alignment="CENTER" spacing="10.0">
+        <ProgressIndicator maxWidth="50" maxHeight="50" />
+        <Label styleClass="text-body, text-primary" style="-fx-font-weight: bold;" text="جاري التحميل..." />
+    </VBox>
+
+</StackPane>

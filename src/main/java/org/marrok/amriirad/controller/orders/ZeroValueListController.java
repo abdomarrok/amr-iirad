@@ -95,12 +95,7 @@ public class ZeroValueListController extends BaseController implements Initializ
             return;
         }
 
-        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("تصدير البيانات");
-        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-        fileChooser.setInitialFileName("zero_value_decisions_" + java.time.LocalDate.now() + ".csv");
-
-        File file = fileChooser.showSaveDialog(decisionTable.getScene().getWindow());
+        java.io.File file = exportService.chooseCSVFile(decisionTable.getScene().getWindow(), "zero_value_decisions");
         if (file != null) {
             concurrencyManager.runAsync(
                 () -> {

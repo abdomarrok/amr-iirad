@@ -6,7 +6,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import java.net.URL?>
-<VBox prefWidth="750" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox fx:id="root" prefWidth="750" spacing="20" styleClass="modal-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.marrok.amriirad.controller.orders.RevenueOrderFormController">
     <padding>
         <Insets bottom="25" left="25" right="25" top="25"/>
@@ -35,10 +35,10 @@
             <Label styleClass="form-label" text="السنة المالية / Exercice :" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="fiscalYearField" editable="false" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-            <Label styleClass="form-label" text="تاريخ الإصدار / Date d'Émission :" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label styleClass="form-label, form-label-required" text="تاريخ الإصدار / Date d'Émission :" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <DatePicker fx:id="issueDatePicker" prefWidth="250" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-            <Label styleClass="form-label" text="المدين / Débiteur :" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label styleClass="form-label, form-label-required" text="المدين / Débiteur :" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <ComboBox fx:id="debtorCombo" prefWidth="300" promptText="اختر المدين..."/>
                 <Button styleClass="btn-outline" onAction="#handleNewDebtor">
@@ -47,7 +47,7 @@
                 </Button>
             </HBox>
 
-            <Label styleClass="form-label" text="محور الميزانية / Chapitre :" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Label styleClass="form-label, form-label-required" text="محور الميزانية / Chapitre :" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
             <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
                 <ComboBox fx:id="budgetChapterCombo" prefWidth="400" promptText="اختر البند/المحور..."/>
                 <Button styleClass="btn-outline" onAction="#handleNewBudgetChapter">
@@ -56,10 +56,10 @@
                 </Button>
             </HBox>
 
-            <Label styleClass="form-label" text="المبلغ (د.ج) / Montant (DA) :" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <Label styleClass="form-label, form-label-required" text="المبلغ (د.ج) / Montant (DA) :" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
             <TextField fx:id="amountField" promptText="0.00" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="200"/>
 
-            <Label styleClass="form-label" text="الموضوع / Objet (Ar) :" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
+            <Label styleClass="form-label, form-label-required" text="الموضوع / Objet (Ar) :" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP"/>
             <TextArea fx:id="objectField" prefRowCount="2" promptText="موضوع الإيراد وأساس التصفية..." GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
             <Label styleClass="form-label" text="Objet (Fr) :" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.valignment="TOP"/>

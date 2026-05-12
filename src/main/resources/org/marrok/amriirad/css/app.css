@@ -575,6 +575,12 @@
     -fx-background-color: white;
 }
 
+.form-label-required::after {
+    content: " *";
+    -fx-fill: #e74c3c;
+    color: #e74c3c;
+}
+
 .form-label {
     -fx-font-size: 13px;
     -fx-font-weight: bold;

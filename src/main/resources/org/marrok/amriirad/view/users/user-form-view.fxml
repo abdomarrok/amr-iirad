@@ -22,36 +22,27 @@
             <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
         
-        <HBox spacing="3.0" GridPane.rowIndex="0">
-            <Label text="اسم المستخدم:" />
-            <Label text="*" styleClass="required-indicator" />
-        </HBox>
+        <Label styleClass="form-label, form-label-required" text="اسم المستخدم:" GridPane.rowIndex="0" />
         <TextField fx:id="usernameField" promptText="مثال: admin_1" GridPane.columnIndex="1" GridPane.rowIndex="0">
             <tooltip><Tooltip text="اسم فريد للدخول إلى النظام (لا يتضمن مسافات)" /></tooltip>
         </TextField>
         
-        <Label text="الاسم الكامل:" GridPane.rowIndex="1" />
+        <Label styleClass="form-label" text="الاسم الكامل:" GridPane.rowIndex="1" />
         <TextField fx:id="fullNameField" promptText="الاسم واللقب" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <tooltip><Tooltip text="الاسم الكامل للمستخدم كما يظهر في التقارير" /></tooltip>
         </TextField>
         
-        <HBox spacing="3.0" GridPane.rowIndex="2">
-            <Label text="كلمة المرور:" />
-            <Label text="*" styleClass="required-indicator" />
-        </HBox>
+        <Label styleClass="form-label, form-label-required" text="كلمة المرور:" GridPane.rowIndex="2" />
         <PasswordField fx:id="passwordField" promptText="اتركه فارغاً للحفاظ على الكلمة الحالية" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <tooltip><Tooltip text="كلمة مرور قوية (الحروف الكبيرة والصغيرة والأرقام والرموز)" /></tooltip>
         </PasswordField>
         
-        <HBox spacing="3.0" GridPane.rowIndex="3">
-            <Label text="الدور / الصلاحية:" />
-            <Label text="*" styleClass="required-indicator" />
-        </HBox>
+        <Label styleClass="form-label, form-label-required" text="الدور / الصلاحية:" GridPane.rowIndex="3" />
         <ComboBox fx:id="roleCombo" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <tooltip><Tooltip text="حدد الدور لتعيين الصلاحيات المناسبة" /></tooltip>
         </ComboBox>
         
-        <Label text="الحالة:" GridPane.rowIndex="4" />
+        <Label styleClass="form-label" text="الحالة:" GridPane.rowIndex="4" />
         <CheckBox fx:id="activeCheck" selected="true" text="حساب نشط" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <tooltip><Tooltip text="الحسابات المجمدة لا تستطيع الدخول للنظام" /></tooltip>
         </CheckBox>

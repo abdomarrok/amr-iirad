@@ -19,20 +19,12 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
     private static final Logger logger = LogManager.getLogger(BudgetChapterFormController.class);
 
-    @FXML
-    private Label titleLabel;
-    @FXML
-    private ComboBox<Integer> levelCombo;
-    @FXML
-    private TextField codeField;
-    @FXML
-    private TextField labelArField;
-    @FXML
-    private TextField labelFrField;
-    @FXML
-    private ComboBox<BudgetChapter> parentCombo;
-    @FXML
-    private Label errorLabel;
+    @FXML private javafx.scene.layout.VBox root;
+    @FXML private ComboBox<Integer> levelCombo;
+    @FXML private TextField codeField;
+    @FXML private TextField labelArField;
+    @FXML private TextField labelFrField;
+    @FXML private ComboBox<BudgetChapter> parentCombo;
 
     private final BudgetChapterRepository chapterRepo;
     private BudgetChapter currentChapter;
@@ -73,45 +65,60 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
         levelCombo.setValue(2); // Default to Chapitre
 
-        // Load parent chapters for hierarchical support
-        loadParentChapters();
+        parentCombo.setConverter(new javafx.util.StringConverter<BudgetChapter>() {
+            @Override
+            public String toString(BudgetChapter chapter) {
+                if (chapter == null) return "";
+                return chapter.getCode() + " - " + chapter.getLabelAr();
+            }
+            @Override
+            public BudgetChapter fromString(String string) { return null; }
+        });
 
         // When level changes, update parent combo
         levelCombo.valueProperty().addListener((obs, oldV, newV) -> {
+            markDirty();
             if (newV != null && newV > 1) {
-                loadParentChapters();
+                loadParentChapters(null);
             } else {
                 parentCombo.getItems().clear();
             }
         });
+        
+        setupDirtyTracking();
+        setupCommonShortcuts(root, this::handleSave);
     }
 
-    private void loadParentChapters() {
+    private void setupDirtyTracking() {
+        codeField.textProperty().addListener((o, ov, nv) -> markDirty());
+        labelArField.textProperty().addListener((o, ov, nv) -> markDirty());
+        labelFrField.textProperty().addListener((o, ov, nv) -> markDirty());
+        parentCombo.valueProperty().addListener((o, ov, nv) -> markDirty());
+    }
+
+    private void loadParentChapters(Integer idToSelect) {
+        if (currentChapter == null) return;
+        
         concurrencyManager.runAsync(
-                () -> {
+            () -> {
                 Integer level = levelCombo.getValue();
                 if (level == null || level <= 1) {
                     return chapterRepo.findAll(currentChapter.getFiscalYearId());
                 }
                 return chapterRepo.findByLevel(currentChapter.getFiscalYearId(), level - 1);
-                },
-                result -> {
-                    parentCombo.setItems(FXCollections.observableArrayList((java.util.List<BudgetChapter>) result));
-                    parentCombo.setConverter(new javafx.util.StringConverter<BudgetChapter>() {
-                        @Override
-                        public String toString(BudgetChapter chapter) {
-                            if (chapter == null)
-                                return "";
-                            return chapter.getCode() + " - " + chapter.getLabelAr();
-                        }
-
-                        @Override
-                        public BudgetChapter fromString(String string) {
-                            return null;
-                        }
-                    });
-                },
-                err -> showError("خطأ في تحميل البنود الأب: " + err.getMessage()));
+            },
+            result -> {
+                java.util.List<BudgetChapter> parents = (java.util.List<BudgetChapter>) result;
+                parentCombo.setItems(FXCollections.observableArrayList(parents));
+                if (idToSelect != null) {
+                    parents.stream()
+                        .filter(p -> p.getId() == idToSelect)
+                        .findFirst()
+                        .ifPresent(parentCombo.getSelectionModel()::select);
+                }
+            },
+            err -> showError("خطأ في تحميل البنود الأب: " + err.getMessage())
+        );
     }
 
     public void initForCreate(int fiscalYearId, Runnable onSuccess) {
@@ -119,6 +126,9 @@ public class BudgetChapterFormController extends BaseFormController implements I
         this.currentChapter.setFiscalYearId(fiscalYearId);
         this.onSuccess = onSuccess;
         titleLabel.setText("إضافة بند/محور جديد");
+        
+        loadParentChapters(null);
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     public void initForEdit(BudgetChapter chapter, Runnable onSuccess) {
@@ -131,21 +141,9 @@ public class BudgetChapterFormController extends BaseFormController implements I
         labelArField.setText(chapter.getLabelAr());
         labelFrField.setText(chapter.getLabelFr());
 
-        // Select parent chapter after loading the list
-        if (chapter.getParentId() != null) {
-            concurrencyManager.runAsync(
-                () -> chapterRepo.findByLevel(chapter.getFiscalYearId(), chapter.getLevel() - 1),
-                result -> {
-                    java.util.List<BudgetChapter> parents = (java.util.List<BudgetChapter>) result;
-                    parentCombo.setItems(FXCollections.observableArrayList(parents));
-                    parents.stream()
-                        .filter(p -> p.getId() == chapter.getParentId())
-                        .findFirst()
-                        .ifPresent(parentCombo.getSelectionModel()::select);
-                },
-                err -> logger.error("Failed to load parent during edit init", err)
-            );
-        }
+        loadParentChapters(chapter.getParentId());
+        
+        javafx.application.Platform.runLater(this::clearDirty);
     }
 
     @FXML
@@ -153,6 +151,7 @@ public class BudgetChapterFormController extends BaseFormController implements I
         if (!validateForm())
             return;
         clearError();
+        setLoading(true);
 
         currentChapter.setLevel(levelCombo.getValue());
         currentChapter.setCode(codeField.getText().trim());
@@ -166,12 +165,15 @@ public class BudgetChapterFormController extends BaseFormController implements I
         concurrencyManager.runAsync(
                 () -> chapterRepo.save(currentChapter),
                 result -> {
+                    setLoading(false);
+                    clearDirty();
                     logger.info("Saved budget chapter: {}", result.getCode());
                     org.marrok.amriirad.util.DialogHelper.showInfo("نجاح", "تم حفظ بند الميزانية بنجاح.");
                     closeWindow();
                     runOnSuccess();
                 },
                 err -> {
+                    setLoading(false);
                     String msg = err.getMessage();
                     if (msg.contains("Duplicate entry")) {
                         showError("هذا الرمز موجود بالفعل في هذه السنة المالية.");
@@ -183,28 +185,40 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
     @Override
     protected boolean validateForm() {
+        clearError();
+        setInvalid(codeField, false);
+        setInvalid(labelArField, false);
+        setInvalid(labelFrField, false);
+        setInvalid(levelCombo, false);
+        setInvalid(parentCombo, false);
+
         String code = codeField.getText() == null ? "" : codeField.getText().trim();
         String labelAr = labelArField.getText() == null ? "" : labelArField.getText().trim();
         String labelFr = labelFrField.getText() == null ? "" : labelFrField.getText().trim();
         Integer level = levelCombo.getValue();
 
         if (code.isEmpty()) {
+            setInvalid(codeField, true);
             showError("يجب إدخال الرمز");
             return false;
         }
         if (labelAr.isEmpty()) {
+            setInvalid(labelArField, true);
             showError("يجب إدخال التسمية بالعربية");
             return false;
         }
         if (labelFr.isEmpty()) {
+            setInvalid(labelFrField, true);
             showError("يجب إدخال التسمية بالفرنسية");
             return false;
         }
         if (level == null) {
+            setInvalid(levelCombo, true);
             showError("يجب اختيار المستوى");
             return false;
         }
         if (level > 1 && parentCombo.getValue() == null) {
+            setInvalid(parentCombo, true);
             showError("يجب اختيار البند الأب للمستويات من 2 فما فوق");
             return false;
         }
@@ -214,7 +228,7 @@ public class BudgetChapterFormController extends BaseFormController implements I
 
     @Override
     protected void showError(String msg) {
-        errorLabel.setText(msg);
+        super.showError(msg);
     }
 
     @Override

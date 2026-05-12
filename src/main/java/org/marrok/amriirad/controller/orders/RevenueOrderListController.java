@@ -49,10 +49,12 @@ public class RevenueOrderListController implements Initializable {
     @FXML private TableColumn<RevenueOrder, String> colAmount;
     @FXML private TableColumn<RevenueOrder, String> colStatus;
 
-    @FXML private TextField searchField;
-    @FXML private ComboBox<OrderStatus> statusFilterCombo;
+    @FXML private org.marrok.amriirad.controller.shared.components.FilterBarController filterBarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.ActionToolbarController actionToolbarController;
+    @FXML private org.marrok.amriirad.controller.shared.components.EmptyStateController emptyStateController;
     @FXML private ProgressIndicator loadingIndicator;
-    @FXML private Button addOrderBtn;
+
+    private ComboBox<OrderStatus> statusFilterCombo;
 
     private AsyncTableLoader<RevenueOrder> tableLoader;
 
@@ -84,22 +86,42 @@ public class RevenueOrderListController implements Initializable {
         if (topBarController != null) {
             topBarController.setBackVisible(true);
         }
-        checkPermissions();
+        
         tableLoader = new AsyncTableLoader<>(concurrencyManager, tableView, loadingIndicator);
+        
         initColumns();
         setupFilters();
+        setupToolbar();
+        setupEmptyState();
         setupTableInteraction();
+        
         loadDataAsync();
     }
 
-    private void checkPermissions() {
+    private void setupToolbar() {
+        actionToolbarController.init(
+            this::handleNewOrder,
+            null, // Edit handled by double click for now
+            null, // Delete handled inside form/details
+            this::loadDataAsync,
+            this::handleExport
+        );
+        actionToolbarController.setAddText("أمر جديد");
+        
+        // Permission check for Add button
         var auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        if (addOrderBtn != null) {
-            boolean canAdd = auth.canDo("orders.create");
-            addOrderBtn.setVisible(canAdd);
-            addOrderBtn.setManaged(canAdd);
-        }
+        actionToolbarController.setAddVisible(auth.canDo("orders.create"));
     }
+
+    private void setupEmptyState() {
+        emptyStateController.init(
+            "لا توجد أوامر إيراد",
+            "لم يتم العثور على أي أوامر إيراد مسجلة لهذه السنة المالية.",
+            "fas-file-invoice",
+            this::handleNewOrder
+        );
+    }
+
 
     private void initColumns() {
         colOrderNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
@@ -133,10 +155,12 @@ public class RevenueOrderListController implements Initializable {
     }
 
     private void setupFilters() {
+        statusFilterCombo = new ComboBox<>();
+        statusFilterCombo.setPromptText("تصفية بالحالة");
+        statusFilterCombo.setPrefWidth(150.0);
         statusFilterCombo.getItems().addAll(OrderStatus.values());
         statusFilterCombo.getItems().add(0, null); // "All" option
 
-        // Display Arabic labels in the filter combo
         statusFilterCombo.setConverter(new javafx.util.StringConverter<OrderStatus>() {
             @Override
             public String toString(OrderStatus status) {
@@ -149,8 +173,11 @@ public class RevenueOrderListController implements Initializable {
             }
         });
 
+        filterBarController.setSearchPrompt("بحث عن أمر...");
+        filterBarController.addFilter(statusFilterCombo);
+
         // Bind filter to input changes
-        searchField.textProperty().addListener((obs, oldV, newV) -> updatePredicate());
+        filterBarController.getSearchField().textProperty().addListener((obs, oldV, newV) -> updatePredicate());
         statusFilterCombo.valueProperty().addListener((obs, oldV, newV) -> updatePredicate());
     }
 
@@ -158,7 +185,7 @@ public class RevenueOrderListController implements Initializable {
         FilteredList<RevenueOrder> filteredList = tableLoader.getFilteredList();
         if (filteredList == null) return;
         
-        String search = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String search = filterBarController.getSearchField().getText() == null ? "" : filterBarController.getSearchField().getText().toLowerCase();
         OrderStatus status = statusFilterCombo.getValue();
 
         filteredList.setPredicate(order -> {
@@ -209,6 +236,9 @@ public class RevenueOrderListController implements Initializable {
                 return orderRepo.findAll(activeYear.getId());
             }
             return List.<RevenueOrder>of(); 
+        }, orders -> {
+            emptyStateController.show(orders.isEmpty());
+            tableView.setVisible(!orders.isEmpty());
         });
     }
 
@@ -224,12 +254,7 @@ public class RevenueOrderListController implements Initializable {
             return;
         }
 
-        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
-        fileChooser.setTitle("تصدير البيانات");
-        fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("CSV Files (*.csv)", "*.csv"));
-        fileChooser.setInitialFileName("revenue_orders_" + java.time.LocalDate.now() + ".csv");
-
-        java.io.File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
+        java.io.File file = exportService.chooseCSVFile(tableView.getScene().getWindow(), "revenue_orders");
         if (file != null) {
             concurrencyManager.runAsync(
                 () -> {
