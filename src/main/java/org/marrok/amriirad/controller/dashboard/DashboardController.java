@@ -1,11 +1,14 @@
 package org.marrok.amriirad.controller.dashboard;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.marrok.amriirad.controller.orders.RevenueOrderFormController;
 import org.marrok.amriirad.controller.shared.TopBarController;
@@ -23,23 +26,29 @@ import org.marrok.amriirad.repository.RevenueOrderRepository;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
- * Main dashboard controller.
- * Displays summary stats for the active fiscal year and provides quick-action navigation.
+ * Simplified Dashboard Controller focusing on stats and recent activity.
  */
 public class DashboardController implements Initializable {
 
     private static final Logger logger = LogManager.getLogger(DashboardController.class);
 
-    @FXML private org.marrok.amriirad.controller.shared.TopBarController topBarController;
-    @FXML private org.marrok.amriirad.controller.shared.FooterController footerController;
+    @FXML private TopBarController topBarController;
+    @FXML private FooterController footerController;
 
     @FXML private Label totalOrdersLabel;
     @FXML private Label issuedOrdersLabel;
     @FXML private Label dispatchedOrdersLabel;
     @FXML private Label totalAmountLabel;
+
+    @FXML private TableView<RevenueOrder> recentOrdersTable;
+    @FXML private TableColumn<RevenueOrder, String> colRecentNumber;
+    @FXML private TableColumn<RevenueOrder, String> colRecentDebtor;
+    @FXML private TableColumn<RevenueOrder, BigDecimal> colRecentAmount;
 
     @FXML private javafx.scene.control.Button newOrderBtn;
     @FXML private javafx.scene.control.Button orderListBtn;
@@ -61,9 +70,9 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        topBarController.setBackVisible(false); // No back on dashboard
-        
-        // Listen to fiscal year changes from the centralized top bar
+        topBarController.setBackVisible(false);
+        setupRecentTable();
+
         topBarController.getFiscalYearCombo().getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 refreshStats();
@@ -74,15 +83,20 @@ public class DashboardController implements Initializable {
         refreshStats();
     }
 
+    private void setupRecentTable() {
+        if (recentOrdersTable == null) return;
+        colRecentNumber.setCellValueFactory(new PropertyValueFactory<>("orderNumber"));
+        colRecentDebtor.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(
+                cell.getValue().getDebtor() != null ? cell.getValue().getDebtor().getFullName() : "---"));
+        colRecentAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+    }
+
     private void checkPermissions() {
-        org.marrok.amriirad.service.AuthService auth = org.marrok.amriirad.core.AppContext.getInstance().getAuthService();
-        
-        // Local action buttons
-        setBtnVisible(newOrderBtn, auth.canView("orders"));
-        setBtnVisible(orderListBtn, auth.canView("orders"));
-        setBtnVisible(debtorsBtn, auth.canView("debtors"));
-        setBtnVisible(dispatchBtn, auth.canView("orders"));
-        setBtnVisible(budgetChaptersBtn, auth.canDo("budget_chapter.manage"));
+        setBtnVisible(newOrderBtn, authService.canView("orders"));
+        setBtnVisible(orderListBtn, authService.canView("orders"));
+        setBtnVisible(debtorsBtn, authService.canView("debtors"));
+        setBtnVisible(dispatchBtn, authService.canView("orders"));
+        setBtnVisible(budgetChaptersBtn, authService.canDo("budget_chapter.manage"));
     }
 
     private void setBtnVisible(javafx.scene.control.Button btn, boolean visible) {
@@ -99,26 +113,33 @@ public class DashboardController implements Initializable {
         try {
             List<RevenueOrder> allOrders = orderRepo.findAll(selected.getId());
 
+            // 1. Scalar Stats
             long totalCount = allOrders.size();
-            long issuedCount = allOrders.stream()
-                    .filter(o -> o.getStatus() == OrderStatus.ISSUED).count();
-            long dispatchedCount = allOrders.stream()
-                    .filter(o -> o.getStatus() == OrderStatus.DISPATCHED).count();
+            long issuedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.ISSUED).count();
+            long dispatchedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.DISPATCHED).count();
             BigDecimal totalAmount = allOrders.stream()
                     .map(RevenueOrder::getAmount)
-                    .filter(a -> a != null)
+                    .filter(Objects::nonNull)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             totalOrdersLabel.setText(String.valueOf(totalCount));
             issuedOrdersLabel.setText(String.valueOf(issuedCount));
             dispatchedOrdersLabel.setText(String.valueOf(dispatchedCount));
             totalAmountLabel.setText(String.format("%,.2f", totalAmount));
+
+            // 2. Recent Orders Table
+            if (recentOrdersTable != null) {
+                List<RevenueOrder> recent = allOrders.stream()
+                        .limit(8)
+                        .collect(Collectors.toList());
+                recentOrdersTable.setItems(FXCollections.observableArrayList(recent));
+            }
             
             footerController.setStatus("تم تحديث البيانات — " + selected.getYearLabel());
 
         } catch (Exception e) {
-            logger.error("Failed to refresh stats for year {}", selected.getYearLabel(), e);
-            footerController.setStatus("❌ خطأ في تحميل الإحصائيات");
+            logger.error("Failed to refresh dashboard stats", e);
+            footerController.setStatus("❌ خطأ في تحميل البيانات");
         }
     }
 

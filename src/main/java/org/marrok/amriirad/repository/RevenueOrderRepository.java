@@ -78,6 +78,18 @@ public class RevenueOrderRepository {
         return false;
     }
 
+    public boolean isDebtorInUse(int debtorId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM revenue_order WHERE debtor_id = ? AND is_deleted = 0";
+        try (Connection c = DatabaseConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, debtorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
     // -------------------------------------------------------------------------
     // WRITE
     // -------------------------------------------------------------------------

@@ -185,12 +185,26 @@ public class UserManagementController implements Initializable {
         }
 
         if (DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف المستخدم " + selected.getUsername() + "؟")) {
-            if (userRepository.delete(selected.getId())) {
-                loadDataAsync();
-                DialogHelper.showInfo("نجاح", "تم حذف المستخدم بنجاح.");
-            } else {
-                DialogHelper.showError("خطأ", "فشل حذف المستخدم.");
-            }
+            concurrencyManager.runAsync(
+                () -> userRepository.delete(selected.getId()),
+                success -> {
+                    if (success) {
+                        loadDataAsync();
+                        DialogHelper.showInfo("نجاح", "تم حذف المستخدم بنجاح.");
+                    } else {
+                        DialogHelper.showError("خطأ", "فشل حذف المستخدم.");
+                    }
+                },
+                err -> {
+                    logger.error("Failed to delete user", err);
+                    String msg = err.getMessage();
+                    if (msg != null && msg.contains("foreign key")) {
+                        DialogHelper.showError("خطأ", "لا يمكن حذف هذا المستخدم لأنه مرتبط ببيانات أخرى (مثل سجلات العمليات).");
+                    } else {
+                        DialogHelper.showError("خطأ", "تعذر حذف المستخدم: " + msg);
+                    }
+                }
+            );
         }
     }
 

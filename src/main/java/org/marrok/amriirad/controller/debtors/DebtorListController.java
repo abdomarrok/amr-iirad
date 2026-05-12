@@ -26,6 +26,8 @@ import org.marrok.amriirad.repository.DebtorRepository;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import org.marrok.amriirad.repository.RevenueOrderRepository;
 import org.marrok.amriirad.ui.AsyncTableLoader;
 import org.marrok.amriirad.service.ExportService;
 import org.marrok.amriirad.util.SceneManager;
@@ -55,15 +57,18 @@ public class DebtorListController implements Initializable {
     private AsyncTableLoader<Debtor> tableLoader;
 
     private final DebtorRepository debtorRepo;
+    private final RevenueOrderRepository revenueOrderRepo;
     private final org.marrok.amriirad.service.AuthService authService;
     private final ExportService exportService;
     private final ConcurrencyManager concurrencyManager;
 
     public DebtorListController(DebtorRepository debtorRepo, 
+                                RevenueOrderRepository revenueOrderRepo,
                                 org.marrok.amriirad.service.AuthService authService,
                                 ExportService exportService,
                                 ConcurrencyManager concurrencyManager) {
         this.debtorRepo = debtorRepo;
+        this.revenueOrderRepo = revenueOrderRepo;
         this.authService = authService;
         this.exportService = exportService;
         this.concurrencyManager = concurrencyManager;
@@ -188,9 +193,13 @@ public class DebtorListController implements Initializable {
             return;
         }
 
-        if (org.marrok.amriirad.util.DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف المدين: " + selected.getFullName() + "؟\nملاحظة: لا يمكن حذف مدين له أوامر إيراد مسجلة.")) {
+        if (org.marrok.amriirad.util.DialogHelper.showConfirmation("تأكيد الحذف", "هل أنت متأكد من حذف المدين: " + selected.getFullName() + "؟")) {
             concurrencyManager.runAsync(
                 () -> {
+                    // Pre-check: Is debtor linked to any orders?
+                    if (revenueOrderRepo.isDebtorInUse(selected.getId())) {
+                        throw new RuntimeException("DebtorInUse");
+                    }
                     debtorRepo.delete(selected.getId());
                     return true;
                 },
@@ -199,8 +208,17 @@ public class DebtorListController implements Initializable {
                     loadDataAsync();
                 },
                 err -> {
-                    logger.error("Failed to delete debtor", err);
-                    org.marrok.amriirad.util.DialogHelper.showError("خطأ", "تعذر حذف المدين. قد يكون مرتبطاً ببيانات أخرى.");
+                    if ("DebtorInUse".equals(err.getMessage())) {
+                        org.marrok.amriirad.util.DialogHelper.showError("خطأ", "لا يمكن حذف هذا المدين لأنه مرتبط بأوامر إيراد مسجلة.");
+                    } else {
+                        logger.error("Failed to delete debtor", err);
+                        String msg = err.getMessage();
+                        if (msg != null && msg.contains("foreign key")) {
+                            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "لا يمكن حذف هذا المدين لأنه مرتبط ببيانات أخرى في النظام.");
+                        } else {
+                            org.marrok.amriirad.util.DialogHelper.showError("خطأ", "تعذر حذف المدين: " + msg);
+                        }
+                    }
                 }
             );
         }

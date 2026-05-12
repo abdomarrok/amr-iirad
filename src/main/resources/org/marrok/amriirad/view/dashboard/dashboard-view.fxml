@@ -1,144 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-
 <?import java.net.URL?>
-<?import javafx.scene.layout.StackPane?>
-<BorderPane prefHeight="680" prefWidth="1100" styleClass="main-background" xmlns="http://javafx.com/javafx/21"
+
+<BorderPane prefHeight="720" prefWidth="1100" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.marrok.amriirad.controller.dashboard.DashboardController">
 
-    <!-- TOP BAR -->
     <top>
         <fx:include fx:id="topBar" source="../shared/top-bar.fxml" />
     </top>
 
-    <!-- MAIN CONTENT -->
     <center>
-        <VBox spacing="24">
+        <VBox spacing="24" styleClass="dashboard-content">
             <padding>
                 <Insets bottom="24" left="24" right="24" top="24"/>
             </padding>
 
-            <!-- Stats Row -->
-            <HBox spacing="16" alignment="CENTER">
-                <!-- Total Orders -->
-                <VBox styleClass="stat-card stat-card-primary" alignment="CENTER" spacing="12" HBox.hgrow="ALWAYS">
-                    <StackPane styleClass="stat-card-icon">
-                        <FontIcon iconLiteral="fas-file-invoice" iconSize="24" styleClass="icon-primary"/>
-                    </StackPane>
-                    <Label fx:id="totalOrdersLabel" styleClass="stat-value" text="0"/>
-                    <Label styleClass="stat-label" text="إجمالي الأوامر / Total Ordres"/>
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="4">
+                    <Label styleClass="dashboard-title" text="لوحة التحكم / Tableau de bord"/>
+                    <Label styleClass="dashboard-subtitle" text="ملخص النشاط المالي للسنة المالية المختارة"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="newOrderBtn" styleClass="btn-primary" onAction="#handleNewOrder" prefHeight="40" prefWidth="160">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-plus" iconSize="16" styleClass="icon-white"/>
+                    </graphic>
+                    <text>أمر إيراد جديد</text>
+                </Button>
+            </HBox>
+
+            <!-- STATS CARDS -->
+            <HBox spacing="16">
+                <VBox styleClass="stat-card, card-primary" HBox.hgrow="ALWAYS" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox>
+                            <Label styleClass="stat-card-label" text="إجمالي الأوامر"/>
+                            <Label fx:id="totalOrdersLabel" styleClass="stat-card-value" text="0"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <StackPane styleClass="stat-card-icon-bg">
+                            <FontIcon iconLiteral="fas-file-alt" iconSize="20"/>
+                        </StackPane>
+                    </HBox>
                 </VBox>
 
-                <!-- Issued -->
-                <VBox styleClass="stat-card stat-card-info" alignment="CENTER" spacing="12" HBox.hgrow="ALWAYS">
-                    <StackPane styleClass="stat-card-icon">
-                        <FontIcon iconLiteral="fas-check-circle" iconSize="24" styleClass="icon-info"/>
-                    </StackPane>
-                    <Label fx:id="issuedOrdersLabel" styleClass="stat-value" text="0"/>
-                    <Label styleClass="stat-label" text="أوامر مُصدرة / Émis"/>
+                <VBox styleClass="stat-card, card-info" HBox.hgrow="ALWAYS" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox>
+                            <Label styleClass="stat-card-label" text="أوامر مُصدرة"/>
+                            <Label fx:id="issuedOrdersLabel" styleClass="stat-card-value" text="0"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <StackPane styleClass="stat-card-icon-bg">
+                            <FontIcon iconLiteral="fas-check-circle" iconSize="20"/>
+                        </StackPane>
+                    </HBox>
                 </VBox>
 
-                <!-- Dispatched -->
-                <VBox styleClass="stat-card stat-card-success" alignment="CENTER" spacing="12" HBox.hgrow="ALWAYS">
-                    <StackPane styleClass="stat-card-icon">
-                        <FontIcon iconLiteral="fas-truck" iconSize="24" styleClass="icon-success"/>
-                    </StackPane>
-                    <Label fx:id="dispatchedOrdersLabel" styleClass="stat-value" text="0"/>
-                    <Label styleClass="stat-label" text="أوامر مُرسلة / Envoyés"/>
+                <VBox styleClass="stat-card, card-success" HBox.hgrow="ALWAYS" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox>
+                            <Label styleClass="stat-card-label" text="أوامر مُرسلة"/>
+                            <Label fx:id="dispatchedOrdersLabel" styleClass="stat-card-value" text="0"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <StackPane styleClass="stat-card-icon-bg">
+                            <FontIcon iconLiteral="fas-paper-plane" iconSize="20"/>
+                        </StackPane>
+                    </HBox>
                 </VBox>
 
-                <!-- Total Amount -->
-                <VBox styleClass="stat-card stat-card-warning" alignment="CENTER" spacing="12" HBox.hgrow="ALWAYS">
-                    <StackPane styleClass="stat-card-icon">
-                        <FontIcon iconLiteral="fas-coins" iconSize="24" styleClass="icon-warning"/>
-                    </StackPane>
-                    <Label fx:id="totalAmountLabel" styleClass="stat-value" text="0.00"/>
-                    <Label styleClass="stat-label" text="المبلغ الإجمالي (د.ج) / Montant (DA)"/>
+                <VBox styleClass="stat-card, card-warning" HBox.hgrow="ALWAYS" spacing="10">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox>
+                            <Label styleClass="stat-card-label" text="المبلغ الإجمالي (د.ج)"/>
+                            <Label fx:id="totalAmountLabel" styleClass="stat-card-value" text="0.00"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <StackPane styleClass="stat-card-icon-bg">
+                            <FontIcon iconLiteral="fas-coins" iconSize="20"/>
+                        </StackPane>
+                    </HBox>
                 </VBox>
             </HBox>
 
-            <Separator/>
+            <!-- MAIN WORK AREA -->
+            <HBox spacing="20" VBox.vgrow="ALWAYS">
+                
+                <!-- QUICK ACTIONS PANEL (LEFT) -->
+                <VBox styleClass="card" prefWidth="260" spacing="20">
+                    <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+                    <Label styleClass="chart-title" text="الوصول السريع"/>
+                    <VBox spacing="12">
+                        <Button fx:id="orderListBtn" onAction="#handleViewOrders" styleClass="dashboard-btn" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic><FontIcon iconLiteral="fas-list-ul" iconSize="16"/></graphic>
+                            <text>سجل الأوامر</text>
+                        </Button>
+                        <Button fx:id="debtorsBtn" onAction="#handleViewDebtors" styleClass="dashboard-btn" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic><FontIcon iconLiteral="fas-address-book" iconSize="16"/></graphic>
+                            <text>سجل المدينين</text>
+                        </Button>
+                        <Button fx:id="dispatchBtn" onAction="#handleViewSlips" styleClass="dashboard-btn" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic><FontIcon iconLiteral="fas-truck-loading" iconSize="16"/></graphic>
+                            <text>جداول الإرسال</text>
+                        </Button>
+                        <Button fx:id="budgetChaptersBtn" onAction="#handleViewChapters" styleClass="dashboard-btn" maxWidth="Infinity" alignment="BASELINE_LEFT">
+                            <graphic><FontIcon iconLiteral="fas-project-diagram" iconSize="16"/></graphic>
+                            <text>بنود الميزانية</text>
+                        </Button>
+                    </VBox>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <VBox styleClass="stat-card-icon-bg" alignment="CENTER" spacing="8" style="-fx-background-color: -fx-theme-primary-light;">
+                        <FontIcon iconLiteral="fas-info-circle" iconSize="24" styleClass="icon-primary"/>
+                        <Label text="نظام إدارة أوامر الإيراد" style="-fx-font-weight: bold; -fx-font-size: 11px;"/>
+                        <Label text="V 1.0.0" style="-fx-font-size: 10px;"/>
+                    </VBox>
+                </VBox>
 
-            <!-- Action Buttons -->
-            <Label styleClass="text-subheading" text="إجراءات سريعة / Actions Rapides"/>
-
-            <FlowPane hgap="16" vgap="16" alignment="CENTER" styleClass="dashboard-actions-panel" prefWrapLength="980">
-
-                <!-- Budget Chapters -->
-                <Button fx:id="budgetChaptersBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewChapters" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-sitemap" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="الميزانية / Budget"/>
+                <!-- RECENT ACTIVITY TABLE (RIGHT/CENTER) -->
+                <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="15">
+                    <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox spacing="4">
+                            <Label styleClass="chart-title" text="آخر العمليات المسجلة"/>
+                            <Label text="عرض آخر 8 عمليات قمت بها مؤخراً" style="-fx-font-size: 11px; -fx-text-fill: -fx-theme-text-muted;"/>
                         </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Dispatch Slips -->
-                <Button fx:id="dispatchBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewSlips" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-paper-plane" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="جدول الإرسال / Bordereau"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Debtors -->
-                <Button fx:id="debtorsBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewDebtors" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-users" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="المدينين / Débiteurs"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- Revenue Orders List -->
-                <Button fx:id="orderListBtn" styleClass="btn-outline dashboard-action-btn" onAction="#handleViewOrders" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-list-alt" iconSize="26" styleClass="icon-primary"/>
-                            <Label styleClass="dashboard-action-label" text="قائمة الأوامر / Liste"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-                <!-- New Revenue Order -->
-                <Button fx:id="newOrderBtn" styleClass="btn-primary dashboard-action-btn" onAction="#handleNewOrder" prefWidth="220" prefHeight="84"
-                        contentDisplay="TOP">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="6">
-                            <FontIcon iconLiteral="fas-plus-circle" iconSize="26" styleClass="icon-light"/>
-                            <Label styleClass="dashboard-action-label-light" text="أمر إيراد جديد / Nouveau"/>
-                        </VBox>
-                    </graphic>
-                </Button>
-
-            </FlowPane>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button styleClass="btn-text" text="عرض كافة السجلات" onAction="#handleViewOrders"/>
+                    </HBox>
+                    <TableView fx:id="recentOrdersTable" VBox.vgrow="ALWAYS" styleClass="table-compact">
+                        <placeholder>
+                            <Label text="لا توجد عمليات مسجلة حالياً"/>
+                        </placeholder>
+                        <columns>
+                            <TableColumn fx:id="colRecentNumber" text="رقم الأمر" prefWidth="180"/>
+                            <TableColumn fx:id="colRecentDebtor" text="المدين / Débiteur" prefWidth="400"/>
+                            <TableColumn fx:id="colRecentAmount" text="المبلغ (د.ج)" prefWidth="200"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </HBox>
 
         </VBox>
     </center>
 
-    <!-- BOTTOM BAR -->
     <bottom>
         <fx:include fx:id="footer" source="../shared/footer.fxml" />
     </bottom>
 
     <stylesheets>
         <URL value="@../../css/master.css" />
+        <URL value="@../../css/dashboard.css" />
     </stylesheets>
 </BorderPane>

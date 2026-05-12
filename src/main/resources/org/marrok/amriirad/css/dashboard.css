@@ -1,0 +1,98 @@
+/* Minimalist Dashboard Styles */
+
+.dashboard-root {
+    -fx-background-color: -fx-theme-bg-tertiary;
+}
+
+.dashboard-content {
+    -fx-spacing: 24px;
+}
+
+.dashboard-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-theme-text-primary;
+}
+
+.dashboard-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-theme-text-muted;
+}
+
+/* Minimalist Stat Cards */
+.stat-card {
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-padding: 16px;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-theme-border-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 2);
+}
+
+.stat-card-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-theme-text-primary;
+}
+
+.stat-card-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-theme-text-secondary;
+}
+
+/* Specific Border Accents instead of full gradients */
+.card-primary { -fx-border-color: transparent transparent transparent -fx-theme-primary; -fx-border-width: 0 0 0 4; }
+.card-info { -fx-border-color: transparent transparent transparent -fx-theme-info; -fx-border-width: 0 0 0 4; }
+.card-success { -fx-border-color: transparent transparent transparent -fx-theme-success; -fx-border-width: 0 0 0 4; }
+.card-warning { -fx-border-color: transparent transparent transparent -fx-theme-warning; -fx-border-width: 0 0 0 4; }
+
+.stat-card-icon-bg {
+    -fx-background-color: -fx-theme-bg-tertiary;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+.stat-card-icon-bg .font-icon {
+    -fx-icon-color: -fx-theme-text-secondary;
+}
+
+/* Action Buttons */
+.dashboard-btn {
+    -fx-background-color: -fx-theme-bg-secondary;
+    -fx-border-color: -fx-theme-border-light;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+    -fx-cursor: hand;
+}
+
+.dashboard-btn:hover {
+    -fx-background-color: -fx-theme-primary-light;
+    -fx-border-color: -fx-theme-primary;
+}
+
+.dashboard-btn .font-icon {
+    -fx-icon-color: -fx-theme-primary;
+}
+
+/* Charts */
+.chart-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-theme-text-primary;
+}
+
+.chart-bar {
+    -fx-bar-fill: -fx-theme-primary;
+}
+
+.chart-pie {
+    -fx-border-color: -fx-theme-bg-secondary;
+}
+
+/* Compact Table */
+.table-view.table-compact {
+    -fx-background-color: transparent;
+    -fx-font-size: 12px;
+}
