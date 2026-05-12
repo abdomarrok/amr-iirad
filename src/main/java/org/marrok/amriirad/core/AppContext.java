@@ -196,7 +196,9 @@ public class AppContext implements Disposable {
         if (clazz == DispatchSlipService.class) return dispatchSlipService;
         if (clazz == AuthService.class) return authService;
         if (clazz == InstitutionService.class) return institutionService;
+        if (clazz == AuditLogService.class) return auditLogService;
         if (clazz == ExportService.class) return exportService;
+        if (clazz == ZeroValueService.class) return zeroValueService;
         
         if (clazz == BudgetChapterRepository.class) return budgetChapterRepository;
         if (clazz == DebtorRepository.class) return debtorRepository;
