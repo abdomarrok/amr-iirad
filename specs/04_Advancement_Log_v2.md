@@ -1,6 +1,6 @@
 # Advancement Log v2 — Amr-Iirad Stabilization
-> **Latest Update:** 2026-05-11 (Late Morning)  
-> **Current Focus:** Phase 6 — Maintenance & Production Hardening
+> **Latest Update:** 2026-05-12 (Late Afternoon)  
+> **Current Focus:** Phase 7 — Advanced Reporting & Data Analytics
 
 ---
 
@@ -14,11 +14,22 @@
 | **Phase 3** | UI Layer & Design System | ✅ Complete |
 | **Phase 4** | Reporting & Jasper Integration | ✅ Complete |
 | **Phase 5** | Stability, RTL & Final Polish | ✅ Complete |
-| **Phase 6** | Maintenance & Security | 🚧 Active |
+| **Phase 6** | Maintenance & Security Hardening | ✅ Complete |
 
 ---
 
 ## 🔧 Recent Achievements (Stabilization Phase)
+
+### 📅 2026-05-12 (Late Afternoon): Reporting Engine & RBAC Hardening
+- ✅ **Reporting Engine Finalized**: Enabled end-to-end printing for all official Annexes (1-6) with full bilingual (Arabic/French) support.
+  - Integrated `ReportService` hooks into `ActionToolbar` for all list views.
+  - Verified RTL Arabic and French layout fidelity across all 12 templates.
+- ✅ **RBAC String Synchronization**: Performed a global audit and reconciliation of permission strings.
+  - Aligned controllers with `DatabaseSchemaManager` seeds (e.g., fixed `orders.*` -> `revenue_order.*`).
+  - Added missing `debtor.delete` permission to the database bootstrap.
+- ✅ **Empty State Standardization**: Integrated `EmptyStateController` into all list views (Orders, Debtors, Users, Dispatch, Zero-Value, Chapters).
+- ✅ **Dashboard Async Loading**: Refactored `DashboardController` to use `ConcurrencyManager` for background data fetching and stat calculation, ensuring a smooth UX during fiscal year transitions.
+- ✅ **ActionToolbar Universal Integration**: Upgraded all module list views to use the latest `ActionToolbar` with dynamic, permission-aware button visibility.
 
 ### 📅 2026-05-12 (Afternoon): UI Redesign & Modern Dashboard Aesthetic
 - ✅ **Dashboard Action Cards Refactored**: Redesigned the quick-action button row on the dashboard to match a modern card-based layout:
@@ -166,10 +177,11 @@
 ---
 
 ## 🎯 Next Objectives
-8. ✅ **Fiscal Scoping**: Refactored budget management to be year-isolated.
-9. ✅ **UI Refresh Stabilization**: Guaranteed real-time consistency across modals and lists.
-10. 🚧 **Copy to Next Year**: Planned feature to clone budget hierarchies across fiscal years.
-11. 🚧 **Data Export**: Implement CSV/Excel export for financial audits.
-12. 🚧 **Architecture Cleanup**: Kill the static "God" classes and migrate to a modern DI framework (Phase 2 Roadmap).
-13. 🚧 **State Management**: Transition to a reactive, property-based state store for large-scale enterprise sessions.
+1. ✅ **Fiscal Scoping**: Refactored budget management to be year-isolated.
+2. ✅ **UI Refresh Stabilization**: Guaranteed real-time consistency across modals and lists.
+3. ✅ **RBAC Hardening**: Synchronized all permission codes with DB seeds.
+4. ✅ **Reporting Engine**: Finalized Annex 1-6 universal integration.
+5. 🚧 **Data Export**: Implement CSV/Excel export for financial audits.
+6. 🚧 **Architecture Cleanup**: Kill the static "God" classes and migrate to a modern DI framework (Phase 2 Roadmap).
+7. 🚧 **Copy to Next Year**: Feature to clone budget hierarchies across fiscal years.
 

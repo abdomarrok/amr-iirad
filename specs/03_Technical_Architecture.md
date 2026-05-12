@@ -1,7 +1,7 @@
 # Technical Manifest: Amr-Iirad State of the Union
-> **Date:** 2026-05-11  
-> **Status:** Production-Ready Core / Refactored & Polished  
-> **Context:** This document serves as the primary "fingerprint" for any future AI agent or developer taking over this project. It summarizes the architectural truth as of May 11th, 2026.
+> **Date:** 2026-05-12
+> **Status:** Production-Ready Core / Hardened & Optimized
+> **Context:** This document serves as the primary "fingerprint" for any future AI agent or developer taking over this project. It summarizes the architectural truth as of May 12th, 2026.
 
 ---
 
@@ -48,6 +48,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 - **Typography**: The `Cairo` font is mandatory and applied at the `.root` level via `master.css`.
 - **TopBar**: Contains global actions (Back, Fiscal Year selection, User Management, Settings, Logout).
 - **Footer**: Displays system status and current user info.
+- **ActionToolbar**: Standardized toolbar for all list views. Consists of Add/Edit/Delete/Refresh/Print/Export buttons with centralized icon/text management and permission-based visibility logic.
+- **EmptyStateController**: A universal placeholder for empty tables. Provides context-specific icons, titles, and call-to-action buttons, ensuring a polished "no-data" experience.
 - **Data Grids**: All tables should use the standard `TableView` or `.data-table` classes to benefit from the premium `tableview.css` styling.
 - **Cards**: Use the `.card` class for container-based layouts to achieve the modern, elevated look.
 
@@ -59,6 +61,8 @@ The CSS system is now structured to prevent style leakage and ensure theme consi
 - **Bilingual Schema**: Database tables (`revenue_order`, `revenue_order_cancellation`, `institution_info`) use parallel columns for bilingual storage (e.g., `object_ar` and `object_fr`).
 - **Tafqeet (Multi-lang)**: Numeric amounts are automatically converted to words in both Arabic and French via `TafqeetService`, depending on the selected print language.
 - **Status Matrix**: Orders transition through `DRAFT` -> `ISSUED` -> `DISPATCHED` -> `CANCELLED`/`REDUCED`/`INCREASED`/`ZERO_VALUE`.
+- **RBAC Synchronization**: All permission strings are synchronized between `DatabaseSchemaManager` seeds and the Controller layer (e.g., `revenue_order.create`, `debtor.edit`). Avoid pluralized keys or generic module names.
+- **Async Data Loading**: Dashboard and list statistics use the `ConcurrencyManager` to fetch data in background threads, keeping the UI responsive during complex aggregations.
 - **Safe Enum Mapping**: Repositories implement robust mapping with safe fallbacks and logging to handle legacy or inconsistent database records during enum transitions.
 - **Self-Healing Migrations**: `DatabaseSchemaManager` uses idempotent DDL and `ALTER TABLE ... IF NOT EXISTS` patterns, including logic to drop legacy conflicting indexes (e.g., transition from global `code` uniqueness to year-scoped `uq_code_year`).
 - **Soft Deletion**: Records are never permanently deleted from the DB; they are marked `is_deleted = 1`.
@@ -79,7 +83,9 @@ The application uses a **Fat JAR (Uber-JAR)** model for distribution:
 3. ✅ **Bilingual Reporting**: Implemented full French documentation support and 2-JRXML printing strategy — **IMPLEMENTED**.
 4. ✅ **UI Extraction**: Migrated all programmatic Java UI code to declarative FXML views — **IMPLEMENTED**.
 5. ✅ **Administrative Compliance**: Fully implemented Decree 24-358, including "Increase Revenue" and "Zero Value Decisions" (Annex 6) — **IMPLEMENTED**.
-6. **Data Export**: Implement CSV/Excel export for financial reporting.
+6. ✅ **Dashboard Redesign**: High-performance activity command center with async loading — **IMPLEMENTED**.
+7. ✅ **Reporting Engine**: End-to-end integration of Annexes 1-6 with bilingual support — **IMPLEMENTED**.
+8. **Data Export**: Implement CSV/Excel export for financial reporting.
 
 ---
 *If you are the next AI agent: Maintain the pattern. If you need to add a feature, create a sub-package in `controller/` and `view/`, register the controller in `AppContext`, and use `SceneManager` for navigation.*

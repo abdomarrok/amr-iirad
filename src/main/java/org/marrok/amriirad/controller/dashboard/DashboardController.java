@@ -59,13 +59,16 @@ public class DashboardController implements Initializable {
     private final FiscalYearRepository fyRepo;
     private final RevenueOrderRepository orderRepo;
     private final org.marrok.amriirad.service.AuthService authService;
+    private final org.marrok.amriirad.core.ConcurrencyManager concurrencyManager;
 
     public DashboardController(FiscalYearRepository fyRepo, 
                                RevenueOrderRepository orderRepo,
-                               org.marrok.amriirad.service.AuthService authService) {
+                               org.marrok.amriirad.service.AuthService authService,
+                               org.marrok.amriirad.core.ConcurrencyManager concurrencyManager) {
         this.fyRepo = fyRepo;
         this.orderRepo = orderRepo;
         this.authService = authService;
+        this.concurrencyManager = concurrencyManager;
     }
 
     @Override
@@ -110,38 +113,45 @@ public class DashboardController implements Initializable {
         FiscalYear selected = topBarController.getFiscalYearCombo().getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
-        try {
-            List<RevenueOrder> allOrders = orderRepo.findAll(selected.getId());
+        footerController.setStatus("جاري تحديث البيانات...");
+        
+        concurrencyManager.runAsync(
+            () -> {
+                List<RevenueOrder> allOrders = orderRepo.findAll(selected.getId());
+                
+                // Pre-calculate stats in background
+                long totalCount = allOrders.size();
+                long issuedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.ISSUED).count();
+                long dispatchedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.DISPATCHED).count();
+                BigDecimal totalAmount = allOrders.stream()
+                        .map(RevenueOrder::getAmount)
+                        .filter(Objects::nonNull)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            // 1. Scalar Stats
-            long totalCount = allOrders.size();
-            long issuedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.ISSUED).count();
-            long dispatchedCount = allOrders.stream().filter(o -> o.getStatus() == OrderStatus.DISPATCHED).count();
-            BigDecimal totalAmount = allOrders.stream()
-                    .map(RevenueOrder::getAmount)
-                    .filter(Objects::nonNull)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            totalOrdersLabel.setText(String.valueOf(totalCount));
-            issuedOrdersLabel.setText(String.valueOf(issuedCount));
-            dispatchedOrdersLabel.setText(String.valueOf(dispatchedCount));
-            totalAmountLabel.setText(String.format("%,.2f", totalAmount));
-
-            // 2. Recent Orders Table (Latest 8)
-            if (recentOrdersTable != null) {
                 List<RevenueOrder> recent = allOrders.stream()
-                        .sorted((a, b) -> Integer.compare(b.getId(), a.getId())) // Descending
+                        .sorted((a, b) -> Integer.compare(b.getId(), a.getId()))
                         .limit(8)
                         .collect(Collectors.toList());
-                recentOrdersTable.setItems(FXCollections.observableArrayList(recent));
-            }
-            
-            footerController.setStatus("تم تحديث البيانات — " + selected.getYearLabel());
 
-        } catch (Exception e) {
-            logger.error("Failed to refresh dashboard stats", e);
-            footerController.setStatus("❌ خطأ في تحميل البيانات");
-        }
+                return new Object[]{totalCount, issuedCount, dispatchedCount, totalAmount, recent};
+            },
+            result -> {
+                Object[] data = (Object[]) result;
+                totalOrdersLabel.setText(String.valueOf(data[0]));
+                issuedOrdersLabel.setText(String.valueOf(data[1]));
+                dispatchedOrdersLabel.setText(String.valueOf(data[2]));
+                totalAmountLabel.setText(String.format("%,.2f", (BigDecimal) data[3]));
+
+                if (recentOrdersTable != null) {
+                    recentOrdersTable.setItems(FXCollections.observableArrayList((List<RevenueOrder>) data[4]));
+                }
+                footerController.setStatus("تم تحديث البيانات — " + selected.getYearLabel());
+            },
+            err -> {
+                logger.error("Failed to refresh dashboard stats", err);
+                footerController.setStatus("❌ خطأ في تحميل البيانات");
+            }
+        );
     }
 
     @FXML
